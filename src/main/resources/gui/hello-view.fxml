@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="517.0" prefWidth="753.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GuiController">
+    <bottom>
+        <HBox prefHeight="78.0" prefWidth="753.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false" text="Fahrgast"/>
+                <Button mnemonicParsing="false" text="Uhrzeit"/>
+            </children>
+        </HBox>
+    </bottom>
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="59.0" prefWidth="753.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button mnemonicParsing="false" onAction="#testCommport" text="connect"/>
+                <VBox fx:id="serialPane" onMouseClicked="#addCom" prefHeight="200.0" prefWidth="100.0"/>
+                <Button fx:id="speed" mnemonicParsing="false" text="Button"/>
+                <Button fx:id="addDyn" mnemonicParsing="false" text="Button"/>
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fx:id="ePaneTest" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0"/>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>
