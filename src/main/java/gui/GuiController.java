@@ -9,11 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import logic.Elevator;
 import logic.Floor;
 import logic.Logic;
@@ -42,8 +45,10 @@ public class GuiController {
     private int eCount = 0;
     private int fCount = 0;
 
-    private final double SPEED = 0.2;
-    private double[] speeds = {0, SPEED, -SPEED};
+
+    private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 4;
+    private static final int ELEVATOR_SPEED = 20;
+
     private Group allElevators = new Group();
 
     private Group allElevatorDoors = new Group();
@@ -66,6 +71,10 @@ public class GuiController {
             prev = l;
             //speed.setScaleY(speed.getScaleY() + xD);
             //TODO nach Logic auslagern
+            for (Elevator e : logic.getGrid().getElevators()
+            ) {
+                e.setSpeed(xD * ELEVATOR_SPEED);
+            }
             logic.getGrid().getElevators()[0].moveUp();
             logic.getGrid().getElevators()[1].moveUp();
             logic.getGrid().getElevators()[2].moveUp();
@@ -76,15 +85,17 @@ public class GuiController {
                     for (Floor f : logic.getGrid().getFloors()
                     ) {
                         //TODO ACHTUNG FLOAT
-                        if (e.getElevation() - f.getHeight() <= 0.1) {
+
+                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * ELEVATOR_SPEED / 2) {
                             //TODO SEND ARRIVE AT
+                            System.out.println("E" + e.getId() + "arrived at F" + f.getId());
                         }
                     }
                 }
             }
             //TODO DRAW aulagern
             for (int i = 0; i < elevators.size(); i++) {
-                elevators.get(i).setTranslateY(logic.getGrid().getElevators()[i].getElevation());
+                elevators.get(i).setTranslateY(logic.getGrid().getElevators()[i].getElevation() * -1);
             }
         }
     };
@@ -95,7 +106,7 @@ public class GuiController {
         elevators.clear();
         allElevators = new Group();
         if (!running) {
-            logic = new Logic(4, 3, 0, 0, 0);
+            logic = new Logic(4, 2, 0, 0, 0);
             for (int i = 0; i < logic.getGrid().elevators.length; i++) {
                 addElevator();
             }
@@ -172,7 +183,6 @@ public class GuiController {
             ePaneTest = new ScrollPane();
         }
         gridAll.getChildren().add(createStaticElevator(elevatorNum));
-
         ePaneTest.setContent(gridAll);
     }
 
@@ -208,20 +218,24 @@ public class GuiController {
         shaft.setFill(Color.LIGHTGRAY);
         shaft.setHeight(floors.size() * 100);
         shaft.setWidth(2f);
-        shaft.setX(((elevatorNum + 1) * 100 + 20) * 1);
+        shaft.setX(((elevatorNum + 1) * 100 + 20));
         shaft.setY((floors.size() * 100 - 50) * -1);
 
         staticElevator.getChildren().addAll(shaft);
-
+        //create FloorButtons
         for (int i = 0; i < logic.getGrid().floors.length; i++) {
-            Rectangle shaft2 = new Rectangle();
-            shaft2.setFill(Color.RED);
-            shaft2.setHeight(10f);
-            shaft2.setWidth(10f);
-            shaft2.setX(((elevatorNum + 1) * 100 + 40) * 1);
-            shaft2.setY((floors.size() * 100 - 50 + i * 15) * -1);
+            Rectangle floorLCD = new Rectangle();
+            floorLCD.setFill(Color.GRAY);
+            floorLCD.setHeight(16f);
+            floorLCD.setWidth(16f);
+            Text test = new Text("" + i);
+            test.setStyle("-fx-font: 16 arial;");
+            StackPane test2 = new StackPane(floorLCD, test);
+            int columnLength = i / BUTTONS_PER_COLUMN_IN_ELEVATOR;
+            test2.setLayoutX(((elevatorNum + 1) * 100 + 18 * columnLength));
+            test2.setLayoutY((100 + i % BUTTONS_PER_COLUMN_IN_ELEVATOR * 18));
             int floornum = i;
-            shaft2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     System.out.println("pressed in E:" + elevatorNum + " to F:" + floornum);
@@ -230,12 +244,10 @@ public class GuiController {
                     }
                 }
             });
-            staticElevator.getChildren().addAll(shaft2);
+            staticElevator.getChildren().addAll(test2);
         }
-
-
-        //TODO BUTTONS in elevator
-
+        //TODO more buttons
+        //if(logic.priority_mode)
         return staticElevator;
     }
 
@@ -249,20 +261,20 @@ public class GuiController {
         inner.setHeight(16f);
         inner.setWidth(16f);
 
-        inner.setY((floors.size() * 100 - 2) * -1);
+        inner.setY((floors.size() * 100 - 2) * -1 + 60);
         inner.setX(22);
         outer.setY(floors.size() * 100 * -1);
         outer.setX(20);
         Group test = new Group();
         Label text = new Label("" + floors.size());
         text.setTranslateX(26);
-        text.setTranslateY((floors.size() * 100 - 2) * -1);
+        text.setTranslateY((floors.size() * 100 - 2) * -1 + 60);
 
         Rectangle heightLine = new Rectangle();
         heightLine.setFill(Color.LIGHTGRAY);
         heightLine.setWidth(elevators.size() * 100);
         heightLine.setHeight(2f);
-        heightLine.setY((floors.size() * 100 - 20) * -1);
+        heightLine.setY((floors.size() * 100 - 20) * -1 + 60);
 
         test.getChildren().addAll(heightLine, outer, inner, text);
         floors.add(test);

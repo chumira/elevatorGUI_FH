@@ -24,12 +24,12 @@ public class Elevator {
 
 
     public void moveUp() {
-        this.elevation -= this.speed;
+        this.elevation += this.speed;
         this.isMoving = true;
     }
 
     public void moveDown() {
-        this.elevation += this.speed;
+        this.elevation -= this.speed;
         this.isMoving = true;
     }
 
