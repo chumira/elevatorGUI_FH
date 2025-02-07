@@ -10,7 +10,7 @@ import java.util.*;
 @Setter
 public class Logic {
     public ElevatorGrid grid;
-    Timer timer = new Timer("Uhrzeit");
+    Timer timer;
 
     Queue<String> inbox;
     Queue<String> outbox;
@@ -25,6 +25,7 @@ public class Logic {
         this.hoursPerDay = hoursPerDay;
         this.currentHour = hour;
         this.currentMinute = minute;
+        toggleTimer();
     }
 
     public List<String> establishSerialConnection() {
@@ -39,10 +40,14 @@ public class Logic {
 
     public void toggleTimer() {
         if (timer_isrunning) {
+            System.out.println("stop");
             timer.cancel();
+            timer_isrunning = false;
             return;
         }
         timer_isrunning = true;
+        System.out.println("start");
+        timer = new Timer("uhrzeit");
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
