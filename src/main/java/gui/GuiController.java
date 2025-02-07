@@ -4,20 +4,18 @@ import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import logic.Elevator;
+import logic.ElevatorMovement;
 import logic.Floor;
 import logic.Logic;
 
@@ -74,21 +72,20 @@ public class GuiController {
             for (Elevator e : logic.getGrid().getElevators()
             ) {
                 e.setSpeed(xD * ELEVATOR_SPEED);
+                e.updateElevation();
             }
-            logic.getGrid().getElevators()[0].moveUp();
-            logic.getGrid().getElevators()[1].moveUp();
-            logic.getGrid().getElevators()[2].moveUp();
             for (Elevator e : logic.getGrid().getElevators()
             ) {
-                if (e.isMoving()) {
+                if (!(e.getMovementDirection() == ElevatorMovement.STAND_STILL)) {
 
                     for (Floor f : logic.getGrid().getFloors()
                     ) {
                         //TODO ACHTUNG FLOAT
 
-                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * ELEVATOR_SPEED / 2) {
+                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED - 1)) {
                             //TODO SEND ARRIVE AT
                             System.out.println("E" + e.getId() + "arrived at F" + f.getId());
+                            e.setMovementDirection(ElevatorMovement.STAND_STILL);
                         }
                     }
                 }
@@ -238,9 +235,13 @@ public class GuiController {
             test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    System.out.println("pressed in E:" + elevatorNum + " to F:" + floornum);
-                    if (logic.grid.elevators[elevatorNum].isMoving()) {
-                        logic.grid.elevators[elevatorNum].setSpeed(-1 * logic.grid.elevators[elevatorNum].getSpeed());
+                    if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
+                        logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
+                        System.out.println(logic.grid.elevators[elevatorNum].getMovementDirection());
+                    } else if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
+                        logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.DOWN);
+                    } else if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
+                        logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
                     }
                 }
             });
@@ -263,7 +264,7 @@ public class GuiController {
 
         inner.setY((floors.size() * 100 - 2) * -1 + 60);
         inner.setX(22);
-        outer.setY(floors.size() * 100 * -1);
+        outer.setY(floors.size() * 100 * -1 + 60);
         outer.setX(20);
         Group test = new Group();
         Label text = new Label("" + floors.size());

@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bce16d52-f670-48ae-acf6-5752902eb5e4" name="Changes" comment="initial commit;&#10;many warnings">
+    <list default="true" id="bce16d52-f670-48ae-acf6-5752902eb5e4" name="Changes" comment="Buttons in Elevator to Floor added;&#10;Elevator arrival on Floor detection;">
+      <change afterPath="$PROJECT_DIR$/src/main/java/logic/ElevatorMovement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/GuiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/GuiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/logic/Activity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/Activity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/logic/Elevator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/Elevator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/logic/ElevatorGrid.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/ElevatorGrid.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/logic/LCDButton.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/LCDButton.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -83,7 +83,14 @@
       <option name="project" value="LOCAL" />
       <updated>1738862240823</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Buttons in Elevator to Floor added;&#10;Elevator arrival on Floor detection;">
+      <created>1738929179668</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738929179668</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -100,6 +107,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
     <MESSAGE value="initial commit;&#10;many warnings" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial commit;&#10;many warnings" />
+    <MESSAGE value="Buttons in Elevator to Floor added;&#10;Elevator arrival on Floor detection;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Buttons in Elevator to Floor added;&#10;Elevator arrival on Floor detection;" />
   </component>
 </project>

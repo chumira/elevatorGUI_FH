@@ -13,6 +13,7 @@ public class Elevator {
     List<Passenger> passengers;
     List<LCDButton> buttons;
     boolean doorClosed, isMoving;
+    ElevatorMovement movementDirection;
     double elevation = 0;
     double speed = 0.1;
     double closedpercentage;
@@ -20,12 +21,26 @@ public class Elevator {
     public Elevator(String id) {
         this.id = id;
         this.buttons = new ArrayList<>();
+        this.passengers = new ArrayList<>();
+        this.movementDirection = ElevatorMovement.STAND_STILL;
     }
 
 
-    public void moveUp() {
-        this.elevation += this.speed;
-        this.isMoving = true;
+    public void updateElevation() {
+        //System.out.println(this.movementDirection);
+        switch (this.movementDirection) {
+            case STAND_STILL:
+                break;
+            case UP:
+                this.elevation += this.speed;
+                break;
+            case DOWN:
+                this.elevation -= this.speed;
+                break;
+            default:
+                throw new IllegalArgumentException();
+
+        }
     }
 
     public void moveDown() {
