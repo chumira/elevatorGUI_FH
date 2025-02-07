@@ -9,7 +9,7 @@
         <HBox prefHeight="78.0" prefWidth="753.0" BorderPane.alignment="CENTER">
             <children>
                 <Button mnemonicParsing="false" text="Fahrgast"/>
-                <Button mnemonicParsing="false" text="Uhrzeit"/>
+                <Button fx:id="timerButton" mnemonicParsing="false" onAction="#toggleTimerButton" text="Uhrzeit"/>
             </children>
         </HBox>
     </bottom>

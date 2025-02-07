@@ -35,10 +35,12 @@ public class GuiController {
     private ScrollPane ePaneTest;
     @FXML
     private HBox eGrid;
+    @FXML
+    private Button timerButton;
     /**
      * Logik
      */
-    private Logic logic = new Logic();
+    private Logic logic;
     boolean running = false;
     private int eCount = 0;
     private int fCount = 0;
@@ -80,12 +82,10 @@ public class GuiController {
 
                     for (Floor f : logic.getGrid().getFloors()
                     ) {
-                        //TODO ACHTUNG FLOAT
-
-                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED - 1)) {
+                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED / 2.0)) {
                             //TODO SEND ARRIVE AT
                             System.out.println("E" + e.getId() + "arrived at F" + f.getId());
-                            e.setMovementDirection(ElevatorMovement.STAND_STILL);
+                            //e.setMovementDirection(ElevatorMovement.STAND_STILL);
                         }
                     }
                 }
@@ -94,6 +94,7 @@ public class GuiController {
             for (int i = 0; i < elevators.size(); i++) {
                 elevators.get(i).setTranslateY(logic.getGrid().getElevators()[i].getElevation() * -1);
             }
+            timerButton.setText(logic.currentTime());
         }
     };
 
@@ -103,7 +104,7 @@ public class GuiController {
         elevators.clear();
         allElevators = new Group();
         if (!running) {
-            logic = new Logic(4, 2, 0, 0, 0);
+            logic = new Logic(4, 2, 24, 22, 54);
             for (int i = 0; i < logic.getGrid().elevators.length; i++) {
                 addElevator();
             }
@@ -125,6 +126,7 @@ public class GuiController {
         if (!running) {
             a.start();
         } else {
+            logic.clearThreads();
             a.stop();
         }
         running = !running;
@@ -216,7 +218,7 @@ public class GuiController {
         shaft.setHeight(floors.size() * 100);
         shaft.setWidth(2f);
         shaft.setX(((elevatorNum + 1) * 100 + 20));
-        shaft.setY((floors.size() * 100 - 50) * -1);
+        shaft.setY((floors.size() * 100 - 100) * -1);
 
         staticElevator.getChildren().addAll(shaft);
         //create FloorButtons
@@ -235,9 +237,9 @@ public class GuiController {
             test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
+                    //FOR MANUAL TESTING
                     if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
                         logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
-                        System.out.println(logic.grid.elevators[elevatorNum].getMovementDirection());
                     } else if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
                         logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.DOWN);
                     } else if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
@@ -282,4 +284,8 @@ public class GuiController {
         return test;
     }
 
+    @FXML
+    protected void toggleTimerButton() {
+        logic.toggleTimer();
+    }
 }

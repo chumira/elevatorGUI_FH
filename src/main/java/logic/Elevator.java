@@ -42,13 +42,4 @@ public class Elevator {
 
         }
     }
-
-    public void moveDown() {
-        this.elevation -= this.speed;
-        this.isMoving = true;
-    }
-
-    public void stop() {
-        this.isMoving = false;
-    }
 }
