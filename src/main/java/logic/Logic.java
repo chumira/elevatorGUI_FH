@@ -18,6 +18,7 @@ public class Logic {
     int currentHour = 0;
     int currentMinute = 0;
 
+
     private boolean timer_isrunning = false;
 
     public Logic(int elevators, int floors, int hoursPerDay, int hour, int minute) {
@@ -40,13 +41,11 @@ public class Logic {
 
     public void toggleTimer() {
         if (timer_isrunning) {
-            System.out.println("stop");
             timer.cancel();
             timer_isrunning = false;
             return;
         }
         timer_isrunning = true;
-        System.out.println("start");
         timer = new Timer("uhrzeit");
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -54,15 +53,16 @@ public class Logic {
                 currentMinute++;
                 currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
                 currentMinute %= 60;
-                System.out.println(currentHour + ":" + currentMinute);
+                if (currentMinute == 0) {
+                    System.out.println("HOUR " + currentHour);
+                }
             }
         }, 1000, 1000);
     }
 
 
     public String currentTime() {
-        String formatted = String.format("%02d:%02d", currentHour, currentMinute);
-        return formatted;
+        return String.format("%02d:%02d", currentHour, currentMinute);
     }
 
     public void clearThreads() {

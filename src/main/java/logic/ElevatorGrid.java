@@ -1,7 +1,10 @@
 package logic;
 
+import javafx.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,8 +30,18 @@ public class ElevatorGrid {
                 elevators[i].getButtons().add(new LCDButton("" + j, "TODO"));
                 //elevators[i].getButtons().get(j);
             }
-
         }
     }
+
+    public void adjustElevatorHeight(int elevatorID, int floorID) {
+        elevators[elevatorID].setElevation(floors[floorID].getHeight());
+    }
+
+    public void adjustElevatorHeights(List<Pair<Integer, Integer>> toAdjust) {
+        for (Pair<Integer, Integer> e : toAdjust) {
+            adjustElevatorHeight(e.getKey(), e.getValue());
+        }
+    }
+
 
 }
