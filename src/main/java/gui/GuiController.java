@@ -1,11 +1,14 @@
 package gui;
 
+import com.fazecast.jSerialComm.SerialPort;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -14,19 +17,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import logic.Elevator;
-import logic.ElevatorMovement;
-import logic.Floor;
-import logic.Logic;
+import logic.*;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class GuiController {
+public class GuiController implements Initializable {
     @FXML
     private Label welcomeText;
     @FXML
-    private VBox serialPane;
+    private ListView<SerialPort> serialPane;
     @FXML
     private Button speed;
     @FXML
@@ -37,13 +41,17 @@ public class GuiController {
     private HBox eGrid;
     @FXML
     private Button timerButton;
+    @FXML
+    private Button reloadSerial;
     /**
      * Logik
      */
-    private Logic logic;
+    private LogicWrapper logicWrapper = new LogicWrapper();
     boolean running = false;
     private int eCount = 0;
     private int fCount = 0;
+
+    private SerialConnection serialConnection;
 
 
     private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 4;
@@ -71,20 +79,21 @@ public class GuiController {
             prev = l;
             //speed.setScaleY(speed.getScaleY() + xD);
             //TODO nach Logic auslagern
-            for (Elevator e : logic.getGrid().getElevators()
+            for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
             ) {
                 e.setSpeed(xD * ELEVATOR_SPEED);
                 e.updateElevation();
             }
-            for (Elevator e : logic.getGrid().getElevators()
+            for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
             ) {
                 if (!(e.getMovementDirection() == ElevatorMovement.STAND_STILL)) {
 
-                    for (Floor f : logic.getGrid().getFloors()
+                    for (Floor f : logicWrapper.getLogic().getGrid().getFloors()
                     ) {
-                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED / 2.0)) {
+                        //TODO FINE_TUNE detection range
+                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED * 0.51)) {
                             //TODO SEND ARRIVE AT
-                            System.out.println("E" + e.getId() + "arrived at F" + f.getId());
+                            System.out.println("ARRIVE " + e.getId() + " " + f.getId());
                             //e.setMovementDirection(ElevatorMovement.STAND_STILL);
                         }
                     }
@@ -92,9 +101,9 @@ public class GuiController {
             }
             //TODO DRAW aulagern
             for (int i = 0; i < elevators.size(); i++) {
-                elevators.get(i).setTranslateY(logic.getGrid().getElevators()[i].getElevation() * -1);
+                elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
             }
-            timerButton.setText(logic.currentTime());
+            timerButton.setText(logicWrapper.getLogic().currentTime());
         }
     };
 
@@ -104,14 +113,14 @@ public class GuiController {
         elevators.clear();
         allElevators = new Group();
         if (!running) {
-            logic = new Logic(4, 2, 24, 22, 54);
-            for (int i = 0; i < logic.getGrid().elevators.length; i++) {
+            logicWrapper.setLogic(new Logic(4, 2, 24, 22, 54));
+            for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
                 addElevator();
             }
-            for (int i = 0; i < logic.getGrid().floors.length; i++) {
-                addFloor();
+            for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
+                addFloor(i);
             }
-            for (int i = 0; i < logic.getGrid().elevators.length; i++) {
+            for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
                 addStaticElevator(i);
             }
         } else {
@@ -126,21 +135,12 @@ public class GuiController {
         if (!running) {
             a.start();
         } else {
-            logic.clearThreads();
+            logicWrapper.getLogic().clearThreads();
             a.stop();
         }
         running = !running;
     }
 
-    @FXML
-    protected void addCom() {
-        List<String> a = logic.establishSerialConnection();
-        for (String b : a
-        ) {
-            serialPane.getChildren().add(new Label(b));
-        }
-
-    }
 
     @FXML
     protected void addElevator() {
@@ -159,7 +159,7 @@ public class GuiController {
     }
 
     @FXML
-    protected void addFloor() {
+    protected void addFloor(int floornum) {
 
         if (eGrid == null) {
             eGrid = new HBox();
@@ -168,7 +168,7 @@ public class GuiController {
             ePaneTest = new ScrollPane();
         }
 
-        gridAll.getChildren().add(createFloor());
+        gridAll.getChildren().add(createFloor(floornum));
         ePaneTest.setContent(gridAll);
     }
 
@@ -222,7 +222,7 @@ public class GuiController {
 
         staticElevator.getChildren().addAll(shaft);
         //create FloorButtons
-        for (int i = 0; i < logic.getGrid().floors.length; i++) {
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
             Rectangle floorLCD = new Rectangle();
             floorLCD.setFill(Color.GRAY);
             floorLCD.setHeight(16f);
@@ -238,12 +238,13 @@ public class GuiController {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     //FOR MANUAL TESTING
-                    if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
-                        logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
-                    } else if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
-                        logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.DOWN);
-                    } else if (logic.grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
-                        logic.grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
+                    System.out.println("REQUEST " + elevatorNum + " " + floornum);
+                    if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
+                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
+                    } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
+                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.DOWN);
+                    } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
+                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
                     }
                 }
             });
@@ -254,7 +255,7 @@ public class GuiController {
         return staticElevator;
     }
 
-    private Group createFloor() {
+    private Group createFloor(int floornum) {
         Rectangle outer = new Rectangle();
         outer.setFill(Color.BLACK);
         outer.setHeight(20f);
@@ -264,28 +265,60 @@ public class GuiController {
         inner.setHeight(16f);
         inner.setWidth(16f);
 
-        inner.setY((floors.size() * 100 - 2) * -1 + 60);
+        inner.setY((floornum * 100 - 2) * -1 + 60);
         inner.setX(22);
-        outer.setY(floors.size() * 100 * -1 + 60);
+        outer.setY(floornum * 100 * -1 + 60);
         outer.setX(20);
         Group test = new Group();
-        Label text = new Label("" + floors.size());
+        Label text = new Label("" + floornum);
         text.setTranslateX(26);
-        text.setTranslateY((floors.size() * 100 - 2) * -1 + 60);
+        text.setTranslateY((floornum * 100 - 2) * -1 + 60);
 
         Rectangle heightLine = new Rectangle();
         heightLine.setFill(Color.LIGHTGRAY);
         heightLine.setWidth(elevators.size() * 100);
         heightLine.setHeight(2f);
-        heightLine.setY((floors.size() * 100 - 20) * -1 + 60);
+        heightLine.setY((floornum * 100 - 20) * -1 + 60);
+        heightLine.setX(70);
 
         test.getChildren().addAll(heightLine, outer, inner, text);
         floors.add(test);
+        test.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                System.out.println("BUTTON_PUSH " + floornum);
+            }
+        });
         return test;
     }
 
     @FXML
     protected void toggleTimerButton() {
-        logic.toggleTimer();
+        logicWrapper.getLogic().toggleTimer();
+    }
+
+
+    @FXML
+    protected void writeSerialPort() throws IOException {
+        //logicWrapper.updateQueue();
+
+    }
+
+    @FXML
+    protected void showSerialPorts() {
+        this.serialPane.getItems().clear();
+        this.serialPane.getItems().addAll(SerialPort.getCommPorts());
+
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        showSerialPorts();
+        //TODO verschieben nach connect button
+        logicWrapper.initConnection("COM1");
+        //fuer die Auswahl
+        //this.serialPane.getSelectionModel().getSelectedItem()
+
     }
 }

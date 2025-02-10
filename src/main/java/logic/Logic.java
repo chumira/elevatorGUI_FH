@@ -29,15 +29,6 @@ public class Logic {
         toggleTimer();
     }
 
-    public List<String> establishSerialConnection() {
-        SerialPort[] a = SerialPort.getCommPorts();
-        for (SerialPort b : a
-        ) {
-            System.out.println(b.getDescriptivePortName());
-        }
-        List<String> res = Arrays.stream(a).map(SerialPort::getDescriptivePortName).toList();
-        return res;
-    }
 
     public void toggleTimer() {
         if (timer_isrunning) {
