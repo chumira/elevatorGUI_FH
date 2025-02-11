@@ -6,14 +6,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -22,7 +18,6 @@ import logic.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -46,7 +41,7 @@ public class GuiController implements Initializable {
     /**
      * Logik
      */
-    private LogicWrapper logicWrapper = new LogicWrapper();
+    private LogicWrapper logicWrapper = new LogicWrapper(this);
     boolean running = false;
     private int eCount = 0;
     private int fCount = 0;
@@ -79,68 +74,98 @@ public class GuiController implements Initializable {
             prev = l;
             //speed.setScaleY(speed.getScaleY() + xD);
             //TODO nach Logic auslagern
-            for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
-            ) {
-                e.setSpeed(xD * ELEVATOR_SPEED);
-                e.updateElevation();
-            }
-            for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
-            ) {
-                if (!(e.getMovementDirection() == ElevatorMovement.STAND_STILL)) {
 
-                    for (Floor f : logicWrapper.getLogic().getGrid().getFloors()
-                    ) {
-                        //TODO FINE_TUNE detection range
-                        if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED * 0.51)) {
-                            //TODO SEND ARRIVE AT
-                            System.out.println("ARRIVE " + e.getId() + " " + f.getId());
-                            //e.setMovementDirection(ElevatorMovement.STAND_STILL);
+            if (LogicWrapper.in.size() > 0) {
+                System.out.println("got a command");
+                for (int i = 0; i < LogicWrapper.in.size(); i++) {
+                    String a = LogicWrapper.in.remove();
+                    System.out.println(a);
+                    logicWrapper.getParser().parse(a);
+                }
+            }
+            if (logicWrapper.getParser().init_done) {
+                for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
+                ) {
+                    e.setSpeed(xD * ELEVATOR_SPEED);
+                    e.updateElevation();
+                }
+                for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
+                ) {
+                    if (!(e.getMovementDirection() == ElevatorMovement.STAND_STILL)) {
+
+                        for (Floor f : logicWrapper.getLogic().getGrid().getFloors()
+                        ) {
+                            //TODO FINE_TUNE detection range
+                            if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED * 0.51)) {
+                                //TODO SEND ARRIVE AT
+                                System.out.println("ARRIVE " + e.getId() + " " + f.getId());
+                                //e.setMovementDirection(ElevatorMovement.STAND_STILL);
+                            }
                         }
                     }
                 }
+                //TODO DRAW aulagern
+                for (int i = 0; i < elevators.size(); i++) {
+                    elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
+                }
+                timerButton.setText(logicWrapper.getLogic().currentTime());
             }
-            //TODO DRAW aulagern
-            for (int i = 0; i < elevators.size(); i++) {
-                elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
-            }
-            timerButton.setText(logicWrapper.getLogic().currentTime());
         }
     };
 
+
+    public void drawGrid() {
+
+        //logicWrapper.setLogic(new Logic(4, 2, 24, 22, 54));
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
+            addElevator();
+        }
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
+            addFloor(i);
+        }
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
+            addStaticElevator(i);
+        }
+        /**       if (!running) {
+         a.start();
+         } else {
+         logicWrapper.getLogic().clearThreads();
+         a.stop();
+         }
+
+         running = !running;
+         */
+    }
+
+
     @FXML
-    protected void testCommport() {
-        ePaneTest.setContent(null);
-        elevators.clear();
-        allElevators = new Group();
+    protected void testCommport2() {
+
         if (!running) {
-            logicWrapper.setLogic(new Logic(4, 2, 24, 22, 54));
-            for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
-                addElevator();
-            }
-            for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
-                addFloor(i);
-            }
-            for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
-                addStaticElevator(i);
-            }
+            a.start();
         } else {
-            /**
-             * Kann weg
-             */
+            //logicWrapper.getLogic().clearThreads();
+            a.stop();
+            
+            //delete previous elements to draw
             ePaneTest.setContent(null);
             elevators.clear();
             floors.clear();
             gridAll = new Group();
         }
-        if (!running) {
-            a.start();
-        } else {
-            logicWrapper.getLogic().clearThreads();
-            a.stop();
-        }
         running = !running;
     }
 
+
+    @FXML
+    protected void setSelectedSerialPort() {
+        if (this.serialPane.getSelectionModel().getSelectedItem() != null) {
+            this.logicWrapper.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
+            System.out.println("connected to: " + this.logicWrapper.getSerialPort().getDescriptivePortName());
+            this.logicWrapper.initConnection();
+        }
+
+    }
 
     @FXML
     protected void addElevator() {
@@ -299,12 +324,6 @@ public class GuiController implements Initializable {
 
 
     @FXML
-    protected void writeSerialPort() throws IOException {
-        //logicWrapper.updateQueue();
-
-    }
-
-    @FXML
     protected void showSerialPorts() {
         this.serialPane.getItems().clear();
         this.serialPane.getItems().addAll(SerialPort.getCommPorts());
@@ -316,9 +335,19 @@ public class GuiController implements Initializable {
 
         showSerialPorts();
         //TODO verschieben nach connect button
-        logicWrapper.initConnection("COM1");
-        //fuer die Auswahl
-        //this.serialPane.getSelectionModel().getSelectedItem()
+
+        //Darstellung der SerialPorts aendern
+        this.serialPane.setCellFactory(e -> new ListCell<SerialPort>() {
+            @Override
+            protected void updateItem(SerialPort sp, boolean empty) {
+                super.updateItem(sp, empty);
+                if (empty || sp == null || sp.getDescriptivePortName() == null) {
+                    setText("");
+                } else {
+                    setText(sp.getDescriptivePortName());
+                }
+            }
+        });
 
     }
 }

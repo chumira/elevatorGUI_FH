@@ -5,6 +5,7 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
+import gui.GuiController;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,23 +23,25 @@ public class LogicWrapper {
 
     SerialConnection sCon;
 
-    SerialPort sc;
+    SerialPort serialPort;
     Thread rt;
     byte[] buffer = new byte[256];
     Queue<String> out = new LinkedList<>();
 
+    GuiController gui;
+    public static Queue<String> in = new LinkedList<>();
     StringBuilder command = new StringBuilder();
-    Queue<String> in = new LinkedList<>();
 
-    public LogicWrapper() {
+    private final Parser parser = new Parser(this);
+
+    public LogicWrapper(GuiController gui) {
+        this.gui = gui;
     }
 
-    public boolean initConnection(String portName) {
-        this.sc = SerialPort.getCommPorts()[1];
-
-        sc.openPort();
+    public boolean initConnection() {
+        serialPort.openPort();
         MessageListener listener = new MessageListener();
-        sc.addDataListener(listener);
+        serialPort.addDataListener(listener);
         //try {
         //  Thread.sleep(5000);
         //} catch (Exception e) {
@@ -51,10 +54,14 @@ public class LogicWrapper {
 
 
     public boolean closeConnection() {
-        sc.closePort();
+        serialPort.closePort();
         return true;
     }
 
+    /**
+     * Klasse fuer das event-based reading fuer das Event: A delimited string-based message has been received
+     * siehe https://fazecast.github.io/jSerialComm/
+     */
     private static final class MessageListener implements SerialPortMessageListener {
         @Override
         public int getListeningEvents() {
@@ -63,6 +70,7 @@ public class LogicWrapper {
 
         @Override
         public byte[] getMessageDelimiter() {
+            //newLine Symbol als Delimiter
             return new byte[]{(byte) '\n'};
         }
 
@@ -80,6 +88,8 @@ public class LogicWrapper {
                 sb.append((char) b);
             }
             System.out.println("Received the following delimited message: " + sb);
+            //eingegangene Nachricht speichern (ohne '\n')
+            in.add(sb.delete(sb.length() - 1, sb.length()).toString());
         }
     }
 }

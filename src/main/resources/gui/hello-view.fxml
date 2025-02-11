@@ -16,10 +16,10 @@
     <top>
         <HBox alignment="CENTER_LEFT" prefHeight="59.0" prefWidth="753.0" BorderPane.alignment="CENTER">
             <children>
-                <Button mnemonicParsing="false" onAction="#testCommport" text="connect"/>
-                <ListView fx:id="serialPane" prefHeight="200.0" prefWidth="200.0"/>
+                <Button mnemonicParsing="false" onAction="#setSelectedSerialPort" text="connect"/>
+                <ListView fx:id="serialPane" prefHeight="59.0" prefWidth="300.0"/>
                 <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="reload"/>
-                <Button mnemonicParsing="false" onAction="#writeSerialPort" text="Button"/>
+                <Button mnemonicParsing="false" onAction="#testCommport2" text="startloop"/>
             </children>
         </HBox>
     </top>

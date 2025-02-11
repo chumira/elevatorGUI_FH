@@ -4,14 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bce16d52-f670-48ae-acf6-5752902eb5e4" name="Changes" comment="added sout HOUR &lt;H&gt;;&#10;function to adjust ElevatorHeight for INIT;">
-      <change afterPath="$PROJECT_DIR$/src/main/java/logic/LogicWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/logic/SerialConnection.java" afterDir="false" />
+    <list default="true" id="bce16d52-f670-48ae-acf6-5752902eb5e4" name="Changes" comment="serialConnection 1st try, works somewhat">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gui/GuiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/GuiController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/logic/Logic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/Logic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/logic/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/logic/LogicWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/LogicWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/logic/parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/Parser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/gui/hello-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/gui/hello-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -121,7 +119,14 @@
       <option name="project" value="LOCAL" />
       <updated>1738935643437</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="serialConnection 1st try, works somewhat">
+      <created>1739210095449</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1739210095449</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -143,7 +148,8 @@
     <MESSAGE value="added Timer in Logic and GUIController;" />
     <MESSAGE value="timer fix when toggled repeatedly" />
     <MESSAGE value="added sout HOUR &lt;H&gt;;&#10;function to adjust ElevatorHeight for INIT;" />
-    <option name="LAST_COMMIT_MESSAGE" value="added sout HOUR &lt;H&gt;;&#10;function to adjust ElevatorHeight for INIT;" />
+    <MESSAGE value="serialConnection 1st try, works somewhat" />
+    <option name="LAST_COMMIT_MESSAGE" value="serialConnection 1st try, works somewhat" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ElevatorGUI$Unnamed.ic" NAME="Unnamed Coverage Results" MODIFIED="1739205980201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />

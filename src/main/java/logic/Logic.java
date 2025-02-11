@@ -21,7 +21,7 @@ public class Logic {
 
     private boolean timer_isrunning = false;
 
-    public Logic(int elevators, int floors, int hoursPerDay, int hour, int minute) {
+    public Logic(int floors, int elevators, int hoursPerDay, int hour, int minute) {
         this.grid = new ElevatorGrid(elevators, floors);
         this.hoursPerDay = hoursPerDay;
         this.currentHour = hour;
