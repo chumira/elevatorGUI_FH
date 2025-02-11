@@ -76,10 +76,9 @@ public class GuiController implements Initializable {
             //TODO nach Logic auslagern
 
             if (LogicWrapper.in.size() > 0) {
-                System.out.println("got a command");
                 for (int i = 0; i < LogicWrapper.in.size(); i++) {
                     String a = LogicWrapper.in.remove();
-                    System.out.println(a);
+                    System.out.println("parsing now: " + a);
                     logicWrapper.getParser().parse(a);
                 }
             }
@@ -137,21 +136,31 @@ public class GuiController implements Initializable {
          */
     }
 
+    @FXML
+    protected void testGrid() throws InterruptedException {
+
+        logicWrapper.getParser().parse("init_base 3 5 4 5 6");
+        logicWrapper.getParser().parse("init_done");
+        this.testCommport2();
+        if (running)
+            this.drawGrid();
+
+    }
 
     @FXML
     protected void testCommport2() {
-
+        //delete previous elements to draw
+        ePaneTest.setContent(null);
+        elevators.clear();
+        floors.clear();
+        gridAll = new Group();
         if (!running) {
             a.start();
         } else {
-            //logicWrapper.getLogic().clearThreads();
+            logicWrapper.getLogic().clearThreads();
             a.stop();
-            
-            //delete previous elements to draw
-            ePaneTest.setContent(null);
-            elevators.clear();
-            floors.clear();
-            gridAll = new Group();
+
+
         }
         running = !running;
     }
@@ -279,6 +288,7 @@ public class GuiController implements Initializable {
         //if(logic.priority_mode)
         return staticElevator;
     }
+
 
     private Group createFloor(int floornum) {
         Rectangle outer = new Rectangle();

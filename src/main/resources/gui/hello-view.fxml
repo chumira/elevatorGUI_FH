@@ -20,6 +20,7 @@
                 <ListView fx:id="serialPane" prefHeight="59.0" prefWidth="300.0"/>
                 <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="reload"/>
                 <Button mnemonicParsing="false" onAction="#testCommport2" text="startloop"/>
+                <Button mnemonicParsing="false" onAction="#testGrid" text="testGrid"/>
             </children>
         </HBox>
     </top>

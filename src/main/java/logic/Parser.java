@@ -56,8 +56,6 @@ public class Parser {
                         this.parent.getLogic().getGrid().adjustElevatorHeight(pair.getKey(), pair.getValue());
                     }
                     init_done = true;
-                    System.out.println("amount f: " + this.parent.getLogic().getGrid().floors.length);
-                    System.out.println("amount e: " + this.parent.getLogic().getGrid().elevators.length);
                     this.parent.getGui().drawGrid();
                     break;
             }
