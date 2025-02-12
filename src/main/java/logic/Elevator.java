@@ -12,11 +12,11 @@ public class Elevator {
     String id;
     List<Passenger> passengers;
     List<LCDButton> buttons;
-    boolean doorClosed, isMoving;
+    boolean doorOpen;
     ElevatorMovement movementDirection;
     double elevation = 0;
     double speed = 0.1;
-    double closedpercentage;
+    double closedpercentage = 100;
 
     public Elevator(String id) {
         this.id = id;
@@ -42,4 +42,5 @@ public class Elevator {
 
         }
     }
+
 }

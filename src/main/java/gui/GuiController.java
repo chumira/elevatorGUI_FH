@@ -87,6 +87,7 @@ public class GuiController implements Initializable {
     public void changeDynamicObjects() {
         for (int i = 0; i < elevators.size(); i++) {
             elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
+            elevators.get(i).getChildren().get(1).setVisible(logicWrapper.getLogic().getGrid().getElevators()[i].isDoorOpen());
         }
         timerButton.setText(logicWrapper.getLogic().currentTime());
     }
@@ -265,6 +266,8 @@ public class GuiController implements Initializable {
                     } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
                         logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
                     }
+                    logicWrapper.getLogic().grid.elevators[elevatorNum].setDoorOpen(
+                            !logicWrapper.getLogic().grid.elevators[elevatorNum].isDoorOpen());
                 }
             });
             staticElevator.getChildren().addAll(test2);
