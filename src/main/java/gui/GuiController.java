@@ -15,7 +15,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import logic.*;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class GuiController implements Initializable {
 
 
     private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 4;
-    private static final int ELEVATOR_SPEED = 20;
+    public final int ELEVATOR_SPEED = 20;
 
     private Group allElevators = new Group();
 
@@ -67,51 +66,30 @@ public class GuiController implements Initializable {
         @Override
         public void handle(long l) {
             // 0.01666 60FPS
-            double xD = ((l - prev) / 1000000000.0);
-            if (xD > 1f) {
-                xD = 0.016666;
+            double elapsedTime = ((l - prev) / 1000000000.0);
+            if (elapsedTime > 0.05) {
+                elapsedTime = 0.016666;
             }
             prev = l;
             //speed.setScaleY(speed.getScaleY() + xD);
-            //TODO nach Logic auslagern
 
-            if (LogicWrapper.in.size() > 0) {
-                for (int i = 0; i < LogicWrapper.in.size(); i++) {
-                    String a = LogicWrapper.in.remove();
-                    System.out.println("parsing now: " + a);
-                    logicWrapper.getParser().parse(a);
-                }
-            }
-            if (logicWrapper.getParser().init_done) {
-                for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
-                ) {
-                    e.setSpeed(xD * ELEVATOR_SPEED);
-                    e.updateElevation();
-                }
-                for (Elevator e : logicWrapper.getLogic().getGrid().getElevators()
-                ) {
-                    if (!(e.getMovementDirection() == ElevatorMovement.STAND_STILL)) {
+            //Verarbeitung auf der Logikseite fuer die vergangene Zeit seit dem letzten Aufruf
+            logicWrapper.tickUpdate(elapsedTime);
 
-                        for (Floor f : logicWrapper.getLogic().getGrid().getFloors()
-                        ) {
-                            //TODO FINE_TUNE detection range
-                            if (Math.abs(e.getElevation() - f.getHeight()) < xD * (ELEVATOR_SPEED * 0.51)) {
-                                //TODO SEND ARRIVE AT
-                                System.out.println("ARRIVE " + e.getId() + " " + f.getId());
-                                //e.setMovementDirection(ElevatorMovement.STAND_STILL);
-                            }
-                        }
-                    }
-                }
-                //TODO DRAW aulagern
-                for (int i = 0; i < elevators.size(); i++) {
-                    elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
-                }
-                timerButton.setText(logicWrapper.getLogic().currentTime());
+            //dynamische Objekte wie die Aufzuege veraendern. Farbe und Position
+            if (logicWrapper.getCommandState().init_done) {
+                changeDynamicObjects();
             }
         }
     };
 
+
+    public void changeDynamicObjects() {
+        for (int i = 0; i < elevators.size(); i++) {
+            elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
+        }
+        timerButton.setText(logicWrapper.getLogic().currentTime());
+    }
 
     public void drawGrid() {
 
@@ -139,8 +117,8 @@ public class GuiController implements Initializable {
     @FXML
     protected void testGrid() throws InterruptedException {
 
-        logicWrapper.getParser().parse("init_base 3 5 4 5 6");
-        logicWrapper.getParser().parse("init_done");
+        logicWrapper.getCommandState().parse("init_base 3 5 4 5 6");
+        logicWrapper.getCommandState().parse("init_done");
         this.testCommport2();
         if (running)
             this.drawGrid();
@@ -159,8 +137,18 @@ public class GuiController implements Initializable {
         } else {
             logicWrapper.getLogic().clearThreads();
             a.stop();
+        }
+        running = !running;
+    }
 
-
+    @FXML
+    protected void toggleLoop() {
+        if (!running) {
+            a.start();
+        } else {
+            if (logicWrapper.getLogic() != null)
+                logicWrapper.getLogic().clearThreads();
+            a.stop();
         }
         running = !running;
     }
@@ -184,11 +172,8 @@ public class GuiController implements Initializable {
         if (ePaneTest == null) {
             ePaneTest = new ScrollPane();
         }
-        //allElevators.getChildren().add(createElevator());
         gridAll.getChildren().add(createElevator());
-        //ePaneTest.setContent(gridAll);
         ePaneTest.setContent(gridAll);
-        //System.out.println(allElevators.getChildren().size());
 
     }
 

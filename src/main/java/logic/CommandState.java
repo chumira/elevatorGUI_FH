@@ -5,7 +5,7 @@ import javafx.util.Pair;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Parser {
+public class CommandState {
 
     private boolean init_phase = false;
 
@@ -22,7 +22,7 @@ public class Parser {
     LogicWrapper parent;
 
 
-    public Parser(LogicWrapper parent) {
+    public CommandState(LogicWrapper parent) {
         this.parent = parent;
 
     }
@@ -34,6 +34,7 @@ public class Parser {
             switch (div[0]) {
                 case "INIT_START":
                     init_phase = true;
+                    init_done = false;
                     break;
                 case "INIT_BASE":
                     init_amountFloors = Integer.parseInt(div[1]);

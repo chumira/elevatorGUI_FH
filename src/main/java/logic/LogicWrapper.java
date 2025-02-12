@@ -2,7 +2,6 @@ package logic;
 
 
 import com.fazecast.jSerialComm.SerialPort;
-import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 import gui.GuiController;
@@ -10,8 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-import java.io.*;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -29,18 +26,50 @@ public class LogicWrapper {
     Queue<String> out = new LinkedList<>();
 
     GuiController gui;
-    public static Queue<String> in = new LinkedList<>();
+    public Queue<String> in = new LinkedList<>();
     StringBuilder command = new StringBuilder();
 
-    private final Parser parser = new Parser(this);
+    private final CommandState commandState = new CommandState(this);
 
     public LogicWrapper(GuiController gui) {
         this.gui = gui;
     }
 
+    public void tickUpdate(double elapsedTime) {
+        if (this.in.size() > 0) {
+            for (int i = 0; i < this.in.size(); i++) {
+                String a = this.in.remove();
+                System.out.println("parsing now: " + a);
+                this.commandState.parse(a);
+            }
+        }
+        if (this.commandState.init_done) {
+            for (Elevator e : this.getLogic().getGrid().getElevators()
+            ) {
+                e.setSpeed(elapsedTime * this.gui.ELEVATOR_SPEED);
+                e.updateElevation();
+            }
+            for (Elevator e : this.getLogic().getGrid().getElevators()
+            ) {
+                if (!(e.getMovementDirection() == ElevatorMovement.STAND_STILL)) {
+
+                    for (Floor f : this.logic.getGrid().getFloors()
+                    ) {
+                        //TODO FINE_TUNE detection range
+                        if (Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED * 0.51)) {
+                            //TODO SEND ARRIVE AT
+                            System.out.println("ARRIVE " + e.getId() + " " + f.getId());
+                            //e.setMovementDirection(ElevatorMovement.STAND_STILL);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public boolean initConnection() {
         serialPort.openPort();
-        MessageListener listener = new MessageListener();
+        MessageListener listener = new MessageListener(this);
         serialPort.addDataListener(listener);
         //try {
         //  Thread.sleep(5000);
@@ -63,6 +92,12 @@ public class LogicWrapper {
      * siehe https://fazecast.github.io/jSerialComm/
      */
     private static final class MessageListener implements SerialPortMessageListener {
+        LogicWrapper logicWrapper;
+
+        MessageListener(LogicWrapper logicWrapper) {
+            this.logicWrapper = logicWrapper;
+        }
+
         @Override
         public int getListeningEvents() {
             return SerialPort.LISTENING_EVENT_DATA_RECEIVED;
@@ -89,7 +124,7 @@ public class LogicWrapper {
             }
             System.out.println("Received the following delimited message: " + sb);
             //eingegangene Nachricht speichern (ohne '\n')
-            in.add(sb.delete(sb.length() - 1, sb.length()).toString());
+            logicWrapper.in.add(sb.delete(sb.length() - 1, sb.length()).toString());
         }
     }
 }
