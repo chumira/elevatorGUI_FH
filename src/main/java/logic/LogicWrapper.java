@@ -39,7 +39,7 @@ public class LogicWrapper {
         if (this.in.size() > 0) {
             for (int i = 0; i < this.in.size(); i++) {
                 String a = this.in.remove();
-                System.out.println("parsing now: " + a);
+                System.out.println("-->parsing now: " + a);
                 this.commandState.parse(a);
             }
         }
