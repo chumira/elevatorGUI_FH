@@ -65,6 +65,15 @@ public class CommandState {
                 case "CLOSE":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
                     break;
+                case "MOVE_UP":
+                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.UP);
+                    break;
+                case "MOVE_DOWN":
+                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.DOWN);
+                    break;
+                case "STOP":
+                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
+                    break;
                 default:
                     throw new UnsupportedOperationException();
 
