@@ -59,6 +59,15 @@ public class CommandState {
                     init_done = true;
                     this.parent.getGui().drawGrid();
                     break;
+                case "OPEN":
+                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = true;
+                    break;
+                case "CLOSE":
+                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
+                    break;
+                default:
+                    throw new UnsupportedOperationException();
+
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("couldnt parse the command");

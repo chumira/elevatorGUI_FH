@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bce16d52-f670-48ae-acf6-5752902eb5e4" name="Changes" comment="renamed parser to CommandState;Code aus Loop in Unterklassen ausgelagert">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/GuiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/GuiController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/logic/Elevator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/Elevator.java" afterDir="false" />
+    <list default="true" id="bce16d52-f670-48ae-acf6-5752902eb5e4" name="Changes" comment="erster Ansatz Tueren oeffnen und schliessen">
+      <change beforePath="$PROJECT_DIR$/src/main/java/logic/CommandState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/logic/CommandState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,7 +142,14 @@
       <option name="project" value="LOCAL" />
       <updated>1739366972487</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="erster Ansatz Tueren oeffnen und schliessen">
+      <created>1739367999572</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1739367999572</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -170,7 +175,8 @@
     <MESSAGE value="choose serialport done;&#10;serialPortListener and parser for init phase done;" />
     <MESSAGE value="added Button for grid testing;" />
     <MESSAGE value="renamed parser to CommandState;Code aus Loop in Unterklassen ausgelagert" />
-    <option name="LAST_COMMIT_MESSAGE" value="renamed parser to CommandState;Code aus Loop in Unterklassen ausgelagert" />
+    <MESSAGE value="erster Ansatz Tueren oeffnen und schliessen" />
+    <option name="LAST_COMMIT_MESSAGE" value="erster Ansatz Tueren oeffnen und schliessen" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/ElevatorGUI$Unnamed.ic" NAME="Unnamed Coverage Results" MODIFIED="1739205980201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
