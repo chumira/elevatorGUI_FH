@@ -64,6 +64,37 @@ public class LogicWrapper {
                     }
                 }
             }
+
+            //Fahrgaeste steigen in einen Aufzug ein falls er in seiner Ebene steht
+            for (int fID = 0; fID < this.getLogic().getGrid().getFloors().length; fID++) {
+                for (Passenger p : this.getLogic().getGrid().getFloors()[fID].getPassengers()
+                ) {
+                    if (p.getActivity() == Activity.IS_WAITING) {
+                        for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
+                            if (this.getLogic().getGrid().isElevatorinFloor(fID, eID)) {
+                                this.getLogic().getGrid().getFloors()[fID].getPassengers().remove(p);
+                                this.getLogic().getGrid().getElevators()[eID].getPassengers().add(p);
+                                p.setActivity(Activity.IN_ELEVATOR);
+                            }
+                        }
+                    }
+                }
+            }
+            //Fahrgaeste steigen aus Aufzug aus
+            for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
+                if (this.getLogic().getGrid().getElevators()[eID].getMovementDirection() == ElevatorMovement.STAND_STILL)
+                    for (Passenger p : this.getLogic().getGrid().getElevators()[eID].getPassengers()
+                    ) {
+                        Floor f = this.getLogic().getGrid().getFloorClosestToElevator(eID);
+                        if (p.getDestination().equals(f)) {
+                            if (this.getLogic().getGrid().isElevatorinFloor(eID, f.id)) {
+                                //TODO activity redundant ->remove it
+                                p.setActivity(Activity.HAS_ARRIVED);
+                                this.getLogic().getGrid().getElevators()[eID].getPassengers().remove(p);
+                            }
+                        }
+                    }
+            }
         }
     }
 

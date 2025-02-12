@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Elevator {
-    String id;
+    int id;
     List<Passenger> passengers;
     List<LCDButton> buttons;
     boolean doorOpen;
@@ -18,7 +18,7 @@ public class Elevator {
     double speed = 0.1;
     double closedpercentage = 100;
 
-    public Elevator(String id) {
+    public Elevator(int id) {
         this.id = id;
         this.buttons = new ArrayList<>();
         this.passengers = new ArrayList<>();

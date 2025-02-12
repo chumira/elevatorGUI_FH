@@ -10,8 +10,7 @@ public class Passenger {
     Floor origin, destination;
     Activity activity = Activity.IS_WAITING;
 
-    Passenger(String id, Floor origin, Floor destination){
-        this.id =id;
+    Passenger(Floor origin, Floor destination) {
         this.origin = origin;
         this.destination = destination;
 

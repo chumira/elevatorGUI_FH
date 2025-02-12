@@ -51,6 +51,10 @@ public class Logic {
         }, 1000, 1000);
     }
 
+    public void addPassenger(int origin, int destination) {
+        //Fahrgaeste starten immer in einem Stockwerk
+        Passenger newPassenger = new Passenger(this.grid.floors[origin], this.grid.floors[destination]);
+    }
 
     public String currentTime() {
         return String.format("%02d:%02d", currentHour, currentMinute);

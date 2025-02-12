@@ -5,15 +5,17 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Getter
 @Setter
 public class Floor {
 
-    String id;
+    int id;
     List<Passenger> passengers = new ArrayList<>();
     List<LCDButton> buttons = new ArrayList<>();
     double height;
-    public Floor(String id){
+
+    public Floor(int id) {
         this.id = id;
     }
 }
