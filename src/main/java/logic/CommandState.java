@@ -76,9 +76,14 @@ public class CommandState {
                 case "STOP":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
                     break;
-                case "LIGHT":
+                case "LIGHT_ON":
                     //TODO ueberlegen wie alle LEDS angesprochen werden koennen
-                    //LIGHT F|E 0-N so etwa?
+                    //LIGHT F|E 0-N 0-M so etwa?
+                    //aktuell LIGHT_ON 0-N 0-M NUR FUER ELEVATORS
+                    int eID = Integer.parseInt(div[1]);
+                    int bID = Integer.parseInt(div[2]);
+                    this.parent.logic.grid.elevators[eID].getButtons().get(bID).isGlowing = true;
+                    this.parent.gui.changeButtonLight(true, eID, bID);
                     break;
                 default:
                     throw new UnsupportedOperationException();

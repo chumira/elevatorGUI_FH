@@ -60,6 +60,8 @@ public class GuiController implements Initializable {
     private List<Group> elevators = new ArrayList<>();
     private List<Group> elevatorDoors = new ArrayList<>();
     private List<Group> floors = new ArrayList<>();
+
+    private final List<List<Rectangle>> buttons = new ArrayList<>();
     AnimationTimer a = new AnimationTimer() {
         long prev = 0;
 
@@ -85,17 +87,26 @@ public class GuiController implements Initializable {
 
 
     public void changeDynamicObjects() {
-        for (int i = 0; i < elevators.size(); i++) {
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().getElevators().length; i++) {
             elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
             elevators.get(i).getChildren().get(1).setVisible(logicWrapper.getLogic().getGrid().getElevators()[i].isDoorOpen());
         }
         timerButton.setText(logicWrapper.getLogic().currentTime());
     }
 
+    public void changeButtonLight(boolean on, int elevatorID, int buttonID) {
+        if (on) {
+            buttons.get(elevatorID).get(buttonID).setFill(Color.YELLOW);
+        } else {
+            buttons.get(elevatorID).get(buttonID).setFill(Color.GRAY);
+        }
+    }
+
     public void clearGrid() {
         ePaneTest.setContent(null);
         elevators.clear();
         floors.clear();
+        buttons.clear();
         gridAll = new Group();
     }
 
@@ -123,13 +134,12 @@ public class GuiController implements Initializable {
     }
 
     @FXML
-    protected void testGrid() throws InterruptedException {
+    protected void testGrid() {
 
         logicWrapper.getCommandState().parse("init_base 3 5 4 5 6");
         logicWrapper.getCommandState().parse("init_done");
-        this.testCommport2();
-        if (running)
-            this.drawGrid();
+        logicWrapper.getCommandState().parse("light_on 1 0");
+        
 
     }
 
@@ -249,6 +259,7 @@ public class GuiController implements Initializable {
 
         staticElevator.getChildren().addAll(shaft);
         //create FloorButtons
+        List<Rectangle> buttonsInElevator = new ArrayList<>();
         for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
             Rectangle floorLCD = new Rectangle();
             floorLCD.setFill(Color.GRAY);
@@ -278,7 +289,9 @@ public class GuiController implements Initializable {
                 }
             });
             staticElevator.getChildren().addAll(test2);
+            buttonsInElevator.add(floorLCD);
         }
+        buttons.add(buttonsInElevator);
         //TODO more buttons
         //if(logic.priority_mode)
         return staticElevator;
