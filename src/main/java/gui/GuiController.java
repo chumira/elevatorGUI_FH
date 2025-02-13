@@ -126,7 +126,7 @@ public class GuiController implements Initializable {
 
         //logicWrapper.setLogic(new Logic(4, 2, 24, 22, 54));
         for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
-            addElevator();
+            addElevator(i);
         }
         for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
             addFloor(i);
@@ -151,6 +151,7 @@ public class GuiController implements Initializable {
         logicWrapper.getCommandState().parse("init_base 3 5 4 5 6");
         logicWrapper.getCommandState().parse("init_done");
         logicWrapper.getCommandState().parse("light_on e 1 0");
+        logicWrapper.getCommandState().parse("light_on e 3 2");
 
 
     }
@@ -195,14 +196,14 @@ public class GuiController implements Initializable {
     }
 
     @FXML
-    protected void addElevator() {
+    protected void addElevator(int elevatorNum) {
         if (eGrid == null) {
             eGrid = new HBox();
         }
         if (ePaneTest == null) {
             ePaneTest = new ScrollPane();
         }
-        gridAll.getChildren().add(createElevator());
+        gridAll.getChildren().add(createElevator(elevatorNum));
         ePaneTest.setContent(gridAll);
 
     }
@@ -218,6 +219,7 @@ public class GuiController implements Initializable {
         }
 
         gridAll.getChildren().add(createFloor(floornum));
+        gridAll.getChildren().add(createFloorLine(floornum));
         ePaneTest.setContent(gridAll);
     }
 
@@ -234,7 +236,7 @@ public class GuiController implements Initializable {
         ePaneTest.setContent(gridAll);
     }
 
-    private Group createElevator() {
+    private Group createElevator(int elevatorNum) {
         Rectangle outer = new Rectangle();
         outer.setFill(Color.BLACK);
         outer.setHeight(60f);
@@ -244,10 +246,10 @@ public class GuiController implements Initializable {
         inner.setHeight(50f);
         inner.setWidth(30f);
         //ePaneTest.getChildren().addAll(outer,inner);
-        inner.setX((elevators.size() + 1) * 100 + 5);
+        inner.setX((elevatorNum + 1) * 100 + 5);
         inner.setY(25);
         inner.setVisible(false);
-        outer.setX((elevators.size() + 1) * 100);
+        outer.setX((elevatorNum + 1) * 100);
         outer.setY(20);
         Group testMovable = new Group();
 
@@ -312,40 +314,42 @@ public class GuiController implements Initializable {
 
 
     private Group createFloor(int floornum) {
-        Rectangle outer = new Rectangle();
-        outer.setFill(Color.BLACK);
-        outer.setHeight(20f);
-        outer.setWidth(20f);
-        Rectangle inner = new Rectangle();
-        inner.setFill(Color.WHITE);
-        inner.setHeight(16f);
-        inner.setWidth(16f);
+        Group allButtonsFloor = new Group();
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().floors[floornum].getButtons().size(); i++) {
+            Rectangle outer = new Rectangle();
+            outer.setFill(Color.BLACK);
+            outer.setHeight(20f);
+            outer.setWidth(20f);
+            Rectangle inner = new Rectangle();
+            inner.setFill(Color.WHITE);
+            inner.setHeight(16f);
+            inner.setWidth(16f);
+            StackPane test = new StackPane();
+            test.setTranslateY((floornum * 100) * -1 + 60);
+            test.setTranslateX(i * 25);
+            Text text = new Text("" + logicWrapper.getLogic().getGrid().getFloors()[floornum].getButtons().get(i).getSymbol());
+            test.getChildren().addAll(outer, inner, text);
+            int fI = i;
+            test.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    System.out.println("BUTTON_PUSH " + floornum + " " + fI);
+                }
+            });
+            allButtonsFloor.getChildren().add(test);
+        }
+        floors.add(allButtonsFloor);
+        return allButtonsFloor;
+    }
 
-        inner.setY((floornum * 100 - 2) * -1 + 60);
-        inner.setX(22);
-        outer.setY(floornum * 100 * -1 + 60);
-        outer.setX(20);
-        Group test = new Group();
-        Label text = new Label("" + floornum);
-        text.setTranslateX(26);
-        text.setTranslateY((floornum * 100 - 2) * -1 + 60);
-
+    private Rectangle createFloorLine(int floorNum) {
         Rectangle heightLine = new Rectangle();
         heightLine.setFill(Color.LIGHTGRAY);
-        heightLine.setWidth(elevators.size() * 100);
+        heightLine.setWidth(logicWrapper.getLogic().getGrid().elevators.length * 100);
         heightLine.setHeight(2f);
-        heightLine.setY((floornum * 100 - 20) * -1 + 60);
+        heightLine.setY((floorNum * 100 - 20) * -1 + 60);
         heightLine.setX(70);
-
-        test.getChildren().addAll(heightLine, outer, inner, text);
-        floors.add(test);
-        test.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println("BUTTON_PUSH " + floornum);
-            }
-        });
-        return test;
+        return heightLine;
     }
 
     @FXML

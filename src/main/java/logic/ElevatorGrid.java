@@ -31,6 +31,11 @@ public class ElevatorGrid {
                 //elevators[i].getButtons().get(j);
             }
         }
+        for (int i = 0; i < amountFloors; i++) {
+            floors[i].getButtons().add(new LCDButton("E" + i, "TODO"));
+            floors[i].setHeight(i * 100);
+        }
+        floors[0].getButtons().add(new LCDButton("ABC", "TODO"));
     }
 
     public void adjustElevatorHeight(int elevatorID, int floorID) {
