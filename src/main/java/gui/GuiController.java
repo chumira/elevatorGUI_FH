@@ -92,6 +92,13 @@ public class GuiController implements Initializable {
         timerButton.setText(logicWrapper.getLogic().currentTime());
     }
 
+    public void clearGrid() {
+        ePaneTest.setContent(null);
+        elevators.clear();
+        floors.clear();
+        gridAll = new Group();
+    }
+
     public void drawGrid() {
 
         //logicWrapper.setLogic(new Logic(4, 2, 24, 22, 54));

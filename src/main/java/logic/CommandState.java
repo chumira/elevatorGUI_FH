@@ -57,7 +57,9 @@ public class CommandState {
                         this.parent.getLogic().getGrid().adjustElevatorHeight(pair.getKey(), pair.getValue());
                     }
                     init_done = true;
+                    this.parent.getGui().clearGrid();
                     this.parent.getGui().drawGrid();
+                    this.elevator_States.clear();
                     break;
                 case "OPEN":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = true;
@@ -73,6 +75,10 @@ public class CommandState {
                     break;
                 case "STOP":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
+                    break;
+                case "LIGHT":
+                    //TODO ueberlegen wie alle LEDS angesprochen werden koennen
+                    //LIGHT F|E 0-N so etwa?
                     break;
                 default:
                     throw new UnsupportedOperationException();
