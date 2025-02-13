@@ -60,8 +60,8 @@ public class GuiController implements Initializable {
     private List<Group> elevators = new ArrayList<>();
     private List<Group> elevatorDoors = new ArrayList<>();
     private List<Group> floors = new ArrayList<>();
-
-    private final List<List<Rectangle>> buttons = new ArrayList<>();
+    private final List<List<Rectangle>> floorbuttons = new ArrayList<>();
+    private final List<List<Rectangle>> elevatorbuttons = new ArrayList<>();
     AnimationTimer a = new AnimationTimer() {
         long prev = 0;
 
@@ -94,19 +94,31 @@ public class GuiController implements Initializable {
         timerButton.setText(logicWrapper.getLogic().currentTime());
     }
 
-    public void changeButtonLight(boolean on, int elevatorID, int buttonID) {
+    public void changeElevatorButtonLight(boolean on, int elevatorID, int buttonID) {
         if (on) {
-            buttons.get(elevatorID).get(buttonID).setFill(Color.YELLOW);
+            elevatorbuttons.get(elevatorID).get(buttonID).setFill(Color.YELLOW);
         } else {
-            buttons.get(elevatorID).get(buttonID).setFill(Color.GRAY);
+            elevatorbuttons.get(elevatorID).get(buttonID).setFill(Color.GRAY);
         }
+    }
+
+    public void changeFloorButtonLight(boolean on, int floorID, int buttonID) {
+        if (on) {
+            elevatorbuttons.get(floorID).get(buttonID).setFill(Color.YELLOW);
+        } else {
+            elevatorbuttons.get(floorID).get(buttonID).setFill(Color.WHITE);
+        }
+    }
+
+    public void changeDoorOpen(boolean open, int elevatorID) {
+        elevators.get(elevatorID).getChildren().get(1).setVisible(logicWrapper.getLogic().getGrid().getElevators()[elevatorID].isDoorOpen());
     }
 
     public void clearGrid() {
         ePaneTest.setContent(null);
         elevators.clear();
         floors.clear();
-        buttons.clear();
+        elevatorbuttons.clear();
         gridAll = new Group();
     }
 
@@ -138,8 +150,8 @@ public class GuiController implements Initializable {
 
         logicWrapper.getCommandState().parse("init_base 3 5 4 5 6");
         logicWrapper.getCommandState().parse("init_done");
-        logicWrapper.getCommandState().parse("light_on 1 0");
-        
+        logicWrapper.getCommandState().parse("light_on e 1 0");
+
 
     }
 
@@ -234,6 +246,7 @@ public class GuiController implements Initializable {
         //ePaneTest.getChildren().addAll(outer,inner);
         inner.setX((elevators.size() + 1) * 100 + 5);
         inner.setY(25);
+        inner.setVisible(false);
         outer.setX((elevators.size() + 1) * 100);
         outer.setY(20);
         Group testMovable = new Group();
@@ -260,7 +273,7 @@ public class GuiController implements Initializable {
         staticElevator.getChildren().addAll(shaft);
         //create FloorButtons
         List<Rectangle> buttonsInElevator = new ArrayList<>();
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators[i].getButtons().size(); i++) {
             Rectangle floorLCD = new Rectangle();
             floorLCD.setFill(Color.GRAY);
             floorLCD.setHeight(16f);
@@ -291,7 +304,7 @@ public class GuiController implements Initializable {
             staticElevator.getChildren().addAll(test2);
             buttonsInElevator.add(floorLCD);
         }
-        buttons.add(buttonsInElevator);
+        elevatorbuttons.add(buttonsInElevator);
         //TODO more buttons
         //if(logic.priority_mode)
         return staticElevator;

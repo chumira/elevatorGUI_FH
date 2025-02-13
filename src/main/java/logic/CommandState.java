@@ -63,9 +63,11 @@ public class CommandState {
                     break;
                 case "OPEN":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = true;
+                    this.parent.gui.changeDoorOpen(true, Integer.parseInt(div[1]));
                     break;
                 case "CLOSE":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
+                    this.parent.gui.changeDoorOpen(false, Integer.parseInt(div[1]));
                     break;
                 case "MOVE_UP":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.UP);
@@ -80,10 +82,17 @@ public class CommandState {
                     //TODO ueberlegen wie alle LEDS angesprochen werden koennen
                     //LIGHT F|E 0-N 0-M so etwa?
                     //aktuell LIGHT_ON 0-N 0-M NUR FUER ELEVATORS
-                    int eID = Integer.parseInt(div[1]);
-                    int bID = Integer.parseInt(div[2]);
-                    this.parent.logic.grid.elevators[eID].getButtons().get(bID).isGlowing = true;
-                    this.parent.gui.changeButtonLight(true, eID, bID);
+                    String floorOrElevator = div[1];
+                    int eID = Integer.parseInt(div[2]);
+                    int bID = Integer.parseInt(div[3]);
+                    if (floorOrElevator.equals("E")) {
+                        this.parent.logic.grid.elevators[eID].getButtons().get(bID).isGlowing = true;
+                        this.parent.gui.changeElevatorButtonLight(true, eID, bID);
+                    } else if (floorOrElevator.equals("F")) {
+                        //TODO floorButtons
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
                     break;
                 default:
                     throw new UnsupportedOperationException();
