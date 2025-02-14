@@ -57,6 +57,7 @@ public class CommandState {
                         this.parent.getLogic().getGrid().adjustElevatorHeight(pair.getKey(), pair.getValue());
                     }
                     init_done = true;
+                    this.parent.gui.setLoopRunning(true);
                     this.parent.getGui().clearGrid();
                     this.parent.getGui().drawGrid();
                     this.elevator_States.clear();

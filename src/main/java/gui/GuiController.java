@@ -89,7 +89,6 @@ public class GuiController implements Initializable {
     public void changeDynamicObjects() {
         for (int i = 0; i < logicWrapper.getLogic().getGrid().getElevators().length; i++) {
             elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
-            elevators.get(i).getChildren().get(1).setVisible(logicWrapper.getLogic().getGrid().getElevators()[i].isDoorOpen());
         }
         timerButton.setText(logicWrapper.getLogic().currentTime());
     }
@@ -148,10 +147,11 @@ public class GuiController implements Initializable {
     @FXML
     protected void testGrid() {
 
-        logicWrapper.getCommandState().parse("init_base 3 5 4 5 6");
+        logicWrapper.getCommandState().parse("init_base 3 5 12 5 6");
         logicWrapper.getCommandState().parse("init_done");
         logicWrapper.getCommandState().parse("light_on e 1 0");
         logicWrapper.getCommandState().parse("light_on e 3 2");
+        logicWrapper.getCommandState().parse("open 2");
 
 
     }
@@ -172,16 +172,23 @@ public class GuiController implements Initializable {
         running = !running;
     }
 
+
     @FXML
     protected void toggleLoop() {
-        if (!running) {
+        setLoopRunning(!running);
+    }
+
+    public void setLoopRunning(boolean run) {
+        if (!running && run) {
             a.start();
-        } else {
-            if (logicWrapper.getLogic() != null)
-                logicWrapper.getLogic().clearThreads();
+
+
+        } else if (running && !run) {
+
             a.stop();
         }
-        running = !running;
+        this.logicWrapper.getLogic().setTimerRunning(run);
+        running = run;
     }
 
 
@@ -354,7 +361,8 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void toggleTimerButton() {
-        logicWrapper.getLogic().toggleTimer();
+        if (this.running)
+            logicWrapper.getLogic().setTimerRunning(!logicWrapper.getLogic().isTimer_isrunning());
     }
 
 

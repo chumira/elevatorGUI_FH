@@ -26,30 +26,36 @@ public class Logic {
         this.hoursPerDay = hoursPerDay;
         this.currentHour = hour;
         this.currentMinute = minute;
-        toggleTimer();
+        //toggleTimer();
     }
 
 
-    public void toggleTimer() {
-        if (timer_isrunning) {
+    public void setTimerRunning(boolean run) {
+        System.out.println(!timer_isrunning);
+        if (timer_isrunning && !run) {
             timer.cancel();
             timer_isrunning = false;
             return;
-        }
-        timer_isrunning = true;
-        timer = new Timer("uhrzeit");
-        this.timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                currentMinute++;
-                currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
-                currentMinute %= 60;
-                if (currentMinute == 0) {
-                    System.out.println("HOUR " + currentHour);
+        } else if (!timer_isrunning && run) {
+            timer_isrunning = true;
+
+            timer = new Timer("uhrzeit");
+            this.timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    
+                    currentMinute++;
+                    currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
+                    currentMinute %= 60;
+                    if (currentMinute == 0) {
+                        System.out.println("HOUR " + currentHour);
+                    }
+
                 }
-            }
-        }, 1000, 1000);
+            }, 1000, 1000);
+        }
     }
+
 
     public void addPassenger(int origin, int destination) {
         //Fahrgaeste starten immer in einem Stockwerk
