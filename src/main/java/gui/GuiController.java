@@ -147,7 +147,7 @@ public class GuiController implements Initializable {
     @FXML
     protected void testGrid() {
 
-        logicWrapper.getCommandState().parse("init_base 3 5 12 5 6");
+        logicWrapper.getCommandState().parse("init_base 3 6 12 5 6");
         logicWrapper.getCommandState().parse("init_done");
         logicWrapper.getCommandState().parse("light_on e 1 0");
         logicWrapper.getCommandState().parse("light_on e 3 2");
@@ -283,41 +283,43 @@ public class GuiController implements Initializable {
         staticElevator.getChildren().addAll(shaft);
         //create FloorButtons
         List<Rectangle> buttonsInElevator = new ArrayList<>();
-        System.out.println(logicWrapper.getLogic().getGrid().elevators.length);
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
-            for (int j = 0; j < logicWrapper.getLogic().getGrid().elevators[i].getButtons().size(); j++) {
-                Rectangle floorLCD = new Rectangle();
-                floorLCD.setFill(Color.GRAY);
-                floorLCD.setHeight(16f);
-                floorLCD.setWidth(16f);
-                Text test = new Text("" + i);
-                test.setStyle("-fx-font: 16 arial;");
-                StackPane test2 = new StackPane(floorLCD, test);
-                int columnLength = i / BUTTONS_PER_COLUMN_IN_ELEVATOR;
-                test2.setLayoutX(((elevatorNum + 1) * 100 + 18 * columnLength));
-                test2.setLayoutY((100 + i % BUTTONS_PER_COLUMN_IN_ELEVATOR * 18));
-                int floornum = i;
-                test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        //FOR MANUAL TESTING
-                        System.out.println("REQUEST " + elevatorNum + " " + floornum);
-                        if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
-                            logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
-                        } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
-                            logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.DOWN);
-                        } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
-                            logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
-                        }
-                        logicWrapper.getLogic().grid.elevators[elevatorNum].setDoorOpen(
-                                !logicWrapper.getLogic().grid.elevators[elevatorNum].isDoorOpen());
+
+
+        //System.out.println(logicWrapper.getLogic().getGrid().elevators[i].getButtons().size());
+        for (int j = 0; j < logicWrapper.getLogic().getGrid().elevators[elevatorNum].getButtons().size(); j++) {
+            System.out.println(j);
+            Rectangle floorLCD = new Rectangle();
+            floorLCD.setFill(Color.GRAY);
+            floorLCD.setHeight(16f);
+            floorLCD.setWidth(16f);
+            Text test = new Text("" + j);
+            test.setStyle("-fx-font: 16 arial;");
+            StackPane test2 = new StackPane(floorLCD, test);
+            int columnLength = j / BUTTONS_PER_COLUMN_IN_ELEVATOR;
+            test2.setLayoutX(((elevatorNum + 1) * 100 + 18 * columnLength));
+            test2.setLayoutY((100 + j % BUTTONS_PER_COLUMN_IN_ELEVATOR * 18));
+            int floornum = j;
+            test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    //FOR MANUAL TESTING
+                    System.out.println("REQUEST " + elevatorNum + " " + floornum);
+                    if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
+                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
+                    } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
+                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.DOWN);
+                    } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
+                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
                     }
-                });
-                staticElevator.getChildren().addAll(test2);
-                buttonsInElevator.add(floorLCD);
-            }
+                    logicWrapper.getLogic().grid.elevators[elevatorNum].setDoorOpen(
+                            !logicWrapper.getLogic().grid.elevators[elevatorNum].isDoorOpen());
+                }
+            });
+            staticElevator.getChildren().addAll(test2);
+            buttonsInElevator.add(floorLCD);
         }
-    
+
+
         elevatorbuttons.add(buttonsInElevator);
         //TODO more buttons
         //if(logic.priority_mode)

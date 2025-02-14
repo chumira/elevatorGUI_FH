@@ -35,7 +35,6 @@ public class Logic {
         if (timer_isrunning && !run) {
             timer.cancel();
             timer_isrunning = false;
-            return;
         } else if (!timer_isrunning && run) {
             timer_isrunning = true;
 
