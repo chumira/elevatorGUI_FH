@@ -43,14 +43,13 @@ public class Logic {
             this.timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    
                     currentMinute++;
-                    currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
+                    if (hoursPerDay != 0)
+                        currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
                     currentMinute %= 60;
                     if (currentMinute == 0) {
                         System.out.println("HOUR " + currentHour);
                     }
-
                 }
             }, 1000, 1000);
         }

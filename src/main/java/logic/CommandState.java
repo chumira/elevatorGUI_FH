@@ -60,6 +60,7 @@ public class CommandState {
                     this.parent.gui.setLoopRunning(true);
                     this.parent.getGui().clearGrid();
                     this.parent.getGui().drawGrid();
+
                     this.elevator_States.clear();
                     break;
                 case "OPEN":
@@ -99,9 +100,10 @@ public class CommandState {
                     throw new UnsupportedOperationException();
 
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("couldnt parse the command");
-        } catch (NumberFormatException e) {
+        } //catch (ArrayIndexOutOfBoundsException e) {
+        // System.err.println("couldnt parse the command");
+        //}
+        catch (NumberFormatException e) {
             System.err.println("couldnt correctly parse as a number");
         }
     }
