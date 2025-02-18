@@ -17,6 +17,7 @@ import logic.*;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -114,9 +115,9 @@ public class GuiController implements Initializable {
 
     public void changeFloorButtonLight(boolean on, int floorID, int buttonID) {
         if (on) {
-            elevatorbuttons.get(floorID).get(buttonID).setFill(Color.YELLOW);
+            floorbuttons.get(floorID).get(buttonID).setFill(Color.YELLOW);
         } else {
-            elevatorbuttons.get(floorID).get(buttonID).setFill(Color.WHITE);
+            floorbuttons.get(floorID).get(buttonID).setFill(Color.WHITE);
         }
     }
 
@@ -129,6 +130,7 @@ public class GuiController implements Initializable {
         elevators.clear();
         floors.clear();
         elevatorbuttons.clear();
+        floorbuttons.clear();
         gridAll = new Group();
     }
 
@@ -344,6 +346,7 @@ public class GuiController implements Initializable {
 
     private Group createFloor(int floornum) {
         Group allButtonsFloor = new Group();
+        List<Rectangle> buttonsFloor = new ArrayList<>();
         for (int i = 0; i < logicWrapper.getLogic().getGrid().floors[floornum].getButtons().size(); i++) {
             Rectangle outer = new Rectangle();
             outer.setFill(Color.BLACK);
@@ -366,8 +369,10 @@ public class GuiController implements Initializable {
                 }
             });
             allButtonsFloor.getChildren().add(test);
+            buttonsFloor.add(inner);
         }
         floors.add(allButtonsFloor);
+        floorbuttons.add(buttonsFloor);
         return allButtonsFloor;
     }
 
@@ -432,8 +437,8 @@ public class GuiController implements Initializable {
 
         logicWrapper.getCommandState().parse("init_base 3 5 12 5 6");
         logicWrapper.getCommandState().parse("init_done");
-        logicWrapper.getCommandState().parse("light_on e 1 0");
-        logicWrapper.getCommandState().parse("light_on e 3 2");
+        logicWrapper.getCommandState().parse("light 1 e 1 0");
+        logicWrapper.getCommandState().parse("light 1 e 3 2");
         logicWrapper.getCommandState().parse("open 2");
 
 

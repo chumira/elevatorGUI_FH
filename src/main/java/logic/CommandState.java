@@ -80,31 +80,37 @@ public class CommandState {
                 case "STOP":
                     this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
                     break;
-                case "LIGHT_ON":
-                    //TODO ueberlegen wie alle LEDS angesprochen werden koennen
-                    //LIGHT F|E 0-N 0-M so etwa?
-                    //aktuell LIGHT_ON 0-N 0-M NUR FUER ELEVATORS
-                    String floorOrElevator = div[1];
-                    int eID = Integer.parseInt(div[2]);
-                    int bID = Integer.parseInt(div[3]);
-                    if (floorOrElevator.equals("E")) {
-                        this.parent.logic.grid.elevators[eID].getButtons().get(bID).isGlowing = true;
-                        this.parent.gui.changeElevatorButtonLight(true, eID, bID);
-                    } else if (floorOrElevator.equals("F")) {
-                        //TODO floorButtons
+                case "LIGHT":
+                    //LIGHT 0|1 F|E 0-N 0-M
+                    int on = Integer.parseInt(div[1]);
+                    String floorOrElevator = div[2];
+                    int feID = Integer.parseInt(div[3]);
+                    int bID = Integer.parseInt(div[4]);
+                    boolean onOrOff;
+                    if (on == 0) {
+                        onOrOff = true;
+                    } else if (on == 1) {
+                        onOrOff = false;
                     } else {
-                        throw new IllegalArgumentException();
+                        throw new IllegalArgumentException("expected '0' or '1' but got" + div[1]);
+                    }
+                    if (floorOrElevator.equals("E")) {
+                        this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = true;
+                        this.parent.gui.changeElevatorButtonLight(onOrOff, feID, bID);
+                    } else if (floorOrElevator.equals("F")) {
+                        this.parent.logic.grid.floors[feID].getButtons().get(bID).isGlowing = true;
+                        this.parent.gui.changeFloorButtonLight(onOrOff, feID, bID);
+                    } else {
+                        throw new IllegalArgumentException("expected 'E' or 'F' but got" + div[1]);
                     }
                     break;
+
                 default:
-                    throw new UnsupportedOperationException();
+                    throw new UnsupportedOperationException(div[0] + " is not a known command");
 
             }
-        } //catch (ArrayIndexOutOfBoundsException e) {
-        // System.err.println("couldnt parse the command");
-        //}
-        catch (NumberFormatException e) {
-            System.err.println("couldnt correctly parse as a number");
+        } catch (ArrayIndexOutOfBoundsException | UnsupportedOperationException | IllegalArgumentException e) {
+            System.err.println(e.getMessage());
         }
     }
 
