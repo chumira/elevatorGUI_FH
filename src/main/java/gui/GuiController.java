@@ -44,8 +44,8 @@ public class GuiController implements Initializable {
     private LogicWrapper logicWrapper = new LogicWrapper(this);
     boolean running = false;
     private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 2;
-    private static final double ELEVATOR_HEIGHT = 66;
-    private static final double ELEVATOR_WIDTH = 54;
+    private static final double ELEVATOR_HEIGHT = 80;
+    private static final double ELEVATOR_WIDTH = 60;
     private static final double ELEVATOR_WALL_THICKNESS = 5;
     private static final double BUTTON_BORDER_THICKNESS = 2;
     private static final double LINE_THICKNESS = 2;
@@ -262,11 +262,11 @@ public class GuiController implements Initializable {
         if (a < BUTTONS_PER_COLUMN_IN_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
 
+        //Gap zu FloorButtons
+        //((logicWrapper.getLogic().getMaxAmountButtons()+2)* BUTTON_WIDTH)
+
         testMovable.setTranslateX((ELEVATOR_WIDTH) * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + elevatorNum * ELEVATOR_SPACE_BETWEEN);
-
-        //testMovable.setTranslateX((elevatorNum + 1) * 100);
         elevators.add(testMovable);
-
 
         return testMovable;
     }
@@ -299,13 +299,18 @@ public class GuiController implements Initializable {
         //System.out.println(logicWrapper.getLogic().getGrid().elevators[i].getButtons().size());
         for (int j = 0; j < logicWrapper.getLogic().getGrid().elevators[elevatorNum].getButtons().size(); j++) {
             System.out.println(j);
+
+            Rectangle floorLCD_Border = new Rectangle();
+            floorLCD_Border.setFill(Color.BLACK);
+            floorLCD_Border.setHeight(BUTTON_WIDTH);
+            floorLCD_Border.setWidth(BUTTON_WIDTH);
             Rectangle floorLCD = new Rectangle();
             floorLCD.setFill(Color.GRAY);
             floorLCD.setHeight(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             floorLCD.setWidth(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             Text test = new Text("" + j);
             test.setStyle("-fx-font: 16 arial;");
-            StackPane test2 = new StackPane(floorLCD, test);
+            StackPane test2 = new StackPane(floorLCD_Border, floorLCD, test);
             int columnLength = j / BUTTONS_PER_COLUMN_IN_ELEVATOR;
             test2.setLayoutX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + BUTTON_WIDTH * columnLength) + elevatorNum * ELEVATOR_SPACE_BETWEEN);
             test2.setLayoutY((ELEVATOR_HEIGHT * 1.1 + j % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
@@ -344,15 +349,15 @@ public class GuiController implements Initializable {
         for (int i = 0; i < logicWrapper.getLogic().getGrid().floors[floornum].getButtons().size(); i++) {
             Rectangle outer = new Rectangle();
             outer.setFill(Color.BLACK);
-            outer.setHeight(20f);
-            outer.setWidth(20f);
+            outer.setHeight(BUTTON_WIDTH);
+            outer.setWidth(BUTTON_WIDTH);
             Rectangle inner = new Rectangle();
             inner.setFill(Color.WHITE);
-            inner.setHeight(16f);
-            inner.setWidth(16f);
+            inner.setHeight(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
+            inner.setWidth(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             StackPane test = new StackPane();
             test.setTranslateY((logicWrapper.getLogic().getGrid().floors[floornum].getHeight()) * -1 + ELEVATOR_HEIGHT - BUTTON_WIDTH / 2);
-            test.setTranslateX(i * 25);
+            test.setTranslateX(i * (BUTTON_WIDTH));
             Text text = new Text("" + logicWrapper.getLogic().getGrid().getFloors()[floornum].getButtons().get(i).getSymbol());
             test.getChildren().addAll(outer, inner, text);
             int fI = i;

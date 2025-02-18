@@ -60,6 +60,14 @@ public class Logic {
         Passenger newPassenger = new Passenger(this.grid.floors[origin], this.grid.floors[destination]);
     }
 
+    public int getMaxAmountButtons() {
+        int max = 0;
+        for (Floor f : grid.floors) {
+            max = Math.max(f.getButtons().size(), max);
+        }
+        return max;
+    }
+
     public String currentTime() {
         return String.format("%02d:%02d", currentHour, currentMinute);
     }
