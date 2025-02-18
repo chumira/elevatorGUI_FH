@@ -43,23 +43,15 @@ public class GuiController implements Initializable {
      */
     private LogicWrapper logicWrapper = new LogicWrapper(this);
     boolean running = false;
-    private int eCount = 0;
-    private int fCount = 0;
-
-    private SerialConnection serialConnection;
-
-
-    private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 4;
-
+    private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 2;
     private static final double ELEVATOR_HEIGHT = 66;
     private static final double ELEVATOR_WIDTH = 54;
     private static final double ELEVATOR_WALL_THICKNESS = 5;
-
+    private static final double BUTTON_BORDER_THICKNESS = 2;
+    private static final double LINE_THICKNESS = 2;
     private static final double ELEVATOR_OFFSET = 100;
     private static final int BUTTON_COLUMNS_UNDER_ELEVATOR = 2;
     private static final double BUTTON_WIDTH = ELEVATOR_WIDTH / BUTTON_COLUMNS_UNDER_ELEVATOR;
-
-
     private final double ELEVATOR_SPACE_BETWEEN = 10;
     public final int ELEVATOR_SPEED = 20;
 
@@ -136,15 +128,14 @@ public class GuiController implements Initializable {
 
     public void drawGrid() {
 
-        //logicWrapper.setLogic(new Logic(4, 2, 24, 22, 54));
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
-            addElevator(i);
-        }
         for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
             addFloor(i);
         }
         for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
             addStaticElevator(i);
+        }
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
+            addElevator(i);
         }
         /**       if (!running) {
          a.start();
@@ -284,8 +275,10 @@ public class GuiController implements Initializable {
         Group staticElevator = new Group();
         Rectangle shaft = new Rectangle();
         shaft.setFill(Color.LIGHTGRAY);
-        shaft.setHeight(floors.size() * 100);
-        shaft.setWidth(2f);
+
+        shaft.setHeight((logicWrapper.getLogic().getGrid().floors.length) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR);
+        shaft.setHeight((logicWrapper.getLogic().getGrid().floors[logicWrapper.getLogic().getGrid().floors.length - 1].getHeight() + ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR));
+        shaft.setWidth(LINE_THICKNESS);
 
         int a = (logicWrapper.getLogic().getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR);
         if (logicWrapper.getLogic().getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
@@ -294,8 +287,9 @@ public class GuiController implements Initializable {
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
 
 
-        shaft.setX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN));
-        shaft.setY((floors.size() * 100 - 100) * -1);
+        shaft.setX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
+                + ELEVATOR_OFFSET + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
+        shaft.setY((logicWrapper.getLogic().getGrid().floors.length - 1) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR * -1);
 
         staticElevator.getChildren().addAll(shaft);
         //create FloorButtons
@@ -307,14 +301,14 @@ public class GuiController implements Initializable {
             System.out.println(j);
             Rectangle floorLCD = new Rectangle();
             floorLCD.setFill(Color.GRAY);
-            floorLCD.setHeight(BUTTON_WIDTH - 2f);
-            floorLCD.setWidth(BUTTON_WIDTH - 2f);
+            floorLCD.setHeight(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
+            floorLCD.setWidth(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             Text test = new Text("" + j);
             test.setStyle("-fx-font: 16 arial;");
             StackPane test2 = new StackPane(floorLCD, test);
             int columnLength = j / BUTTONS_PER_COLUMN_IN_ELEVATOR;
             test2.setLayoutX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + BUTTON_WIDTH * columnLength) + elevatorNum * ELEVATOR_SPACE_BETWEEN);
-            test2.setLayoutY((100 + j % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
+            test2.setLayoutY((ELEVATOR_HEIGHT * 1.1 + j % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
             int floornum = j;
             test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -390,7 +384,7 @@ public class GuiController implements Initializable {
 
         heightLine.setWidth(((ELEVATOR_WIDTH * (double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * 1) + ELEVATOR_SPACE_BETWEEN) * elevatorNum - ELEVATOR_SPACE_BETWEEN);
 
-        heightLine.setHeight(2f);
+        heightLine.setHeight(LINE_THICKNESS);
 
         heightLine.setY((logicWrapper.getLogic().getGrid().floors[floorNum].getHeight()) * -1 + ELEVATOR_HEIGHT);
         heightLine.setX(ELEVATOR_OFFSET);

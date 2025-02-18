@@ -10,6 +10,8 @@ import java.util.List;
 @Setter
 public class ElevatorGrid {
     private static final double HEIGHT_DIFFERENCE_FOR_EQUAL = 0.5;
+
+    public static final double HEIGHT_INCREASE_PER_FLOOR = 100;
     public Floor[] floors;
     public Elevator[] elevators;
 
@@ -24,7 +26,6 @@ public class ElevatorGrid {
             floors[i] = new Floor(i);
             floors[i].setHeight(i * 100);
         }
-
         for (int i = 0; i < amountElevators; i++) {
             for (int j = 0; j < amountFloors; j++) {
                 elevators[i].getButtons().add(new LCDButton("" + j, "TODO"));
@@ -33,7 +34,7 @@ public class ElevatorGrid {
         }
         for (int i = 0; i < amountFloors; i++) {
             floors[i].getButtons().add(new LCDButton("E" + i, "TODO"));
-            floors[i].setHeight(i * 100);
+            //floors[i].setHeight(i * 100);
         }
         //for debug
         //floors[0].getButtons().add(new LCDButton("ABC", "TODO"));
