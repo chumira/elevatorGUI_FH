@@ -150,23 +150,6 @@ public class GuiController implements Initializable {
 
 
     @FXML
-    protected void testCommport2() {
-        //delete previous elements to draw
-        ePaneTest.setContent(null);
-        elevators.clear();
-        floors.clear();
-        gridAll = new Group();
-        if (!running) {
-            a.start();
-        } else {
-            logicWrapper.getLogic().clearThreads();
-            a.stop();
-        }
-        running = !running;
-    }
-
-
-    @FXML
     protected void toggleLoop() {
         setLoopRunning(!running);
     }
@@ -174,10 +157,7 @@ public class GuiController implements Initializable {
     public void setLoopRunning(boolean run) {
         if (!running && run) {
             a.start();
-
-
         } else if (running && !run) {
-
             a.stop();
         }
         if (this.logicWrapper.getLogic() != null)
@@ -193,6 +173,8 @@ public class GuiController implements Initializable {
             this.logicWrapper.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
             System.out.println("connected to: " + this.logicWrapper.getSerialPort().getDescriptivePortName());
             this.logicWrapper.initConnection();
+        } else {
+            System.out.println("no serial port selected");
         }
     }
 
@@ -298,8 +280,6 @@ public class GuiController implements Initializable {
 
         //System.out.println(logicWrapper.getLogic().getGrid().elevators[i].getButtons().size());
         for (int j = 0; j < logicWrapper.getLogic().getGrid().elevators[elevatorNum].getButtons().size(); j++) {
-            System.out.println(j);
-
             Rectangle floorLCD_Border = new Rectangle();
             floorLCD_Border.setFill(Color.BLACK);
             floorLCD_Border.setHeight(BUTTON_WIDTH);

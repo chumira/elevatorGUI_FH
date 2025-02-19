@@ -32,21 +32,21 @@ public class CommandState {
         String[] div = aa.split(" ");
         try {
             switch (div[0]) {
-                case "INIT_START":
+                case "INIT_BASE" -> {
                     init_phase = true;
                     init_done = false;
-                    break;
-                case "INIT_BASE":
+                    this.elevator_States.clear();
                     init_amountFloors = Integer.parseInt(div[1]);
                     init_amountElevators = Integer.parseInt(div[2]);
                     init_hoursPerDay = Integer.parseInt(div[3]);
                     init_hourAtStart = Integer.parseInt(div[4]);
                     init_minuteAtStart = Integer.parseInt(div[5]);
-                    break;
-                case "INIT_STATE":
-                    elevator_States.add(new Pair<>(Integer.parseInt(div[1]), Integer.parseInt(div[2])));
-                    break;
-                case "INIT_DONE":
+                }
+                case "INIT_STATE" -> {
+                    if (init_phase)
+                        elevator_States.add(new Pair<>(Integer.parseInt(div[1]), Integer.parseInt(div[2])));
+                }
+                case "INIT_DONE" -> {
                     init_phase = false;
                     this.parent.setLogic(
                             new Logic(init_amountFloors, init_amountElevators,
@@ -58,56 +58,61 @@ public class CommandState {
                     }
                     init_done = true;
                     this.parent.gui.setLoopRunning(true);
-                    this.parent.getGui().clearGrid();
-                    this.parent.getGui().drawGrid();
-
+                    this.parent.gui.clearGrid();
+                    this.parent.gui.drawGrid();
                     this.elevator_States.clear();
-                    break;
-                case "OPEN":
-                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = true;
-                    this.parent.gui.changeDoorOpen(true, Integer.parseInt(div[1]));
-                    break;
-                case "CLOSE":
-                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
-                    this.parent.gui.changeDoorOpen(false, Integer.parseInt(div[1]));
-                    break;
-                case "MOVE_UP":
-                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.UP);
-                    break;
-                case "MOVE_DOWN":
-                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.DOWN);
-                    break;
-                case "STOP":
-                    this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
-                    break;
-                case "LIGHT":
-                    //LIGHT 0|1 F|E 0-N 0-M
-                    int on = Integer.parseInt(div[1]);
-                    String floorOrElevator = div[2];
-                    int feID = Integer.parseInt(div[3]);
-                    int bID = Integer.parseInt(div[4]);
-                    boolean onOrOff;
-                    if (on == 0) {
-                        onOrOff = true;
-                    } else if (on == 1) {
-                        onOrOff = false;
-                    } else {
-                        throw new IllegalArgumentException("expected '0' or '1' but got" + div[1]);
+                }
+                case "OPEN" -> {
+                    if (init_done) {
+                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = true;
+                        this.parent.gui.changeDoorOpen(true, Integer.parseInt(div[1]));
                     }
-                    if (floorOrElevator.equals("E")) {
-                        this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = true;
-                        this.parent.gui.changeElevatorButtonLight(onOrOff, feID, bID);
-                    } else if (floorOrElevator.equals("F")) {
-                        this.parent.logic.grid.floors[feID].getButtons().get(bID).isGlowing = true;
-                        this.parent.gui.changeFloorButtonLight(onOrOff, feID, bID);
-                    } else {
-                        throw new IllegalArgumentException("expected 'E' or 'F' but got" + div[1]);
+                }
+                case "CLOSE" -> {
+                    if (init_done) {
+                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
+                        this.parent.gui.changeDoorOpen(false, Integer.parseInt(div[1]));
                     }
-                    break;
-
-                default:
-                    throw new UnsupportedOperationException(div[0] + " is not a known command");
-
+                }
+                case "MOVE_UP" -> {
+                    if (init_done)
+                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.UP);
+                }
+                case "MOVE_DOWN" -> {
+                    if (init_done)
+                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.DOWN);
+                }
+                case "STOP" -> {
+                    if (init_done)
+                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
+                }
+                case "LIGHT" -> {
+                    //LIGHT ON|OFF F|E 0-N 0-M
+                    if (init_done) {
+                        String onOrOff = div[1];
+                        String floorOrElevator = div[2];
+                        int feID = Integer.parseInt(div[3]);
+                        int bID = Integer.parseInt(div[4]);
+                        boolean on;
+                        if (onOrOff.equals("ON")) {
+                            on = true;
+                        } else if (onOrOff.equals("OFF")) {
+                            on = false;
+                        } else {
+                            throw new IllegalArgumentException("expected '0N' or 'OFF' but got '" + div[1] + "'");
+                        }
+                        if (floorOrElevator.equals("E")) {
+                            this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = true;
+                            this.parent.gui.changeElevatorButtonLight(on, feID, bID);
+                        } else if (floorOrElevator.equals("F")) {
+                            this.parent.logic.grid.floors[feID].getButtons().get(bID).isGlowing = true;
+                            this.parent.gui.changeFloorButtonLight(on, feID, bID);
+                        } else {
+                            throw new IllegalArgumentException("expected 'E' or 'F' but got " + div[2] + "'");
+                        }
+                    }
+                }
+                default -> throw new UnsupportedOperationException(div[0] + " is not a known command");
             }
         } catch (ArrayIndexOutOfBoundsException | UnsupportedOperationException | IllegalArgumentException e) {
             System.err.println(e.getMessage());

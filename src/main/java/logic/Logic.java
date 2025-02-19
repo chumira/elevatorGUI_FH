@@ -11,14 +11,9 @@ import java.util.*;
 public class Logic {
     public ElevatorGrid grid;
     Timer timer;
-
-    Queue<String> inbox;
-    Queue<String> outbox;
     int hoursPerDay;
     int currentHour = 0;
     int currentMinute = 0;
-
-
     private boolean timer_isrunning = false;
 
     public Logic(int floors, int elevators, int hoursPerDay, int hour, int minute) {
@@ -31,7 +26,6 @@ public class Logic {
 
 
     public void setTimerRunning(boolean run) {
-        System.out.println(!timer_isrunning);
         if (timer_isrunning && !run) {
             timer.cancel();
             timer_isrunning = false;
