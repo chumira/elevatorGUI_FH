@@ -74,12 +74,14 @@ public class LogicWrapper {
                 for (Passenger p : this.getLogic().getGrid().getFloors()[fID].getPassengers()
                 ) {
                     if (p.getActivity() == Activity.IS_WAITING) {
+                        //TODO ggf. kapazitaet??
                         for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
                             if (this.getLogic().getGrid().isElevatorinFloor(eID, fID)) {
-                                //this.getLogic().getGrid().getFloors()[fID].getPassengers().remove(p);
-                                removeFromFloor.add(p);
-                                this.getLogic().getGrid().getElevators()[eID].getPassengers().add(p);
-                                p.setActivity(Activity.IN_ELEVATOR);
+                                if (p.getActivity() == Activity.IS_WAITING) {
+                                    removeFromFloor.add(p);
+                                    this.getLogic().getGrid().getElevators()[eID].getPassengers().add(p);
+                                    p.setActivity(Activity.IN_ELEVATOR);
+                                }
                             }
                         }
                     }

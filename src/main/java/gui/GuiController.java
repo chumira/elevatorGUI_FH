@@ -16,16 +16,18 @@ import javafx.scene.text.Text;
 import logic.*;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class GuiController implements Initializable {
     @FXML
     private Label welcomeText;
     @FXML
     private ListView<SerialPort> serialPane;
+
+    @FXML
+    public ListView<Floor> passengerFrom;
+    @FXML
+    private ListView<Floor> passengerTo;
     @FXML
     private Button speed;
     @FXML
@@ -124,12 +126,23 @@ public class GuiController implements Initializable {
         elevators.get(elevatorID).getChildren().get(1).setVisible(logicWrapper.getLogic().getGrid().getElevators()[elevatorID].isDoorOpen());
     }
 
+    public void showFloorList() {
+        passengerFrom.getItems().clear();
+        passengerTo.getItems().clear();
+        passengerFrom.getItems().addAll(logicWrapper.getLogic().getGrid().floors);
+        passengerTo.getItems().addAll(logicWrapper.getLogic().getGrid().floors);
+    }
+
+
     public void clearGrid() {
         ePaneTest.setContent(null);
         elevators.clear();
         floors.clear();
         elevatorbuttons.clear();
         floorbuttons.clear();
+        passengerFloor.clear();
+        passengerElevator.clear();
+
         gridAll = new Group();
     }
 
@@ -180,6 +193,7 @@ public class GuiController implements Initializable {
             this.logicWrapper.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
             System.out.println("connected to: " + this.logicWrapper.getSerialPort().getDescriptivePortName());
             this.logicWrapper.initConnection();
+
         } else {
             System.out.println("no serial port selected");
         }
@@ -410,7 +424,8 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void addPassenger() {
-        logicWrapper.getLogic().addPassenger(1, 0);
+        logicWrapper.getLogic().addPassenger(passengerFrom.getSelectionModel().getSelectedItem(),
+                passengerTo.getSelectionModel().getSelectedItem());
 
     }
 
@@ -429,6 +444,28 @@ public class GuiController implements Initializable {
                     setText("");
                 } else {
                     setText(sp.getDescriptivePortName());
+                }
+            }
+        });
+        this.passengerFrom.setCellFactory(e -> new ListCell<Floor>() {
+            @Override
+            protected void updateItem(Floor f, boolean empty) {
+                super.updateItem(f, empty);
+                if (empty || f == null) {
+                    setText("");
+                } else {
+                    setText(f.getId() + "");
+                }
+            }
+        });
+        this.passengerTo.setCellFactory(e -> new ListCell<Floor>() {
+            @Override
+            protected void updateItem(Floor f, boolean empty) {
+                super.updateItem(f, empty);
+                if (empty || f == null) {
+                    setText("");
+                } else {
+                    setText(f.getId() + "");
                 }
             }
         });

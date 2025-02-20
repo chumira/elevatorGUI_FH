@@ -49,10 +49,13 @@ public class Logic {
     }
 
 
-    public void addPassenger(int origin, int destination) {
+    public void addPassenger(Floor origin, Floor destination) {
         //Fahrgaeste starten immer in einem Stockwerk
-        Passenger newPassenger = new Passenger(this.grid.floors[origin], this.grid.floors[destination]);
-        this.grid.floors[origin].getPassengers().add(newPassenger);
+        System.out.println("from " + origin.getId() + " to " + destination.getId());
+        Passenger newPassenger = new Passenger(this.grid.floors[origin.getId()], this.grid.floors[destination.getId()]);
+        this.grid.floors[origin.getId()].getPassengers().add(newPassenger);
+        System.out.println(this.grid.floors[origin.getId()].getPassengers().size());
+
     }
 
     public int getMaxAmountButtons() {

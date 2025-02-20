@@ -60,6 +60,7 @@ public class CommandState {
                     this.parent.gui.setLoopRunning(true);
                     this.parent.gui.clearGrid();
                     this.parent.gui.drawGrid();
+                    this.parent.gui.showFloorList();
                     this.elevator_States.clear();
                 }
                 case "OPEN" -> {
