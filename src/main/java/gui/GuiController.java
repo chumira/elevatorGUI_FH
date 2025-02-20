@@ -64,6 +64,9 @@ public class GuiController implements Initializable {
     private List<Group> elevators = new ArrayList<>();
     private List<Group> elevatorDoors = new ArrayList<>();
     private List<Group> floors = new ArrayList<>();
+
+    private List<Label> passengerElevator = new ArrayList<>();
+    private List<Label> passengerFloor = new ArrayList<>();
     private final List<List<Rectangle>> floorbuttons = new ArrayList<>();
     private final List<List<Rectangle>> elevatorbuttons = new ArrayList<>();
     AnimationTimer a = new AnimationTimer() {
@@ -93,8 +96,12 @@ public class GuiController implements Initializable {
     public void changeDynamicObjects() {
         for (int i = 0; i < logicWrapper.getLogic().getGrid().getElevators().length; i++) {
             elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
+            passengerElevator.get(i).setText(logicWrapper.getLogic().getGrid().getElevators()[i].getPassengers().size() + "");
         }
         timerButton.setText(logicWrapper.getLogic().currentTime());
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().getFloors().length; i++) {
+            passengerFloor.get(i).setText(logicWrapper.getLogic().getGrid().getFloors()[i].getPassengers().size() + "");
+        }
     }
 
     public void changeElevatorButtonLight(boolean on, int elevatorID, int buttonID) {
@@ -268,12 +275,17 @@ public class GuiController implements Initializable {
         if (a < BUTTON_COLUMNS_UNDER_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
 
-
+        Label passengerAmount = new Label();
+        passengerAmount.setTranslateY(200);
+        passengerElevator.add(passengerAmount);
+        passengerAmount.setTranslateX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
+                + ELEVATOR_OFFSET + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
+        passengerAmount.setText("0");
         shaft.setX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
                 + ELEVATOR_OFFSET + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
         shaft.setY((logicWrapper.getLogic().getGrid().floors.length - 1) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR * -1);
 
-        staticElevator.getChildren().addAll(shaft);
+        staticElevator.getChildren().addAll(passengerAmount, shaft);
         //create FloorButtons
         List<Rectangle> buttonsInElevator = new ArrayList<>();
 
@@ -340,6 +352,8 @@ public class GuiController implements Initializable {
             test.setTranslateX(i * (BUTTON_WIDTH));
             Text text = new Text("" + logicWrapper.getLogic().getGrid().getFloors()[floornum].getButtons().get(i).getSymbol());
             test.getChildren().addAll(outer, inner, text);
+
+
             int fI = i;
             test.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -347,7 +361,11 @@ public class GuiController implements Initializable {
                     System.out.println("BUTTON_PUSH " + floornum + " " + fI);
                 }
             });
-            allButtonsFloor.getChildren().add(test);
+            Label label = new Label("0");
+            label.setTranslateX(-20);
+            label.setTranslateY((logicWrapper.getLogic().getGrid().floors[floornum].getHeight()) * -1 + ELEVATOR_HEIGHT - BUTTON_WIDTH / 2);
+            passengerFloor.add(label);
+            allButtonsFloor.getChildren().addAll(test, label);
             buttonsFloor.add(inner);
         }
         floors.add(allButtonsFloor);
@@ -390,6 +408,12 @@ public class GuiController implements Initializable {
 
     }
 
+    @FXML
+    protected void addPassenger() {
+        logicWrapper.getLogic().addPassenger(1, 0);
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -416,8 +440,8 @@ public class GuiController implements Initializable {
 
         logicWrapper.getCommandState().parse("init_base 3 5 12 5 6");
         logicWrapper.getCommandState().parse("init_done");
-        logicWrapper.getCommandState().parse("light 1 e 1 0");
-        logicWrapper.getCommandState().parse("light 1 e 3 2");
+        logicWrapper.getCommandState().parse("light ON e 1 0");
+        logicWrapper.getCommandState().parse("light ON e 3 2");
         logicWrapper.getCommandState().parse("open 2");
 
 

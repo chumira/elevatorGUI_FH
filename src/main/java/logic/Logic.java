@@ -52,6 +52,7 @@ public class Logic {
     public void addPassenger(int origin, int destination) {
         //Fahrgaeste starten immer in einem Stockwerk
         Passenger newPassenger = new Passenger(this.grid.floors[origin], this.grid.floors[destination]);
+        this.grid.floors[origin].getPassengers().add(newPassenger);
     }
 
     public int getMaxAmountButtons() {

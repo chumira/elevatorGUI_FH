@@ -10,6 +10,7 @@ import lombok.Setter;
 
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 @Setter
@@ -27,6 +28,9 @@ public class LogicWrapper {
 
     GuiController gui;
     public Queue<String> in = new LinkedList<>();
+
+    private List<Passenger> removeFromElevator = new LinkedList<>();
+    private List<Passenger> removeFromFloor = new LinkedList<>();
     StringBuilder command = new StringBuilder();
 
     private final CommandState commandState = new CommandState(this);
@@ -59,7 +63,7 @@ public class LogicWrapper {
                         if (Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED * 0.51)) {
                             //TODO SEND ARRIVE AT
                             System.out.println("ARRIVE " + e.getId() + " " + f.getId());
-                            //e.setMovementDirection(ElevatorMovement.STAND_STILL);
+                            e.setMovementDirection(ElevatorMovement.STAND_STILL);
                         }
                     }
                 }
@@ -71,15 +75,19 @@ public class LogicWrapper {
                 ) {
                     if (p.getActivity() == Activity.IS_WAITING) {
                         for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
-                            if (this.getLogic().getGrid().isElevatorinFloor(fID, eID)) {
-                                this.getLogic().getGrid().getFloors()[fID].getPassengers().remove(p);
+                            if (this.getLogic().getGrid().isElevatorinFloor(eID, fID)) {
+                                //this.getLogic().getGrid().getFloors()[fID].getPassengers().remove(p);
+                                removeFromFloor.add(p);
                                 this.getLogic().getGrid().getElevators()[eID].getPassengers().add(p);
                                 p.setActivity(Activity.IN_ELEVATOR);
                             }
                         }
                     }
                 }
+                this.getLogic().getGrid().getFloors()[fID].getPassengers().removeAll(removeFromFloor);
+                removeFromFloor.clear();
             }
+
             //Fahrgaeste steigen aus Aufzug aus
             for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
                 if (this.getLogic().getGrid().getElevators()[eID].getMovementDirection() == ElevatorMovement.STAND_STILL)
@@ -90,10 +98,12 @@ public class LogicWrapper {
                             if (this.getLogic().getGrid().isElevatorinFloor(eID, f.id)) {
                                 //TODO activity redundant ->remove it
                                 p.setActivity(Activity.HAS_ARRIVED);
-                                this.getLogic().getGrid().getElevators()[eID].getPassengers().remove(p);
+                                removeFromElevator.add(p);
                             }
                         }
                     }
+                this.getLogic().getGrid().getElevators()[eID].getPassengers().removeAll(removeFromElevator);
+                removeFromElevator.clear();
             }
         }
     }
