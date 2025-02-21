@@ -12,6 +12,7 @@ public class Logic {
     public ElevatorGrid grid;
     Timer timer;
     int hoursPerDay;
+    int minutesPerHour;
     int currentHour = 0;
     int currentMinute = 0;
     int currentSpeed = 1000;
@@ -22,7 +23,7 @@ public class Logic {
         this.hoursPerDay = hoursPerDay;
         this.currentHour = hour;
         this.currentMinute = minute;
-        //toggleTimer();
+        this.minutesPerHour = 60;
     }
 
 
@@ -39,8 +40,8 @@ public class Logic {
                 public void run() {
                     currentMinute++;
                     if (hoursPerDay != 0)
-                        currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
-                    currentMinute %= 60;
+                        currentHour = (currentHour + (currentMinute / minutesPerHour)) % hoursPerDay;
+                    currentMinute %= minutesPerHour;
                     if (currentMinute == 0) {
                         System.out.println("HOUR " + currentHour);
                     }
@@ -50,7 +51,6 @@ public class Logic {
     }
 
     public void changeTimerSpeed(int newSpeed) {
-
         if (currentSpeed != newSpeed) {
             currentSpeed = newSpeed;
             if (timer_isrunning) {
@@ -75,10 +75,8 @@ public class Logic {
 
     public void addPassenger(Floor origin, Floor destination) {
         //Fahrgaeste starten immer in einem Stockwerk
-        System.out.println("from " + origin.getId() + " to " + destination.getId());
         Passenger newPassenger = new Passenger(this.grid.floors[origin.getId()], this.grid.floors[destination.getId()]);
         this.grid.floors[origin.getId()].getPassengers().add(newPassenger);
-        System.out.println(this.grid.floors[origin.getId()].getPassengers().size());
 
     }
 
