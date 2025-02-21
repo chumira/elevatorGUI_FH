@@ -332,7 +332,7 @@ public class GuiController implements Initializable {
             test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    //FOR MANUAL TESTING
+                    //FOR MANUAL TESTING (delete later)
                     System.out.println("REQUEST " + elevatorNum + " " + floornum);
                     if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
                         logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
@@ -341,8 +341,6 @@ public class GuiController implements Initializable {
                     } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
                         logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
                     }
-                    logicWrapper.getLogic().grid.elevators[elevatorNum].setDoorOpen(
-                            !logicWrapper.getLogic().grid.elevators[elevatorNum].isDoorOpen());
                 }
             });
             staticElevator.getChildren().addAll(test2);
@@ -432,8 +430,9 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void addPassenger() {
-        logicWrapper.getLogic().addPassenger(passengerFrom.getSelectionModel().getSelectedItem(),
-                passengerTo.getSelectionModel().getSelectedItem());
+        if (running)
+            logicWrapper.getLogic().addPassenger(passengerFrom.getSelectionModel().getSelectedItem(),
+                    passengerTo.getSelectionModel().getSelectedItem());
 
     }
 
@@ -448,7 +447,6 @@ public class GuiController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         showSerialPorts();
-        //TODO verschieben nach connect button
 
         //Darstellung der SerialPorts aendern
         this.serialPane.setCellFactory(e -> new ListCell<SerialPort>() {

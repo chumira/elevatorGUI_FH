@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ElevatorGrid {
+    //TODO ggf hoeheren Wert setzen, zb. 2-50
     private static final double HEIGHT_DIFFERENCE_FOR_EQUAL = 0.5;
 
     public static final double INIT_ELEVATOR_HEIGHT = 0;
@@ -36,7 +37,7 @@ public class ElevatorGrid {
             floors[i].getButtons().add(new LCDButton("E" + i, "TODO"));
         }
         //for debug
-        //floors[0].getButtons().add(new LCDButton("ABC", "TODO"));
+        //floors[0].getButtons().add(new LCDButton("ABC", ""));
     }
 
     public void adjustElevatorHeight(int elevatorID, int floorID) {

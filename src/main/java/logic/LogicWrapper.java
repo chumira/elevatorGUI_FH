@@ -63,7 +63,6 @@ public class LogicWrapper {
                     ) {
                         //TODO FINE_TUNE detection range
                         if (Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED * 0.51)) {
-                            //TODO SEND ARRIVE AT
                             System.out.println("ARRIVE " + e.getId() + " " + f.getId());
                             e.setMovementDirection(ElevatorMovement.STAND_STILL);
                         }
@@ -79,7 +78,7 @@ public class LogicWrapper {
                         //TODO ggf. kapazitaet??
                         for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
                             if (this.getLogic().getGrid().isElevatorinFloor(eID, fID)) {
-                                if (p.getActivity() == Activity.IS_WAITING) {
+                                if (p.getActivity() == Activity.IS_WAITING && this.getLogic().getGrid().elevators[eID].doorOpen) {
                                     removeFromFloor.add(p);
                                     this.getLogic().getGrid().getElevators()[eID].getPassengers().add(p);
                                     p.setActivity(Activity.IN_ELEVATOR);
@@ -94,13 +93,12 @@ public class LogicWrapper {
 
             //Fahrgaeste steigen aus Aufzug aus
             for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
-                if (this.getLogic().getGrid().getElevators()[eID].getMovementDirection() == ElevatorMovement.STAND_STILL)
+                if (this.getLogic().getGrid().getElevators()[eID].getMovementDirection() == ElevatorMovement.STAND_STILL && this.getLogic().getGrid().elevators[eID].doorOpen)
                     for (Passenger p : this.getLogic().getGrid().getElevators()[eID].getPassengers()
                     ) {
                         Floor f = this.getLogic().getGrid().getFloorClosestToElevator(eID);
                         if (p.getDestination().equals(f)) {
                             if (this.getLogic().getGrid().isElevatorinFloor(eID, f.id)) {
-                                //TODO activity redundant ->remove it
                                 p.setActivity(Activity.HAS_ARRIVED);
                                 removeFromElevator.add(p);
                             }
