@@ -31,6 +31,8 @@ public class LogicWrapper {
 
     private List<Passenger> removeFromElevator = new LinkedList<>();
     private List<Passenger> removeFromFloor = new LinkedList<>();
+
+    private Integer[] clockSpeeds = {100, 250, 500, 1000, 2500, 5000, 10000};
     StringBuilder command = new StringBuilder();
 
     private final CommandState commandState = new CommandState(this);

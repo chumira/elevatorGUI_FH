@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="517.0" prefWidth="753.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GuiController">
@@ -12,6 +13,19 @@
                 <ListView fx:id="passengerFrom" prefHeight="78.0" prefWidth="62.0"/>
                 <ListView fx:id="passengerTo" prefHeight="78.0" prefWidth="67.0"/>
                 <Button fx:id="timerButton" mnemonicParsing="false" onAction="#toggleTimerButton" text="Uhrzeit"/>
+                <HBox prefHeight="78.0" prefWidth="509.0">
+                    <children>
+                        <ListView fx:id="clockSpeed" prefHeight="78.0" prefWidth="155.0"/>
+                        <TextField fx:id="clockHourField" prefHeight="25.0" prefWidth="31.0"/>
+                        <Label text=":">
+                            <font>
+                                <Font name="System Bold" size="14.0"/>
+                            </font>
+                        </Label>
+                        <TextField fx:id="clockMinuteField" prefHeight="25.0" prefWidth="33.0"/>
+                        <Button mnemonicParsing="false" onAction="#setTime" text="setTime"/>
+                    </children>
+                </HBox>
             </children>
         </HBox>
     </bottom>

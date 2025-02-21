@@ -2,6 +2,8 @@ package gui;
 
 import com.fazecast.jSerialComm.SerialPort;
 import javafx.animation.AnimationTimer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,6 +31,8 @@ public class GuiController implements Initializable {
     @FXML
     private ListView<Floor> passengerTo;
     @FXML
+    private ListView<Integer> clockSpeed;
+    @FXML
     private Button speed;
     @FXML
     private Button addDyn;
@@ -40,6 +44,10 @@ public class GuiController implements Initializable {
     private Button timerButton;
     @FXML
     private Button reloadSerial;
+    @FXML
+    private TextField clockHourField;
+    @FXML
+    private TextField clockMinuteField;
     /**
      * Logik
      */
@@ -181,7 +189,7 @@ public class GuiController implements Initializable {
             a.stop();
         }
         if (this.logicWrapper.getLogic() != null)
-            this.logicWrapper.getLogic().setTimerRunning(run);
+            this.logicWrapper.getLogic().setTimerRunning(run, clockSpeed.getSelectionModel().getSelectedItem());
         running = run;
     }
 
@@ -411,7 +419,7 @@ public class GuiController implements Initializable {
     @FXML
     protected void toggleTimerButton() {
         if (this.running)
-            logicWrapper.getLogic().setTimerRunning(!logicWrapper.getLogic().isTimer_isrunning());
+            logicWrapper.getLogic().setTimerRunning(!logicWrapper.getLogic().isTimer_isrunning(), clockSpeed.getSelectionModel().getSelectedItem());
     }
 
 
@@ -426,6 +434,13 @@ public class GuiController implements Initializable {
     protected void addPassenger() {
         logicWrapper.getLogic().addPassenger(passengerFrom.getSelectionModel().getSelectedItem(),
                 passengerTo.getSelectionModel().getSelectedItem());
+
+    }
+
+    @FXML
+    protected void setTime() {
+        if (running)
+            logicWrapper.getLogic().setCurrentTime(clockHourField.getText(), clockMinuteField.getText());
 
     }
 
@@ -466,6 +481,34 @@ public class GuiController implements Initializable {
                     setText("");
                 } else {
                     setText(f.getId() + "");
+                }
+            }
+        });
+        this.clockSpeed.getItems().addAll(logicWrapper.getClockSpeeds());
+        this.clockSpeed.getSelectionModel().select(3);
+        this.clockSpeed.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (running) {
+                    logicWrapper.getLogic().changeTimerSpeed(clockSpeed.getSelectionModel().getSelectedItem());
+                }
+            }
+        });
+        clockHourField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    clockHourField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        clockMinuteField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    clockMinuteField.setText(newValue.replaceAll("[^\\d]", ""));
                 }
             }
         });

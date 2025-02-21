@@ -14,6 +14,7 @@ public class Logic {
     int hoursPerDay;
     int currentHour = 0;
     int currentMinute = 0;
+    int currentSpeed = 1000;
     private boolean timer_isrunning = false;
 
     public Logic(int floors, int elevators, int hoursPerDay, int hour, int minute) {
@@ -25,13 +26,13 @@ public class Logic {
     }
 
 
-    public void setTimerRunning(boolean run) {
+    public void setTimerRunning(boolean run, int newSpeed) {
         if (timer_isrunning && !run) {
             timer.cancel();
             timer_isrunning = false;
-        } else if (!timer_isrunning && run) {
+        } else if ((!timer_isrunning && run)) {
             timer_isrunning = true;
-
+            currentSpeed = newSpeed;
             timer = new Timer("uhrzeit");
             this.timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
@@ -44,7 +45,30 @@ public class Logic {
                         System.out.println("HOUR " + currentHour);
                     }
                 }
-            }, 1000, 1000);
+            }, currentSpeed, currentSpeed);
+        }
+    }
+
+    public void changeTimerSpeed(int newSpeed) {
+
+        if (currentSpeed != newSpeed) {
+            currentSpeed = newSpeed;
+            if (timer_isrunning) {
+                timer.cancel();
+                timer = new Timer("uhrzeit");
+                this.timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        currentMinute++;
+                        if (hoursPerDay != 0)
+                            currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
+                        currentMinute %= 60;
+                        if (currentMinute == 0) {
+                            System.out.println("HOUR " + currentHour);
+                        }
+                    }
+                }, currentSpeed, currentSpeed);
+            }
         }
     }
 
@@ -68,6 +92,11 @@ public class Logic {
 
     public String currentTime() {
         return String.format("%02d:%02d", currentHour, currentMinute);
+    }
+
+    public void setCurrentTime(String hour, String minute) {
+        currentHour = Integer.parseInt(hour);
+        currentMinute = Integer.parseInt(minute);
     }
 
     public void clearThreads() {
