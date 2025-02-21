@@ -43,6 +43,10 @@ public class GuiController implements Initializable {
     @FXML
     private Button timerButton;
     @FXML
+    private Button connectButton;
+    @FXML
+    private Button pauseButton;
+    @FXML
     private Button reloadSerial;
     @FXML
     private TextField clockHourField;
@@ -191,21 +195,32 @@ public class GuiController implements Initializable {
         if (this.logicWrapper.getLogic() != null)
             this.logicWrapper.getLogic().setTimerRunning(run, clockSpeed.getSelectionModel().getSelectedItem());
         running = run;
+        if (running)
+            pauseButton.setText("pause");
+        else
+            pauseButton.setText("resume");
     }
 
 
     @FXML
     protected void setSelectedSerialPort() {
-        if (this.serialPane.getSelectionModel().getSelectedItem() != null) {
-            this.setLoopRunning(true);
-            this.logicWrapper.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
-            System.out.println("connected to: " + this.logicWrapper.getSerialPort().getDescriptivePortName());
-            this.logicWrapper.initConnection();
-
+        if (!logicWrapper.isConnected) {
+            if (this.serialPane.getSelectionModel().getSelectedItem() != null) {
+                this.setLoopRunning(true);
+                this.logicWrapper.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
+                System.out.println("connected to: " + this.logicWrapper.getSerialPort().getDescriptivePortName());
+                this.logicWrapper.initConnection();
+                connectButton.setText("disconnect");
+            } else {
+                System.out.println("no serial port selected");
+            }
         } else {
-            System.out.println("no serial port selected");
+            logicWrapper.closeConnection();
+            connectButton.setText("connect");
         }
+
     }
+
 
     @FXML
     protected void addElevator(int elevatorNum) {

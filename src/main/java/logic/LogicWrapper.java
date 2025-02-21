@@ -26,6 +26,7 @@ public class LogicWrapper {
     byte[] buffer = new byte[256];
     Queue<String> out = new LinkedList<>();
 
+    public boolean isConnected = false;
     GuiController gui;
     public Queue<String> in = new LinkedList<>();
 
@@ -121,12 +122,14 @@ public class LogicWrapper {
         // }
         //sc.removeDataListener();
         //sc.closePort();
+        isConnected = true;
         return true;
     }
 
 
     public boolean closeConnection() {
         serialPort.closePort();
+        isConnected = false;
         return true;
     }
 
