@@ -117,6 +117,13 @@ public class CommandState {
                         }
                     }
                 }
+                case "PRINT" -> {
+                    System.out.print("-->");
+                    for (int i = 1; i < div.length; i++) {
+                        System.out.print(div[i]);
+                    }
+                    System.out.println();
+                }
                 default -> throw new UnsupportedOperationException(div[0] + " is not a known command");
             }
         } catch (ArrayIndexOutOfBoundsException | UnsupportedOperationException | IllegalArgumentException e) {

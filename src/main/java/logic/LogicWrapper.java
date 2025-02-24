@@ -117,13 +117,6 @@ public class LogicWrapper {
         serialPort.openPort();
         MessageListener listener = new MessageListener(this);
         serialPort.addDataListener(listener);
-        //try {
-        //  Thread.sleep(5000);
-        //} catch (Exception e) {
-        //    e.printStackTrace();
-        // }
-        //sc.removeDataListener();
-        //sc.closePort();
         isConnected = true;
         return true;
     }
