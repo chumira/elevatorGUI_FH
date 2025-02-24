@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -43,11 +44,21 @@ public class LogicWrapper {
     }
 
     public void tickUpdate(double elapsedTime) {
+        //Eingehende Befehle verarbeiten
         if (this.in.size() > 0) {
             for (int i = 0; i < this.in.size(); i++) {
                 String a = this.in.remove();
                 System.out.println("-->parsing now: " + a);
                 this.commandState.parse(a);
+            }
+        }
+
+        //Ausgehende Befehle senden
+        if (serialPort != null && this.out.size() > 0) {
+            for (int i = 0; i < this.out.size(); i++) {
+                String a = this.out.remove();
+                System.out.println("-->transmitting now: " + a);
+                sendCommand(a);
             }
         }
         if (this.commandState.init_done) {
@@ -65,7 +76,8 @@ public class LogicWrapper {
                     ) {
                         //TODO FINE_TUNE detection range
                         if (Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED * 0.51)) {
-                            System.out.println("ARRIVE " + e.getId() + " " + f.getId());
+                            //System.out.println("ARRIVE " + e.getId() + " " + f.getId());
+                            out.add("ARRIVE " + e.getId() + " " + f.getId() + "\n");
                             e.setMovementDirection(ElevatorMovement.STAND_STILL);
                         }
                     }
@@ -121,6 +133,12 @@ public class LogicWrapper {
         return true;
     }
 
+
+    public void sendCommand(String cmd) {
+        byte[] temp = cmd.getBytes();
+        //System.out.println(Arrays.toString(temp));
+        serialPort.writeBytes(temp, temp.length);
+    }
 
     public boolean closeConnection() {
         serialPort.closePort();

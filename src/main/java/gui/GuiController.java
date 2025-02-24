@@ -503,7 +503,8 @@ public class GuiController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (running) {
-                    logicWrapper.getLogic().changeTimerSpeed(clockSpeed.getSelectionModel().getSelectedItem());
+                    //logicWrapper.getLogic().changeTimerSpeed(clockSpeed.getSelectionModel().getSelectedItem());
+                    logicWrapper.getLogic().setTimerRunning(true, clockSpeed.getSelectionModel().getSelectedItem());
                 }
             }
         });

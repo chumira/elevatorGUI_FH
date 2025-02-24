@@ -17,59 +17,56 @@ public class Logic {
     int currentMinute = 0;
     int currentSpeed = 1000;
     private boolean timer_isrunning = false;
+    private LogicWrapper parent;
 
-    public Logic(int floors, int elevators, int hoursPerDay, int hour, int minute) {
+    public Logic(int floors, int elevators, int hoursPerDay, int hour, int minute, LogicWrapper parent) {
         this.grid = new ElevatorGrid(elevators, floors);
         this.hoursPerDay = hoursPerDay;
         this.currentHour = hour;
         this.currentMinute = minute;
         this.minutesPerHour = 60;
+        this.parent = parent;
     }
 
 
     public void setTimerRunning(boolean run, int newSpeed) {
+        //stop timer
         if (timer_isrunning && !run) {
             timer.cancel();
             timer_isrunning = false;
-        } else if ((!timer_isrunning && run)) {
-            timer_isrunning = true;
-            currentSpeed = newSpeed;
-            timer = new Timer("uhrzeit");
-            this.timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    currentMinute++;
-                    if (hoursPerDay != 0)
-                        currentHour = (currentHour + (currentMinute / minutesPerHour)) % hoursPerDay;
-                    currentMinute %= minutesPerHour;
-                    if (currentMinute == 0) {
-                        System.out.println("HOUR " + currentHour);
+        } else
+            //start timer
+            if ((!timer_isrunning && run)) {
+                timer_isrunning = true;
+                currentSpeed = newSpeed;
+                timer = new Timer("uhrzeit");
+                scheduleTimer(currentSpeed);
+            } else
+                //change timerSpeed
+                if (currentSpeed != newSpeed) {
+                    currentSpeed = newSpeed;
+                    if (timer_isrunning) {
+                        timer.cancel();
+                        timer = new Timer("uhrzeit");
+                        scheduleTimer(currentSpeed);
                     }
                 }
-            }, currentSpeed, currentSpeed);
-        }
     }
 
-    public void changeTimerSpeed(int newSpeed) {
-        if (currentSpeed != newSpeed) {
-            currentSpeed = newSpeed;
-            if (timer_isrunning) {
-                timer.cancel();
-                timer = new Timer("uhrzeit");
-                this.timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        currentMinute++;
-                        if (hoursPerDay != 0)
-                            currentHour = (currentHour + (currentMinute / 60)) % hoursPerDay;
-                        currentMinute %= 60;
-                        if (currentMinute == 0) {
-                            System.out.println("HOUR " + currentHour);
-                        }
-                    }
-                }, currentSpeed, currentSpeed);
+    public void scheduleTimer(int newSpeed) {
+        this.timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                currentMinute++;
+                if (hoursPerDay != 0)
+                    currentHour = (currentHour + (currentMinute / minutesPerHour)) % hoursPerDay;
+                currentMinute %= minutesPerHour;
+                if (currentMinute == 0) {
+                    //System.out.println("HOUR " + currentHour);
+                    parent.out.add("HOUR " + currentHour + "\n");
+                }
             }
-        }
+        }, currentSpeed, currentSpeed);
     }
 
 

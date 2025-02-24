@@ -50,7 +50,7 @@ public class CommandState {
                     init_phase = false;
                     this.parent.setLogic(
                             new Logic(init_amountFloors, init_amountElevators,
-                                    init_hoursPerDay, init_hourAtStart, init_minuteAtStart)
+                                    init_hoursPerDay, init_hourAtStart, init_minuteAtStart, parent)
                     );
                     for (Pair<Integer, Integer> pair : this.elevator_States
                     ) {
