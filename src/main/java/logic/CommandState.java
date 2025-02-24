@@ -65,21 +65,25 @@ public class CommandState {
                 }
                 case "OPEN" -> {
                     if (init_done) {
+                        //TODO error when elevator is moving
                         this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = true;
                         this.parent.gui.changeDoorOpen(true, Integer.parseInt(div[1]));
                     }
                 }
                 case "CLOSE" -> {
                     if (init_done) {
+                        //TODO error when elevator is moving
                         this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
                         this.parent.gui.changeDoorOpen(false, Integer.parseInt(div[1]));
                     }
                 }
                 case "MOVE_UP" -> {
+                    //TODO error when elevatordoor is open
                     if (init_done)
                         this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.UP);
                 }
                 case "MOVE_DOWN" -> {
+                    //TODO error when elevatordoor is open
                     if (init_done)
                         this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.DOWN);
                 }
@@ -103,10 +107,10 @@ public class CommandState {
                             throw new IllegalArgumentException("expected '0N' or 'OFF' but got '" + div[1] + "'");
                         }
                         if (floorOrElevator.equals("E")) {
-                            this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = true;
+                            this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeElevatorButtonLight(on, feID, bID);
                         } else if (floorOrElevator.equals("F")) {
-                            this.parent.logic.grid.floors[feID].getButtons().get(bID).isGlowing = true;
+                            this.parent.logic.grid.floors[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeFloorButtonLight(on, feID, bID);
                         } else {
                             throw new IllegalArgumentException("expected 'E' or 'F' but got " + div[2] + "'");

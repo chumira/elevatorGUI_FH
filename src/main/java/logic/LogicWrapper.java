@@ -55,6 +55,7 @@ public class LogicWrapper {
             ) {
                 e.setSpeed(elapsedTime * this.gui.ELEVATOR_SPEED);
                 e.updateElevation();
+                //TODO error when elevatorElevation is below lowest Floor/ above highest Floor
             }
             for (Elevator e : this.getLogic().getGrid().getElevators()
             ) {
@@ -77,6 +78,7 @@ public class LogicWrapper {
                 ) {
                     if (p.getActivity() == Activity.IS_WAITING) {
                         //TODO ggf. kapazitaet??
+                        //TODO Fahrgast drueckt Knopf zum ZielFloor
                         for (int eID = 0; eID < this.getLogic().getGrid().getElevators().length; eID++) {
                             if (this.getLogic().getGrid().isElevatorinFloor(eID, fID)) {
                                 if (p.getActivity() == Activity.IS_WAITING && this.getLogic().getGrid().elevators[eID].doorOpen) {
