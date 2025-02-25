@@ -72,10 +72,10 @@ public class Logic {
 
     public void addPassenger(Floor origin, Floor destination) {
         //Fahrgaeste starten immer in einem Stockwerk
-        //TODO Fahrgast drueckt Knopf zum Aufzug rufen
         Passenger newPassenger = new Passenger(this.grid.floors[origin.getId()], this.grid.floors[destination.getId()]);
         this.grid.floors[origin.getId()].getPassengers().add(newPassenger);
-
+        //Fahrgast drueckt Knopf zum Aufzug rufen
+        this.parent.out.add(this.grid.floors[origin.getId()].buttons.get(0).onClick);
     }
 
     public int getMaxAmountButtons() {

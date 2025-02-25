@@ -75,10 +75,10 @@ public class LogicWrapper {
                     for (Floor f : this.logic.getGrid().getFloors()
                     ) {
                         //TODO FINE_TUNE detection range
-                        if (Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED * 0.51)) {
+                        if (Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED * 0.61)) {
                             //System.out.println("ARRIVE " + e.getId() + " " + f.getId());
                             out.add("ARRIVE " + e.getId() + " " + f.getId() + "\n");
-                            e.setMovementDirection(ElevatorMovement.STAND_STILL);
+                            //e.setMovementDirection(ElevatorMovement.STAND_STILL);
                         }
                     }
                 }
@@ -97,6 +97,10 @@ public class LogicWrapper {
                                     removeFromFloor.add(p);
                                     this.getLogic().getGrid().getElevators()[eID].getPassengers().add(p);
                                     p.setActivity(Activity.IN_ELEVATOR);
+                                    //Knopf fuer Zieletage im Aufzug druecken
+                                    this.out.add(this.getLogic().getGrid().getElevators()[eID].getButtons().get(
+                                            this.getLogic().getGrid().getElevators()[eID].getPassengers().indexOf(p)
+                                    ).onClick);
                                 }
                             }
                         }
