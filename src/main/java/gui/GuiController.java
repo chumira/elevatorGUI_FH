@@ -22,8 +22,6 @@ import java.util.*;
 
 public class GuiController implements Initializable {
     @FXML
-    private Label welcomeText;
-    @FXML
     private ListView<SerialPort> serialPane;
 
     @FXML
@@ -32,10 +30,6 @@ public class GuiController implements Initializable {
     private ListView<Floor> passengerTo;
     @FXML
     private ListView<Integer> clockSpeed;
-    @FXML
-    private Button speed;
-    @FXML
-    private Button addDyn;
     @FXML
     private ScrollPane ePaneTest;
     @FXML
@@ -46,8 +40,6 @@ public class GuiController implements Initializable {
     private Button connectButton;
     @FXML
     private Button pauseButton;
-    @FXML
-    private Button reloadSerial;
     @FXML
     private TextField clockHourField;
     @FXML
@@ -68,15 +60,8 @@ public class GuiController implements Initializable {
     private static final double BUTTON_WIDTH = ELEVATOR_WIDTH / BUTTON_COLUMNS_UNDER_ELEVATOR;
     private final double ELEVATOR_SPACE_BETWEEN = 10;
     public final int ELEVATOR_SPEED = 20;
-
-    private Group allElevators = new Group();
-
-    private Group allElevatorDoors = new Group();
-    private Group allFloors = new Group();
-
     private Group gridAll = new Group();
     private List<Group> elevators = new ArrayList<>();
-    private List<Group> elevatorDoors = new ArrayList<>();
     private List<Group> floors = new ArrayList<>();
 
     private List<Label> passengerElevator = new ArrayList<>();
@@ -94,11 +79,8 @@ public class GuiController implements Initializable {
                 elapsedTime = 0.016666;
             }
             prev = l;
-            //speed.setScaleY(speed.getScaleY() + xD);
-
             //Verarbeitung auf der Logikseite fuer die vergangene Zeit seit dem letzten Aufruf
             logicWrapper.tickUpdate(elapsedTime);
-
             //dynamische Objekte wie die Aufzuege veraendern. Farbe und Position
             if (logicWrapper.getCommandState().init_done) {
                 changeDynamicObjects();
@@ -154,12 +136,10 @@ public class GuiController implements Initializable {
         floorbuttons.clear();
         passengerFloor.clear();
         passengerElevator.clear();
-
         gridAll = new Group();
     }
 
     public void drawGrid() {
-
         for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
             addFloor(i);
         }
@@ -169,15 +149,6 @@ public class GuiController implements Initializable {
         for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
             addElevator(i);
         }
-        /**       if (!running) {
-         a.start();
-         } else {
-         logicWrapper.getLogic().clearThreads();
-         a.stop();
-         }
-
-         running = !running;
-         */
     }
 
 
@@ -201,7 +172,6 @@ public class GuiController implements Initializable {
             pauseButton.setText("resume");
     }
 
-
     @FXML
     protected void setSelectedSerialPort() {
         if (!logicWrapper.isConnected) {
@@ -218,9 +188,7 @@ public class GuiController implements Initializable {
             logicWrapper.closeConnection();
             connectButton.setText("connect");
         }
-
     }
-
 
     @FXML
     protected void addElevator(int elevatorNum) {
@@ -237,14 +205,12 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void addFloor(int floornum) {
-
         if (eGrid == null) {
             eGrid = new HBox();
         }
         if (ePaneTest == null) {
             ePaneTest = new ScrollPane();
         }
-
         gridAll.getChildren().add(createFloor(floornum));
         gridAll.getChildren().add(createFloorLine(floornum));
         ePaneTest.setContent(gridAll);
@@ -252,7 +218,6 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void addStaticElevator(int elevatorNum) {
-
         if (eGrid == null) {
             eGrid = new HBox();
         }
@@ -272,12 +237,9 @@ public class GuiController implements Initializable {
         inner.setFill(Color.GREY);
         inner.setHeight(ELEVATOR_HEIGHT - ELEVATOR_WALL_THICKNESS * 2);
         inner.setWidth(ELEVATOR_WIDTH - ELEVATOR_WALL_THICKNESS * 2);
-        //ePaneTest.getChildren().addAll(outer,inner);
         inner.setX(ELEVATOR_WALL_THICKNESS);
         inner.setY(ELEVATOR_WALL_THICKNESS);
         inner.setVisible(false);
-        //outer.setX((elevatorNum + 1) * 100);
-        //outer.setY(20);
         Group testMovable = new Group();
 
 
@@ -287,13 +249,8 @@ public class GuiController implements Initializable {
             a++;
         if (a < BUTTONS_PER_COLUMN_IN_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
-
-        //Gap zu FloorButtons
-        //((logicWrapper.getLogic().getMaxAmountButtons()+2)* BUTTON_WIDTH)
-
         testMovable.setTranslateX((ELEVATOR_WIDTH) * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + elevatorNum * ELEVATOR_SPACE_BETWEEN);
         elevators.add(testMovable);
-
         return testMovable;
     }
 
@@ -325,9 +282,6 @@ public class GuiController implements Initializable {
         staticElevator.getChildren().addAll(passengerAmount, shaft);
         //create FloorButtons
         List<Rectangle> buttonsInElevator = new ArrayList<>();
-
-
-        //System.out.println(logicWrapper.getLogic().getGrid().elevators[i].getButtons().size());
         for (int j = 0; j < logicWrapper.getLogic().getGrid().elevators[elevatorNum].getButtons().size(); j++) {
             Rectangle floorLCD_Border = new Rectangle();
             floorLCD_Border.setFill(Color.BLACK);
@@ -347,8 +301,11 @@ public class GuiController implements Initializable {
             test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
+
+                    //System.out.println("REQUEST " + elevatorNum + " " + floornum);
+                    logicWrapper.getOut().add(logicWrapper.getLogic().grid.elevators[elevatorNum].getButtons().get(floornum).getOnClick());
+
                     //FOR MANUAL TESTING (delete later)
-                    System.out.println("REQUEST " + elevatorNum + " " + floornum);
                     if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
                         logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
                     } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
@@ -361,8 +318,6 @@ public class GuiController implements Initializable {
             staticElevator.getChildren().addAll(test2);
             buttonsInElevator.add(floorLCD);
         }
-
-
         elevatorbuttons.add(buttonsInElevator);
         //TODO more buttons
         //if(logic.priority_mode)
@@ -387,13 +342,12 @@ public class GuiController implements Initializable {
             test.setTranslateX(i * (BUTTON_WIDTH));
             Text text = new Text("" + logicWrapper.getLogic().getGrid().getFloors()[floornum].getButtons().get(i).getSymbol());
             test.getChildren().addAll(outer, inner, text);
-
-
             int fI = i;
             test.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    System.out.println("BUTTON_PUSH " + floornum + " " + fI);
+                    //System.out.println("BUTTON_PUSH " + floornum + " " + fI);
+                    logicWrapper.getOut().add(logicWrapper.getLogic().grid.floors[floornum].getButtons().get(fI).getOnClick());
                 }
             });
             Label label = new Label("0");
@@ -416,14 +370,9 @@ public class GuiController implements Initializable {
             a++;
         if (a < BUTTON_COLUMNS_UNDER_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
-
-
         int elevatorNum = logicWrapper.getLogic().getGrid().elevators.length;
-
         heightLine.setWidth(((ELEVATOR_WIDTH * (double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * 1) + ELEVATOR_SPACE_BETWEEN) * elevatorNum - ELEVATOR_SPACE_BETWEEN);
-
         heightLine.setHeight(LINE_THICKNESS);
-
         heightLine.setY((logicWrapper.getLogic().getGrid().floors[floorNum].getHeight()) * -1 + ELEVATOR_HEIGHT);
         heightLine.setX(ELEVATOR_OFFSET);
         return heightLine;

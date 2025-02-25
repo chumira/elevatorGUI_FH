@@ -30,11 +30,11 @@ public class ElevatorGrid {
         }
         for (int i = 0; i < amountElevators; i++) {
             for (int j = 0; j < amountFloors; j++) {
-                elevators[i].getButtons().add(new LCDButton("" + j, "TODO"));
+                elevators[i].getButtons().add(new LCDButton("" + j, "REQUEST " + elevators[i].getId() + " " + floors[j].getId() + "\n"));
             }
         }
         for (int i = 0; i < amountFloors; i++) {
-            floors[i].getButtons().add(new LCDButton("E" + i, "TODO"));
+            floors[i].getButtons().add(new LCDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n"));
         }
         //for debug
         //floors[0].getButtons().add(new LCDButton("ABC", ""));

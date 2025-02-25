@@ -45,7 +45,7 @@ public class LogicWrapper {
 
     public void tickUpdate(double elapsedTime) {
         //Eingehende Befehle verarbeiten
-        if (this.in.size() > 0) {
+        if (serialPort != null && serialPort.isOpen() && this.in.size() > 0) {
             for (int i = 0; i < this.in.size(); i++) {
                 String a = this.in.remove();
                 System.out.println("-->parsing now: " + a);
@@ -54,7 +54,7 @@ public class LogicWrapper {
         }
 
         //Ausgehende Befehle senden
-        if (serialPort != null && this.out.size() > 0) {
+        if (serialPort != null && serialPort.isOpen() && this.out.size() > 0) {
             for (int i = 0; i < this.out.size(); i++) {
                 String a = this.out.remove();
                 System.out.println("-->transmitting now: " + a);
