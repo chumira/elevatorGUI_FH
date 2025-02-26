@@ -44,6 +44,8 @@ public class GuiController implements Initializable {
     private TextField clockHourField;
     @FXML
     private TextField clockMinuteField;
+    @FXML
+    private TextArea errorMessage;
     /**
      * Logik
      */
@@ -60,6 +62,11 @@ public class GuiController implements Initializable {
     private static final double BUTTON_WIDTH = ELEVATOR_WIDTH / BUTTON_COLUMNS_UNDER_ELEVATOR;
     private final double ELEVATOR_SPACE_BETWEEN = 10;
     public final int ELEVATOR_SPEED = 20;
+
+    private final int ELEVATORERROR_GROUP_NUMBER = 0;
+
+    private final int ELEVATORCASE_GROUP_NUMBER = 1;
+    private final int ELEVATORDOOR_GROUP_NUMBER = 2;
     private Group gridAll = new Group();
     private List<Group> elevators = new ArrayList<>();
     private List<Group> floors = new ArrayList<>();
@@ -117,7 +124,35 @@ public class GuiController implements Initializable {
     }
 
     public void changeDoorOpen(boolean open, int elevatorID) {
-        elevators.get(elevatorID).getChildren().get(1).setVisible(logicWrapper.getLogic().getGrid().getElevators()[elevatorID].isDoorOpen());
+        elevators.get(elevatorID).getChildren().get(ELEVATORDOOR_GROUP_NUMBER).setVisible(logicWrapper.getLogic().getGrid().getElevators()[elevatorID].isDoorOpen());
+    }
+
+
+    private void changeElevatorError(boolean error, int elevatorID) {
+        elevators.get(elevatorID).getChildren().get(ELEVATORERROR_GROUP_NUMBER).setVisible(error);
+    }
+
+    public void displayError(String message, int elevatorID) {
+        changeElevatorError(true, elevatorID);
+        errorMessage.setText(message);
+    }
+
+    public void displayErrorMessage(String message) {
+        errorMessage.setText(message);
+    }
+
+    public void hideError(int elevatorID) {
+        changeElevatorError(false, elevatorID);
+        errorMessage.setText("");
+    }
+
+    public void hideErrorMessage() {
+        errorMessage.setText("");
+    }
+
+    @FXML
+    public void changeElevatorErrorTest() {
+        changeElevatorError(true, 1);
     }
 
     public void showFloorList() {
@@ -240,10 +275,17 @@ public class GuiController implements Initializable {
         inner.setX(ELEVATOR_WALL_THICKNESS);
         inner.setY(ELEVATOR_WALL_THICKNESS);
         inner.setVisible(false);
+        Rectangle errorBorder = new Rectangle();
+        errorBorder.setFill(Color.RED);
+        errorBorder.setHeight(ELEVATOR_HEIGHT + ELEVATOR_WALL_THICKNESS * 2);
+        errorBorder.setWidth(ELEVATOR_WIDTH + ELEVATOR_WALL_THICKNESS * 2);
+        errorBorder.setX(-ELEVATOR_WALL_THICKNESS);
+        errorBorder.setY(-ELEVATOR_WALL_THICKNESS);
+        errorBorder.setVisible(false);
         Group testMovable = new Group();
 
 
-        testMovable.getChildren().addAll(outer, inner);
+        testMovable.getChildren().addAll(errorBorder, outer, inner);
         int a = (logicWrapper.getLogic().getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR);
         if (logicWrapper.getLogic().getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
             a++;
@@ -307,12 +349,13 @@ public class GuiController implements Initializable {
 
                     //FOR MANUAL TESTING (delete later)
                     if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
-                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.UP);
+                        logicWrapper.in.add("MOVE_UP " + elevatorNum);
                     } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
-                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.DOWN);
+                        logicWrapper.in.add("MOVE_DOWN " + elevatorNum);
                     } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
-                        logicWrapper.getLogic().grid.elevators[elevatorNum].setMovementDirection(ElevatorMovement.STAND_STILL);
+                        logicWrapper.in.add("STOP " + elevatorNum);
                     }
+
                 }
             });
             staticElevator.getChildren().addAll(test2);
@@ -409,7 +452,8 @@ public class GuiController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        errorMessage.setEditable(false);
+        errorMessage.setStyle("-fx-text-fill: RED;");
         showSerialPorts();
 
         //Darstellung der SerialPorts aendern

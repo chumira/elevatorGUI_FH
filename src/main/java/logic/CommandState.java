@@ -65,27 +65,40 @@ public class CommandState {
                 }
                 case "OPEN" -> {
                     if (init_done) {
-                        //TODO error when elevator is moving
-                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = true;
-                        this.parent.gui.changeDoorOpen(true, Integer.parseInt(div[1]));
+                        int elevatorID = Integer.parseInt(div[1]);
+                        if (this.parent.logic.grid.elevators[elevatorID].getMovementDirection() != ElevatorMovement.STAND_STILL) {
+                            this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while moving", elevatorID);
+                        }
+                        this.parent.logic.grid.elevators[elevatorID].doorOpen = true;
+                        this.parent.gui.changeDoorOpen(true, elevatorID);
+
                     }
                 }
                 case "CLOSE" -> {
                     if (init_done) {
-                        //TODO error when elevator is moving
                         this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
                         this.parent.gui.changeDoorOpen(false, Integer.parseInt(div[1]));
                     }
                 }
                 case "MOVE_UP" -> {
-                    //TODO error when elevatordoor is open
-                    if (init_done)
-                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.UP);
+                    if (init_done) {
+                        int elevatorID = Integer.parseInt(div[1]);
+                        if (this.parent.logic.grid.elevators[elevatorID].isDoorOpen()) {
+                            this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open", elevatorID);
+                        }
+                        this.parent.logic.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.UP);
+                    }
                 }
                 case "MOVE_DOWN" -> {
-                    //TODO error when elevatordoor is open
-                    if (init_done)
-                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.DOWN);
+
+                    if (init_done) {
+                        int elevatorID = Integer.parseInt(div[1]);
+                        if (this.parent.logic.grid.elevators[elevatorID].isDoorOpen()) {
+                            this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open", elevatorID);
+                        }
+                        this.parent.logic.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.DOWN);
+
+                    }
                 }
                 case "STOP" -> {
                     if (init_done)

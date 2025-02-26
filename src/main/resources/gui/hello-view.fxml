@@ -24,6 +24,7 @@
                         </Label>
                         <TextField fx:id="clockMinuteField" prefHeight="25.0" prefWidth="33.0"/>
                         <Button mnemonicParsing="false" onAction="#setTime" text="setTime"/>
+                        <TextArea fx:id="errorMessage" prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
                     </children>
                 </HBox>
             </children>
@@ -38,6 +39,7 @@
                 <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="reload"/>
                 <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#toggleLoop" text="toggleLoop"/>
                 <Button mnemonicParsing="false" onAction="#testGrid" text="testGrid"/>
+                <Button mnemonicParsing="false" onAction="#changeElevatorErrorTest" text="Button"/>
             </children>
         </HBox>
     </top>
