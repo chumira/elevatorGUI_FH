@@ -19,6 +19,8 @@ public class Logic {
     private boolean timer_isrunning = false;
     private LogicWrapper parent;
 
+    private double bufferElevation = 10;
+
     public Logic(int floors, int elevators, int hoursPerDay, int hour, int minute, LogicWrapper parent) {
         this.grid = new ElevatorGrid(elevators, floors);
         this.hoursPerDay = hoursPerDay;

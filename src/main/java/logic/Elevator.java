@@ -16,7 +16,9 @@ public class Elevator {
     ElevatorMovement movementDirection;
     double elevation = 0;
     double speed = 0.1;
-    double closedpercentage = 100;
+    boolean encounteredError = false;
+
+    Floor mostRecentFloor;
 
     public Elevator(int id) {
         this.id = id;

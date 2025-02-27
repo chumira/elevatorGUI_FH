@@ -67,7 +67,8 @@ public class CommandState {
                     if (init_done) {
                         int elevatorID = Integer.parseInt(div[1]);
                         if (this.parent.logic.grid.elevators[elevatorID].getMovementDirection() != ElevatorMovement.STAND_STILL) {
-                            this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while moving", elevatorID);
+                            this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while moving.", elevatorID);
+                            this.parent.logic.grid.elevators[elevatorID].setEncounteredError(true);
                         }
                         this.parent.logic.grid.elevators[elevatorID].doorOpen = true;
                         this.parent.gui.changeDoorOpen(true, elevatorID);
@@ -84,7 +85,9 @@ public class CommandState {
                     if (init_done) {
                         int elevatorID = Integer.parseInt(div[1]);
                         if (this.parent.logic.grid.elevators[elevatorID].isDoorOpen()) {
-                            this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open", elevatorID);
+                            this.parent.logic.grid.elevators[elevatorID].setEncounteredError(true);
+                            this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open.", elevatorID);
+
                         }
                         this.parent.logic.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.UP);
                     }
@@ -94,7 +97,9 @@ public class CommandState {
                     if (init_done) {
                         int elevatorID = Integer.parseInt(div[1]);
                         if (this.parent.logic.grid.elevators[elevatorID].isDoorOpen()) {
-                            this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open", elevatorID);
+                            this.parent.logic.grid.elevators[elevatorID].setEncounteredError(true);
+                            this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open.", elevatorID);
+
                         }
                         this.parent.logic.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.DOWN);
 

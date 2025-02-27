@@ -64,9 +64,26 @@ public class LogicWrapper {
         if (this.commandState.init_done) {
             for (Elevator e : this.getLogic().getGrid().getElevators()
             ) {
-                e.setSpeed(elapsedTime * this.gui.ELEVATOR_SPEED);
-                e.updateElevation();
-                //TODO error when elevatorElevation is below lowest Floor/ above highest Floor
+
+                if ((e.getElevation() + logic.getBufferElevation()) < logic.grid.floors[0].getHeight() && !e.encounteredError) {
+                    e.encounteredError = true;
+                    this.gui.displayError(
+                            "elevator " + e.getId() + " reached the lowest point but was not stopped."
+                            , e.getId());
+                    this.logic.grid.elevators[e.id].setMovementDirection(ElevatorMovement.STAND_STILL);
+
+                } else if ((e.getElevation() - logic.getBufferElevation()) > logic.grid.floors[logic.grid.floors.length - 1].getHeight() && !e.encounteredError) {
+                    e.encounteredError = true;
+                    this.gui.displayError(
+                            "elevator " + e.getId() + " reached the highest point but was not stopped."
+                            , e.getId());
+                    this.logic.grid.elevators[e.id].setMovementDirection(ElevatorMovement.STAND_STILL);
+
+                }
+                if (!e.encounteredError) {
+                    e.setSpeed(elapsedTime * this.gui.ELEVATOR_SPEED);
+                    e.updateElevation();
+                }
             }
             for (Elevator e : this.getLogic().getGrid().getElevators()
             ) {
@@ -74,11 +91,11 @@ public class LogicWrapper {
 
                     for (Floor f : this.logic.getGrid().getFloors()
                     ) {
-                        //TODO FINE_TUNE detection range
-                        if (Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED * 0.61)) {
+
+                        if (!f.equals(e.mostRecentFloor) && Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED)) {
                             //System.out.println("ARRIVE " + e.getId() + " " + f.getId());
                             out.add("ARRIVE " + e.getId() + " " + f.getId() + "\n");
-                            //e.setMovementDirection(ElevatorMovement.STAND_STILL);
+                            e.mostRecentFloor = f;
                         }
                     }
                 }

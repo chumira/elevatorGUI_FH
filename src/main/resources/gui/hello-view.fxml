@@ -39,7 +39,7 @@
                 <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="reload"/>
                 <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#toggleLoop" text="toggleLoop"/>
                 <Button mnemonicParsing="false" onAction="#testGrid" text="testGrid"/>
-                <Button mnemonicParsing="false" onAction="#changeElevatorErrorTest" text="Button"/>
+                <Button mnemonicParsing="false" onAction="#changeElevatorErrorTest" text="errorHide"/>
             </children>
         </HBox>
     </top>

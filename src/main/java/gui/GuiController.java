@@ -128,21 +128,22 @@ public class GuiController implements Initializable {
     }
 
 
-    private void changeElevatorError(boolean error, int elevatorID) {
-        elevators.get(elevatorID).getChildren().get(ELEVATORERROR_GROUP_NUMBER).setVisible(error);
+    private void changeElevatorError(int elevatorID) {
+        elevators.get(elevatorID).getChildren().get(ELEVATORERROR_GROUP_NUMBER).setVisible(logicWrapper.getLogic().getGrid().getElevators()[elevatorID].isEncounteredError());
     }
 
     public void displayError(String message, int elevatorID) {
-        changeElevatorError(true, elevatorID);
-        errorMessage.setText(message);
+        changeElevatorError(elevatorID);
+        // errorMessage.setText(message);
+        errorMessage.appendText(message + '\n');
     }
 
     public void displayErrorMessage(String message) {
-        errorMessage.setText(message);
+        errorMessage.appendText(message);
     }
 
     public void hideError(int elevatorID) {
-        changeElevatorError(false, elevatorID);
+        changeElevatorError(elevatorID);
         errorMessage.setText("");
     }
 
@@ -152,7 +153,11 @@ public class GuiController implements Initializable {
 
     @FXML
     public void changeElevatorErrorTest() {
-        changeElevatorError(true, 1);
+        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
+            logicWrapper.getLogic().getGrid().elevators[i].setEncounteredError(false);
+            hideError(i);
+        }
+
     }
 
     public void showFloorList() {
