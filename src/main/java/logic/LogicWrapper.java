@@ -68,14 +68,14 @@ public class LogicWrapper {
                 if ((e.getElevation() + logic.getBufferElevation()) < logic.grid.floors[0].getHeight() && !e.encounteredError) {
                     e.encounteredError = true;
                     this.gui.displayError(
-                            "elevator " + e.getId() + " reached the lowest point but was not stopped."
+                            "elevator " + e.getId() + " reached the lowest point but has not stopped."
                             , e.getId());
                     this.logic.grid.elevators[e.id].setMovementDirection(ElevatorMovement.STAND_STILL);
 
                 } else if ((e.getElevation() - logic.getBufferElevation()) > logic.grid.floors[logic.grid.floors.length - 1].getHeight() && !e.encounteredError) {
                     e.encounteredError = true;
                     this.gui.displayError(
-                            "elevator " + e.getId() + " reached the highest point but was not stopped."
+                            "elevator " + e.getId() + " reached the highest point but has not stopped."
                             , e.getId());
                     this.logic.grid.elevators[e.id].setMovementDirection(ElevatorMovement.STAND_STILL);
 

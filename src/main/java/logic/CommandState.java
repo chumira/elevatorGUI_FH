@@ -122,16 +122,18 @@ public class CommandState {
                         } else if (onOrOff.equals("OFF")) {
                             on = false;
                         } else {
+                            this.parent.gui.displayErrorMessage(" expected 'ON' or 'OFF' but got '" + div[1] + "' for command " + div[0] + '\n');
                             throw new IllegalArgumentException("expected '0N' or 'OFF' but got '" + div[1] + "'");
                         }
                         if (floorOrElevator.equals("E")) {
-                            this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
+                            //this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeElevatorButtonLight(on, feID, bID);
                         } else if (floorOrElevator.equals("F")) {
                             this.parent.logic.grid.floors[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeFloorButtonLight(on, feID, bID);
                         } else {
-                            throw new IllegalArgumentException("expected 'E' or 'F' but got " + div[2] + "'");
+                            //this.parent.gui.displayErrorMessage(" expected 'E' or 'F' but got '" + div[2] + "' for command " + div[0] + '\n');
+                            throw new IllegalArgumentException("expected 'E' or 'F' but got '" + div[2] + "'");
                         }
                     }
                 }
@@ -142,9 +144,16 @@ public class CommandState {
                     }
                     System.out.println();
                 }
-                default -> throw new UnsupportedOperationException(div[0] + " is not a known command");
+                default -> {
+
+                    throw new UnsupportedOperationException();
+                }
             }
-        } catch (ArrayIndexOutOfBoundsException | UnsupportedOperationException | IllegalArgumentException e) {
+        } catch (UnsupportedOperationException e) {
+            this.parent.gui.displayErrorMessage(div[0] + " is not a valid command." + '\n');
+            System.err.println(e.getMessage());
+        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
+            this.parent.gui.displayErrorMessage(div[0] + "->" + e.getMessage() + '\n');
             System.err.println(e.getMessage());
         }
     }
