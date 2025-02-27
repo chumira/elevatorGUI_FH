@@ -9,9 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ElevatorGrid {
-    //TODO ggf hoeheren Wert setzen, zb. 2-50
     private static final double HEIGHT_DIFFERENCE_FOR_EQUAL = 5;
-
     public static final double INIT_ELEVATOR_HEIGHT = 0;
     public static final double HEIGHT_INCREASE_PER_FLOOR = 100;
     public Floor[] floors;

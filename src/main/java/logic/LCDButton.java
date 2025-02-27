@@ -9,14 +9,10 @@ public class LCDButton {
     String id;
     String symbol;
     String onClick;
-    boolean isGlowing;
+    boolean isGlowing = false;
 
-    public LCDButton() {
-        this.isGlowing = false;
-    }
 
     public LCDButton(String symbol, String onClick) {
-        super();
         this.symbol = symbol;
         this.onClick = onClick;
 

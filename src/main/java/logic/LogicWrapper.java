@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -91,9 +90,7 @@ public class LogicWrapper {
 
                     for (Floor f : this.logic.getGrid().getFloors()
                     ) {
-
                         if (!f.equals(e.mostRecentFloor) && Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED)) {
-                            //System.out.println("ARRIVE " + e.getId() + " " + f.getId());
                             out.add("ARRIVE " + e.getId() + " " + f.getId() + "\n");
                             e.mostRecentFloor = f;
                         }
@@ -202,7 +199,6 @@ public class LogicWrapper {
             ) {
                 sb.append((char) b);
             }
-            System.out.println("Received the following delimited message: " + sb);
             //eingegangene Nachricht speichern (ohne '\n')
             logicWrapper.in.add(sb.delete(sb.length() - 1, sb.length()).toString());
         }

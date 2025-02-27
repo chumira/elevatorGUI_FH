@@ -15,9 +15,8 @@ public class Elevator {
     boolean doorOpen;
     ElevatorMovement movementDirection;
     double elevation = 0;
-    double speed = 0.1;
+    double speed = 0;
     boolean encounteredError = false;
-
     Floor mostRecentFloor;
 
     public Elevator(int id) {
@@ -29,7 +28,6 @@ public class Elevator {
 
 
     public void updateElevation() {
-        //System.out.println(this.movementDirection);
         switch (this.movementDirection) {
             case STAND_STILL:
                 break;
