@@ -18,6 +18,10 @@ public class Main extends Application {
         stage.setTitle("Elevator GUI");
         stage.setScene(scene);
         stage.show();
+
+        stage.setOnCloseRequest(e -> {
+            javafx.application.Platform.exit();
+        });
     }
 
     public static void main(String[] args) {
