@@ -27,6 +27,12 @@ public class SimTime {
         this.parent = logic;
     }
 
+    /**
+     * erstellt einen Timer mit einer hochzarhlenden Uhrzeit oder haelt die Uhrzeit an
+     *
+     * @param run      anhalten oder nicht
+     * @param newSpeed die Zeitabstaende zwischen den Aufrufen
+     */
     public void setTimerRunning(boolean run, int newSpeed) {
         //stop timer
         if (timer_isrunning && !run) {
@@ -51,6 +57,11 @@ public class SimTime {
                 }
     }
 
+    /**
+     * erstellt einen TimerThread welcher eine Minute pro Ausfuehrung hochzaehlt
+     *
+     * @param newSpeed die Zeitabstaende zwischen den Aufrufen
+     */
     public void scheduleTimer(int newSpeed) {
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override

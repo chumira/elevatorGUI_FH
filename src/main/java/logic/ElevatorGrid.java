@@ -40,6 +40,12 @@ public class ElevatorGrid {
         //floors[0].getButtons().add(new LCDButton("ABC", ""));
     }
 
+    /**
+     * setzt die Hoehe des Aufzugs auf die Hoeher der Etage
+     *
+     * @param elevatorID der Aufzug
+     * @param floorID    die Etage
+     */
     public void adjustElevatorHeight(int elevatorID, int floorID) {
         elevators[elevatorID].setElevation(floors[floorID].getHeight());
     }
@@ -50,6 +56,13 @@ public class ElevatorGrid {
         }
     }
 
+    /**
+     * checkt ob der Aufzug ungefaehr auf Hoehe der Etage ist
+     *
+     * @param elevatorID der Aufzug
+     * @param floorID    die Etage
+     * @return true falls Aufzugshoehe == Etagenhoehe
+     */
     public boolean isElevatorinFloor(int elevatorID, int floorID) {
         //sind Aufzug und Etage ungefaehr auf einer Hoehe?
         if (Math.abs(elevators[elevatorID].elevation - floors[floorID].height) < HEIGHT_DIFFERENCE_FOR_EQUAL) {
@@ -59,6 +72,10 @@ public class ElevatorGrid {
         return false;
     }
 
+    /**
+     * @param elevatorID der Aufzug
+     * @return die Etage die dem Aufzug am naehsten ist
+     */
     public Floor getFloorClosestToElevator(int elevatorID) {
         int floorID = -1;
         double distance = Double.MAX_VALUE;
@@ -72,6 +89,9 @@ public class ElevatorGrid {
         return this.getFloors()[floorID];
     }
 
+    /**
+     * @return max. Anzahl von Knoepfen aller Etagen
+     */
     public int getMaxAmountButtons() {
         int max = 0;
         for (Floor f : floors) {

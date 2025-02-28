@@ -73,9 +73,14 @@ public class GuiController implements Initializable {
     private List<Label> passengerFloor = new ArrayList<>();
     private final List<List<Rectangle>> floorbuttons = new ArrayList<>();
     private final List<List<Rectangle>> elevatorbuttons = new ArrayList<>();
+
     AnimationTimer a = new AnimationTimer() {
         long prev = 0;
 
+        /**
+         * dies ist die Mainloop.
+         * wird x mal pro Sekunde aufgerufen
+         */
         @Override
         public void handle(long l) {
             // 0.01666 60FPS
@@ -93,7 +98,9 @@ public class GuiController implements Initializable {
         }
     };
 
-
+    /**
+     * Aufzugshoehe + Uhrzeit aendern
+     */
     public void changeDynamicObjects() {
         for (int i = 0; i < logic.getGrid().getElevators().length; i++) {
             elevators.get(i).setTranslateY(logic.getGrid().getElevators()[i].getElevation() * -1);
@@ -165,7 +172,9 @@ public class GuiController implements Initializable {
         passengerTo.getItems().addAll(logic.getGrid().floors);
     }
 
-
+    /**
+     * Das Grid zuruecksetzen
+     */
     public void clearGrid() {
         ePaneTest.setContent(null);
         elevators.clear();
@@ -177,6 +186,9 @@ public class GuiController implements Initializable {
         gridAll = new Group();
     }
 
+    /**
+     * alle noetige grafische Objekte fuer das Grid erstellen
+     */
     public void drawGrid() {
         for (int i = 0; i < logic.getGrid().floors.length; i++) {
             addFloor(i);
@@ -195,6 +207,11 @@ public class GuiController implements Initializable {
         setLoopRunning(!running);
     }
 
+    /**
+     * Die Hauptschleife starten oder stoppen
+     *
+     * @param run start oder stopp die Schleife
+     */
     public void setLoopRunning(boolean run) {
         if (!running && run) {
             a.start();
@@ -210,6 +227,9 @@ public class GuiController implements Initializable {
             pauseButton.setText("resume");
     }
 
+    /**
+     * zu dem ausgewaehlten SerialPort eine Verbindung aufbauen
+     */
     @FXML
     protected void setSelectedSerialPort() {
         if (!logic.isConnected) {
@@ -453,8 +473,10 @@ public class GuiController implements Initializable {
 
     }
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //errorMessage Werte setzen
         errorMessage.setEditable(false);
         errorMessage.setStyle("-fx-text-fill: RED;");
         showSerialPorts();
@@ -471,6 +493,7 @@ public class GuiController implements Initializable {
                 }
             }
         });
+        //Fahrgast Herkunftsdarstellung zu einer Zahl aendern
         this.passengerFrom.setCellFactory(e -> new ListCell<Floor>() {
             @Override
             protected void updateItem(Floor f, boolean empty) {
@@ -482,6 +505,7 @@ public class GuiController implements Initializable {
                 }
             }
         });
+        //Fahrgast Zielsdarstellung zu einer Zahl aendern
         this.passengerTo.setCellFactory(e -> new ListCell<Floor>() {
             @Override
             protected void updateItem(Floor f, boolean empty) {
@@ -493,6 +517,7 @@ public class GuiController implements Initializable {
                 }
             }
         });
+        //Uhrzeit vorauswaehlen und alle moeglichen Geschwindigkeiten anzeigen
         this.clockSpeed.getItems().addAll(logic.getClockSpeeds());
         this.clockSpeed.getSelectionModel().select(3);
         this.clockSpeed.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -503,6 +528,7 @@ public class GuiController implements Initializable {
                 }
             }
         });
+        //Nur Zahlen sollen moeglich sein im clockHourField
         clockHourField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -512,6 +538,7 @@ public class GuiController implements Initializable {
                 }
             }
         });
+        //Nur Zahlen sollen moeglich sein im clockMinuteField
         clockMinuteField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -526,12 +553,9 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void testGrid() {
-
         logic.getCommandState().parse("init_base 3 5 12 5 6");
         logic.getCommandState().parse("init_done");
         logic.getCommandState().parse("light ON e 1 0");
         logic.getCommandState().parse("open 2");
-
-
     }
 }

@@ -43,6 +43,11 @@ public class Logic {
         this.gui = gui;
     }
 
+    /**
+     * die Hauptlogik, welche in einer Schleife aufgerufen wird fuer Aufzugsbewegung, Befehle und Fahrgaeste
+     *
+     * @param elapsedTime die vergangene Zeit seit dem letzten Aufruf
+     */
     public void tickUpdate(double elapsedTime) {
         //Eingehende Befehle verarbeiten
         if (serialPort != null && serialPort.isOpen() && this.in.size() > 0) {
@@ -64,7 +69,7 @@ public class Logic {
         if (this.commandState.init_done) {
             for (Elevator e : this.grid.getElevators()
             ) {
-
+                //Fehlerfall das der Aufzug unter der untersten Ebene ist
                 if ((e.getElevation() + grid.getBufferHeight()) < grid.floors[0].getHeight() && !e.encounteredError) {
                     e.encounteredError = true;
                     this.grid.elevators[e.id].setMovementDirection(ElevatorMovement.STAND_STILL);
@@ -72,18 +77,22 @@ public class Logic {
                     this.gui.displayError(
                             "elevator " + e.getId() + " reached the lowest point but has not stopped."
                             , e.getId());
-                } else if ((e.getElevation() - grid.getBufferHeight()) > grid.floors[grid.floors.length - 1].getHeight() && !e.encounteredError) {
-                    e.encounteredError = true;
-                    this.grid.elevators[e.id].setMovementDirection(ElevatorMovement.STAND_STILL);
-                    this.grid.bufferHeight += 0.5;
-                    this.gui.displayError(
-                            "elevator " + e.getId() + " reached the highest point but has not stopped."
-                            , e.getId());
-                }
+                } else
+                    //Fehlerfall das der Aufzug ueber der obersten Ebene ist
+                    if ((e.getElevation() - grid.getBufferHeight()) > grid.floors[grid.floors.length - 1].getHeight() && !e.encounteredError) {
+                        e.encounteredError = true;
+                        this.grid.elevators[e.id].setMovementDirection(ElevatorMovement.STAND_STILL);
+                        this.grid.bufferHeight += 0.5;
+                        this.gui.displayError(
+                                "elevator " + e.getId() + " reached the highest point but has not stopped."
+                                , e.getId());
+                    }
                 if (!e.encounteredError) {
+                    //hochfahren/herunterfahren/stillstehen
                     e.updateElevation(elapsedTime * this.grid.ELEVATOR_SPEED);
                 }
             }
+            //check ob der Aufzug in einem Stockwerk angekommen ist
             for (Elevator e : this.getGrid().getElevators()
             ) {
                 if (!(e.getMovementDirection() == ElevatorMovement.STAND_STILL)) {
@@ -143,27 +152,40 @@ public class Logic {
         }
     }
 
-    public boolean initConnection() {
+    /**
+     * baut eine Verbindung per serieller Schnittstelle auf und fuegt dieser einen Data-Listener hinzu, welcher
+     * auf das Zeichen'\n' hoert
+     */
+    public void initConnection() {
         serialPort.openPort();
         MessageListener listener = new MessageListener(this);
         serialPort.addDataListener(listener);
         isConnected = true;
-        return true;
     }
 
 
+    /**
+     * sendet einen Befehl ueber die serielle Schnittstelle
+     *
+     * @param cmd Befehl
+     */
     public void sendCommand(String cmd) {
         byte[] temp = cmd.getBytes();
         //System.out.println(Arrays.toString(temp));
         serialPort.writeBytes(temp, temp.length);
     }
 
-    public boolean closeConnection() {
+    public void closeConnection() {
         serialPort.closePort();
         isConnected = false;
-        return true;
     }
 
+    /**
+     * Fuegt einen Fahrgast zu einem Stockwerk hinzu
+     *
+     * @param origin      wo kommt der Fahrgast her
+     * @param destination wo der Fahrgast hin will
+     */
     public void addPassenger(Floor origin, Floor destination) {
         //Fahrgaeste starten immer in einem Stockwerk
         Passenger newPassenger = new Passenger(this.grid.floors[origin.getId()], this.grid.floors[destination.getId()]);
