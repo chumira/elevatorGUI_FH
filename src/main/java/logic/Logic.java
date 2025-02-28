@@ -173,8 +173,10 @@ public class Logic {
     }
 
     public void closeConnection() {
-        serialPort.closePort();
-        isConnected = false;
+        if (serialPort != null) {
+            serialPort.closePort();
+            isConnected = false;
+        }
     }
 
     /**

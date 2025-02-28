@@ -13,6 +13,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        GuiController controller = fxmlLoader.getController();
         stage.setMinWidth(1000);
         stage.setMinHeight(500);
         stage.setTitle("Elevator GUI");
@@ -20,6 +21,7 @@ public class Main extends Application {
         stage.show();
 
         stage.setOnCloseRequest(e -> {
+            controller.onClose();
             javafx.application.Platform.exit();
         });
     }

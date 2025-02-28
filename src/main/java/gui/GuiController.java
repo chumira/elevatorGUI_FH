@@ -244,6 +244,7 @@ public class GuiController implements Initializable {
                 this.setLoopRunning(true);
                 this.logic.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
                 System.out.println("connected to: " + this.logic.getSerialPort().getDescriptivePortName());
+                serialPane.setMouseTransparent(true);
                 this.logic.initConnection();
                 connectButton.setText("trennen");
             } else {
@@ -251,6 +252,7 @@ public class GuiController implements Initializable {
             }
         } else {
             logic.closeConnection();
+            serialPane.setMouseTransparent(false);
             connectButton.setText("verbinden");
         }
     }
@@ -486,6 +488,9 @@ public class GuiController implements Initializable {
 
     }
 
+    protected void onClose() {
+        this.logic.closeConnection();
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
