@@ -49,7 +49,7 @@ public class GuiController implements Initializable {
     /**
      * Logik
      */
-    private LogicWrapper logicWrapper = new LogicWrapper(this);
+    private Logic logic = new Logic(this);
     boolean running = false;
     private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 2;
     private static final double ELEVATOR_HEIGHT = 80;
@@ -87,9 +87,9 @@ public class GuiController implements Initializable {
             }
             prev = l;
             //Verarbeitung auf der Logikseite fuer die vergangene Zeit seit dem letzten Aufruf
-            logicWrapper.tickUpdate(elapsedTime);
+            logic.tickUpdate(elapsedTime);
             //dynamische Objekte wie die Aufzuege veraendern. Farbe und Position
-            if (logicWrapper.getCommandState().init_done) {
+            if (logic.getCommandState().init_done) {
                 changeDynamicObjects();
             }
         }
@@ -97,13 +97,13 @@ public class GuiController implements Initializable {
 
 
     public void changeDynamicObjects() {
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().getElevators().length; i++) {
-            elevators.get(i).setTranslateY(logicWrapper.getLogic().getGrid().getElevators()[i].getElevation() * -1);
-            passengerElevator.get(i).setText(logicWrapper.getLogic().getGrid().getElevators()[i].getPassengers().size() + "");
+        for (int i = 0; i < logic.getGrid().getElevators().length; i++) {
+            elevators.get(i).setTranslateY(logic.getGrid().getElevators()[i].getElevation() * -1);
+            passengerElevator.get(i).setText(logic.getGrid().getElevators()[i].getPassengers().size() + "");
         }
-        timerButton.setText(logicWrapper.getLogic().currentTime());
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().getFloors().length; i++) {
-            passengerFloor.get(i).setText(logicWrapper.getLogic().getGrid().getFloors()[i].getPassengers().size() + "");
+        timerButton.setText(logic.getSTime().currentTime());
+        for (int i = 0; i < logic.getGrid().getFloors().length; i++) {
+            passengerFloor.get(i).setText(logic.getGrid().getFloors()[i].getPassengers().size() + "");
         }
     }
 
@@ -124,12 +124,12 @@ public class GuiController implements Initializable {
     }
 
     public void changeDoorOpen(boolean open, int elevatorID) {
-        elevators.get(elevatorID).getChildren().get(ELEVATORDOOR_GROUP_NUMBER).setVisible(logicWrapper.getLogic().getGrid().getElevators()[elevatorID].isDoorOpen());
+        elevators.get(elevatorID).getChildren().get(ELEVATORDOOR_GROUP_NUMBER).setVisible(logic.getGrid().getElevators()[elevatorID].isDoorOpen());
     }
 
 
     private void changeElevatorError(int elevatorID) {
-        elevators.get(elevatorID).getChildren().get(ELEVATORERROR_GROUP_NUMBER).setVisible(logicWrapper.getLogic().getGrid().getElevators()[elevatorID].isEncounteredError());
+        elevators.get(elevatorID).getChildren().get(ELEVATORERROR_GROUP_NUMBER).setVisible(logic.getGrid().getElevators()[elevatorID].isEncounteredError());
     }
 
     public void displayError(String message, int elevatorID) {
@@ -153,8 +153,8 @@ public class GuiController implements Initializable {
 
     @FXML
     public void changeElevatorErrorTest() {
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
-            logicWrapper.getLogic().getGrid().elevators[i].setEncounteredError(false);
+        for (int i = 0; i < logic.getGrid().elevators.length; i++) {
+            logic.getGrid().elevators[i].setEncounteredError(false);
             hideError(i);
         }
 
@@ -163,8 +163,8 @@ public class GuiController implements Initializable {
     public void showFloorList() {
         passengerFrom.getItems().clear();
         passengerTo.getItems().clear();
-        passengerFrom.getItems().addAll(logicWrapper.getLogic().getGrid().floors);
-        passengerTo.getItems().addAll(logicWrapper.getLogic().getGrid().floors);
+        passengerFrom.getItems().addAll(logic.getGrid().floors);
+        passengerTo.getItems().addAll(logic.getGrid().floors);
     }
 
 
@@ -180,13 +180,13 @@ public class GuiController implements Initializable {
     }
 
     public void drawGrid() {
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().floors.length; i++) {
+        for (int i = 0; i < logic.getGrid().floors.length; i++) {
             addFloor(i);
         }
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
+        for (int i = 0; i < logic.getGrid().elevators.length; i++) {
             addStaticElevator(i);
         }
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().elevators.length; i++) {
+        for (int i = 0; i < logic.getGrid().elevators.length; i++) {
             addElevator(i);
         }
     }
@@ -203,8 +203,8 @@ public class GuiController implements Initializable {
         } else if (running && !run) {
             a.stop();
         }
-        if (this.logicWrapper.getLogic() != null)
-            this.logicWrapper.getLogic().setTimerRunning(run, clockSpeed.getSelectionModel().getSelectedItem());
+        if (this.logic.getGrid() != null)
+            this.logic.getSTime().setTimerRunning(run, clockSpeed.getSelectionModel().getSelectedItem());
         running = run;
         if (running)
             pauseButton.setText("pause");
@@ -214,18 +214,18 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void setSelectedSerialPort() {
-        if (!logicWrapper.isConnected) {
+        if (!logic.isConnected) {
             if (this.serialPane.getSelectionModel().getSelectedItem() != null) {
                 this.setLoopRunning(true);
-                this.logicWrapper.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
-                System.out.println("connected to: " + this.logicWrapper.getSerialPort().getDescriptivePortName());
-                this.logicWrapper.initConnection();
+                this.logic.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
+                System.out.println("connected to: " + this.logic.getSerialPort().getDescriptivePortName());
+                this.logic.initConnection();
                 connectButton.setText("disconnect");
             } else {
                 System.out.println("no serial port selected");
             }
         } else {
-            logicWrapper.closeConnection();
+            logic.closeConnection();
             connectButton.setText("connect");
         }
     }
@@ -291,8 +291,8 @@ public class GuiController implements Initializable {
 
 
         testMovable.getChildren().addAll(errorBorder, outer, inner);
-        int a = (logicWrapper.getLogic().getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR);
-        if (logicWrapper.getLogic().getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
+        int a = (logic.getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR);
+        if (logic.getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
             a++;
         if (a < BUTTONS_PER_COLUMN_IN_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
@@ -306,12 +306,12 @@ public class GuiController implements Initializable {
         Rectangle shaft = new Rectangle();
         shaft.setFill(Color.LIGHTGRAY);
 
-        shaft.setHeight((logicWrapper.getLogic().getGrid().floors.length) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR);
-        shaft.setHeight((logicWrapper.getLogic().getGrid().floors[logicWrapper.getLogic().getGrid().floors.length - 1].getHeight() + ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR));
+        shaft.setHeight((logic.getGrid().floors.length) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR);
+        shaft.setHeight((logic.getGrid().floors[logic.getGrid().floors.length - 1].getHeight() + ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR));
         shaft.setWidth(LINE_THICKNESS);
 
-        int a = (logicWrapper.getLogic().getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR);
-        if (logicWrapper.getLogic().getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
+        int a = (logic.getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR);
+        if (logic.getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
             a++;
         if (a < BUTTON_COLUMNS_UNDER_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
@@ -324,12 +324,12 @@ public class GuiController implements Initializable {
         passengerAmount.setText("0");
         shaft.setX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
                 + ELEVATOR_OFFSET + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
-        shaft.setY((logicWrapper.getLogic().getGrid().floors.length - 1) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR * -1);
+        shaft.setY((logic.getGrid().floors.length - 1) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR * -1);
 
         staticElevator.getChildren().addAll(passengerAmount, shaft);
         //create FloorButtons
         List<Rectangle> buttonsInElevator = new ArrayList<>();
-        for (int j = 0; j < logicWrapper.getLogic().getGrid().elevators[elevatorNum].getButtons().size(); j++) {
+        for (int j = 0; j < logic.getGrid().elevators[elevatorNum].getButtons().size(); j++) {
             Rectangle floorLCD_Border = new Rectangle();
             floorLCD_Border.setFill(Color.BLACK);
             floorLCD_Border.setHeight(BUTTON_WIDTH);
@@ -350,15 +350,15 @@ public class GuiController implements Initializable {
                 public void handle(MouseEvent mouseEvent) {
 
                     //System.out.println("REQUEST " + elevatorNum + " " + floornum);
-                    logicWrapper.getOut().add(logicWrapper.getLogic().grid.elevators[elevatorNum].getButtons().get(floornum).getOnClick());
+                    logic.getOut().add(logic.getGrid().elevators[elevatorNum].getButtons().get(floornum).getOnClick());
 
                     //FOR MANUAL TESTING (delete later)
-                    if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
-                        logicWrapper.in.add("MOVE_UP " + elevatorNum);
-                    } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
-                        logicWrapper.in.add("MOVE_DOWN " + elevatorNum);
-                    } else if (logicWrapper.getLogic().grid.elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
-                        logicWrapper.in.add("STOP " + elevatorNum);
+                    if (logic.getGrid().elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
+                        logic.in.add("MOVE_UP " + elevatorNum);
+                    } else if (logic.getGrid().elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
+                        logic.in.add("MOVE_DOWN " + elevatorNum);
+                    } else if (logic.getGrid().elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
+                        logic.in.add("STOP " + elevatorNum);
                     }
 
                 }
@@ -376,7 +376,7 @@ public class GuiController implements Initializable {
     private Group createFloor(int floornum) {
         Group allButtonsFloor = new Group();
         List<Rectangle> buttonsFloor = new ArrayList<>();
-        for (int i = 0; i < logicWrapper.getLogic().getGrid().floors[floornum].getButtons().size(); i++) {
+        for (int i = 0; i < logic.getGrid().floors[floornum].getButtons().size(); i++) {
             Rectangle outer = new Rectangle();
             outer.setFill(Color.BLACK);
             outer.setHeight(BUTTON_WIDTH);
@@ -386,21 +386,21 @@ public class GuiController implements Initializable {
             inner.setHeight(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             inner.setWidth(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             StackPane test = new StackPane();
-            test.setTranslateY((logicWrapper.getLogic().getGrid().floors[floornum].getHeight()) * -1 + ELEVATOR_HEIGHT - BUTTON_WIDTH / 2);
+            test.setTranslateY((logic.getGrid().floors[floornum].getHeight()) * -1 + ELEVATOR_HEIGHT - BUTTON_WIDTH / 2);
             test.setTranslateX(i * (BUTTON_WIDTH));
-            Text text = new Text("" + logicWrapper.getLogic().getGrid().getFloors()[floornum].getButtons().get(i).getSymbol());
+            Text text = new Text("" + logic.getGrid().getFloors()[floornum].getButtons().get(i).getSymbol());
             test.getChildren().addAll(outer, inner, text);
             int fI = i;
             test.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     //System.out.println("BUTTON_PUSH " + floornum + " " + fI);
-                    logicWrapper.getOut().add(logicWrapper.getLogic().grid.floors[floornum].getButtons().get(fI).getOnClick());
+                    logic.getOut().add(logic.getGrid().floors[floornum].getButtons().get(fI).getOnClick());
                 }
             });
             Label label = new Label("0");
             label.setTranslateX(-20);
-            label.setTranslateY((logicWrapper.getLogic().getGrid().floors[floornum].getHeight()) * -1 + ELEVATOR_HEIGHT - BUTTON_WIDTH / 2);
+            label.setTranslateY((logic.getGrid().floors[floornum].getHeight()) * -1 + ELEVATOR_HEIGHT - BUTTON_WIDTH / 2);
             passengerFloor.add(label);
             allButtonsFloor.getChildren().addAll(test, label);
             buttonsFloor.add(inner);
@@ -413,15 +413,15 @@ public class GuiController implements Initializable {
     private Rectangle createFloorLine(int floorNum) {
         Rectangle heightLine = new Rectangle();
         heightLine.setFill(Color.LIGHTGRAY);
-        int a = logicWrapper.getLogic().getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR;
-        if (logicWrapper.getLogic().getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
+        int a = logic.getGrid().floors.length / BUTTONS_PER_COLUMN_IN_ELEVATOR;
+        if (logic.getGrid().floors.length % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
             a++;
         if (a < BUTTON_COLUMNS_UNDER_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
-        int elevatorNum = logicWrapper.getLogic().getGrid().elevators.length;
+        int elevatorNum = logic.getGrid().elevators.length;
         heightLine.setWidth(((ELEVATOR_WIDTH * (double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * 1) + ELEVATOR_SPACE_BETWEEN) * elevatorNum - ELEVATOR_SPACE_BETWEEN);
         heightLine.setHeight(LINE_THICKNESS);
-        heightLine.setY((logicWrapper.getLogic().getGrid().floors[floorNum].getHeight()) * -1 + ELEVATOR_HEIGHT);
+        heightLine.setY((logic.getGrid().floors[floorNum].getHeight()) * -1 + ELEVATOR_HEIGHT);
         heightLine.setX(ELEVATOR_OFFSET);
         return heightLine;
     }
@@ -429,7 +429,7 @@ public class GuiController implements Initializable {
     @FXML
     protected void toggleTimerButton() {
         if (this.running)
-            logicWrapper.getLogic().setTimerRunning(!logicWrapper.getLogic().isTimer_isrunning(), clockSpeed.getSelectionModel().getSelectedItem());
+            logic.getSTime().setTimerRunning(!logic.getSTime().isTimer_isrunning(), clockSpeed.getSelectionModel().getSelectedItem());
     }
 
 
@@ -443,7 +443,7 @@ public class GuiController implements Initializable {
     @FXML
     protected void addPassenger() {
         if (running)
-            logicWrapper.getLogic().addPassenger(passengerFrom.getSelectionModel().getSelectedItem(),
+            logic.addPassenger(passengerFrom.getSelectionModel().getSelectedItem(),
                     passengerTo.getSelectionModel().getSelectedItem());
 
     }
@@ -451,7 +451,7 @@ public class GuiController implements Initializable {
     @FXML
     protected void setTime() {
         if (running)
-            logicWrapper.getLogic().setCurrentTime(clockHourField.getText(), clockMinuteField.getText());
+            logic.getSTime().setCurrentTime(clockHourField.getText(), clockMinuteField.getText());
 
     }
 
@@ -495,14 +495,13 @@ public class GuiController implements Initializable {
                 }
             }
         });
-        this.clockSpeed.getItems().addAll(logicWrapper.getClockSpeeds());
+        this.clockSpeed.getItems().addAll(logic.getClockSpeeds());
         this.clockSpeed.getSelectionModel().select(3);
         this.clockSpeed.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (running) {
-                    //logicWrapper.getLogic().changeTimerSpeed(clockSpeed.getSelectionModel().getSelectedItem());
-                    logicWrapper.getLogic().setTimerRunning(true, clockSpeed.getSelectionModel().getSelectedItem());
+                    logic.getSTime().setTimerRunning(true, clockSpeed.getSelectionModel().getSelectedItem());
                 }
             }
         });
@@ -530,11 +529,10 @@ public class GuiController implements Initializable {
     @FXML
     protected void testGrid() {
 
-        logicWrapper.getCommandState().parse("init_base 3 5 12 5 6");
-        logicWrapper.getCommandState().parse("init_done");
-        logicWrapper.getCommandState().parse("light ON e 1 0");
-        logicWrapper.getCommandState().parse("light ON e 3 2");
-        logicWrapper.getCommandState().parse("open 2");
+        logic.getCommandState().parse("init_base 3 5 12 5 6");
+        logic.getCommandState().parse("init_done");
+        logic.getCommandState().parse("light ON e 1 0");
+        logic.getCommandState().parse("open 2");
 
 
     }

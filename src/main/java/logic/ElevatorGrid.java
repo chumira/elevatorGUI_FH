@@ -12,6 +12,7 @@ public class ElevatorGrid {
     private static final double HEIGHT_DIFFERENCE_FOR_EQUAL = 5;
     public static final double INIT_ELEVATOR_HEIGHT = 0;
     public static final double HEIGHT_INCREASE_PER_FLOOR = 100;
+    public double bufferHeight = 5;
     public Floor[] floors;
     public Elevator[] elevators;
 
@@ -68,5 +69,13 @@ public class ElevatorGrid {
             }
         }
         return this.getFloors()[floorID];
+    }
+
+    public int getMaxAmountButtons() {
+        int max = 0;
+        for (Floor f : floors) {
+            max = Math.max(f.getButtons().size(), max);
+        }
+        return max;
     }
 }

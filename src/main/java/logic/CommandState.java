@@ -19,10 +19,10 @@ public class CommandState {
 
     List<Pair<Integer, Integer>> elevator_States = new LinkedList<>();
 
-    LogicWrapper parent;
+    Logic parent;
 
 
-    public CommandState(LogicWrapper parent) {
+    public CommandState(Logic parent) {
         this.parent = parent;
 
     }
@@ -48,13 +48,11 @@ public class CommandState {
                 }
                 case "INIT_DONE" -> {
                     init_phase = false;
-                    this.parent.setLogic(
-                            new Logic(init_amountFloors, init_amountElevators,
-                                    init_hoursPerDay, init_hourAtStart, init_minuteAtStart, parent)
-                    );
+                    this.parent.setGrid(new ElevatorGrid(init_amountFloors, init_amountElevators));
+                    this.parent.setSTime(new SimTime(init_hoursPerDay, init_hourAtStart, init_minuteAtStart, this.parent));
                     for (Pair<Integer, Integer> pair : this.elevator_States
                     ) {
-                        this.parent.getLogic().getGrid().adjustElevatorHeight(pair.getKey(), pair.getValue());
+                        this.parent.grid.adjustElevatorHeight(pair.getKey(), pair.getValue());
                     }
                     init_done = true;
                     this.parent.gui.setLoopRunning(true);
@@ -66,48 +64,48 @@ public class CommandState {
                 case "OPEN" -> {
                     if (init_done) {
                         int elevatorID = Integer.parseInt(div[1]);
-                        if (this.parent.logic.grid.elevators[elevatorID].getMovementDirection() != ElevatorMovement.STAND_STILL) {
+                        if (this.parent.grid.elevators[elevatorID].getMovementDirection() != ElevatorMovement.STAND_STILL) {
                             this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while moving.", elevatorID);
-                            this.parent.logic.grid.elevators[elevatorID].setEncounteredError(true);
+                            this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                         }
-                        this.parent.logic.grid.elevators[elevatorID].doorOpen = true;
+                        this.parent.grid.elevators[elevatorID].doorOpen = true;
                         this.parent.gui.changeDoorOpen(true, elevatorID);
 
                     }
                 }
                 case "CLOSE" -> {
                     if (init_done) {
-                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
+                        this.parent.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
                         this.parent.gui.changeDoorOpen(false, Integer.parseInt(div[1]));
                     }
                 }
                 case "MOVE_UP" -> {
                     if (init_done) {
                         int elevatorID = Integer.parseInt(div[1]);
-                        if (this.parent.logic.grid.elevators[elevatorID].isDoorOpen()) {
-                            this.parent.logic.grid.elevators[elevatorID].setEncounteredError(true);
+                        if (this.parent.grid.elevators[elevatorID].isDoorOpen()) {
+                            this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                             this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open.", elevatorID);
 
                         }
-                        this.parent.logic.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.UP);
+                        this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.UP);
                     }
                 }
                 case "MOVE_DOWN" -> {
 
                     if (init_done) {
                         int elevatorID = Integer.parseInt(div[1]);
-                        if (this.parent.logic.grid.elevators[elevatorID].isDoorOpen()) {
-                            this.parent.logic.grid.elevators[elevatorID].setEncounteredError(true);
+                        if (this.parent.grid.elevators[elevatorID].isDoorOpen()) {
+                            this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                             this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open.", elevatorID);
 
                         }
-                        this.parent.logic.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.DOWN);
+                        this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.DOWN);
 
                     }
                 }
                 case "STOP" -> {
                     if (init_done)
-                        this.parent.logic.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
+                        this.parent.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
                 }
                 case "LIGHT" -> {
                     //LIGHT ON|OFF F|E 0-N 0-M
@@ -129,7 +127,7 @@ public class CommandState {
                             //this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeElevatorButtonLight(on, feID, bID);
                         } else if (floorOrElevator.equals("F")) {
-                            this.parent.logic.grid.floors[feID].getButtons().get(bID).isGlowing = on;
+                            this.parent.grid.floors[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeFloorButtonLight(on, feID, bID);
                         } else {
                             //this.parent.gui.displayErrorMessage(" expected 'E' or 'F' but got '" + div[2] + "' for command " + div[0] + '\n');
