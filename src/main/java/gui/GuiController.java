@@ -25,7 +25,7 @@ public class GuiController implements Initializable {
     private ListView<SerialPort> serialPane;
 
     @FXML
-    public ListView<Floor> passengerFrom;
+    private ListView<Floor> passengerFrom;
     @FXML
     private ListView<Floor> passengerTo;
     @FXML
@@ -38,8 +38,14 @@ public class GuiController implements Initializable {
     private Button timerButton;
     @FXML
     private Button connectButton;
+
+    @FXML
+    private Button testErrorHide;
     @FXML
     private Button pauseButton;
+
+    @FXML
+    private Label time;
     @FXML
     private TextField clockHourField;
     @FXML
@@ -49,7 +55,7 @@ public class GuiController implements Initializable {
     /**
      * Logik
      */
-    private Logic logic = new Logic(this);
+    private final Logic logic = new Logic(this);
     boolean running = false;
     private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 2;
     private static final double ELEVATOR_HEIGHT = 80;
@@ -66,11 +72,11 @@ public class GuiController implements Initializable {
     private final int ELEVATORCASE_GROUP_NUMBER = 1;
     private final int ELEVATORDOOR_GROUP_NUMBER = 2;
     private Group gridAll = new Group();
-    private List<Group> elevators = new ArrayList<>();
-    private List<Group> floors = new ArrayList<>();
+    private final List<Group> elevators = new ArrayList<>();
+    private final List<Group> floors = new ArrayList<>();
 
-    private List<Label> passengerElevator = new ArrayList<>();
-    private List<Label> passengerFloor = new ArrayList<>();
+    private final List<Label> passengerElevator = new ArrayList<>();
+    private final List<Label> passengerFloor = new ArrayList<>();
     private final List<List<Rectangle>> floorbuttons = new ArrayList<>();
     private final List<List<Rectangle>> elevatorbuttons = new ArrayList<>();
 
@@ -106,7 +112,8 @@ public class GuiController implements Initializable {
             elevators.get(i).setTranslateY(logic.getGrid().getElevators()[i].getElevation() * -1);
             passengerElevator.get(i).setText(logic.getGrid().getElevators()[i].getPassengers().size() + "");
         }
-        timerButton.setText(logic.getSTime().currentTime());
+        time.setText(logic.getSTime().currentTime());
+
         for (int i = 0; i < logic.getGrid().getFloors().length; i++) {
             passengerFloor.get(i).setText(logic.getGrid().getFloors()[i].getPassengers().size() + "");
         }
@@ -128,7 +135,7 @@ public class GuiController implements Initializable {
         }
     }
 
-    public void changeDoorOpen(boolean open, int elevatorID) {
+    public void changeDoorOpen(int elevatorID) {
         elevators.get(elevatorID).getChildren().get(ELEVATORDOOR_GROUP_NUMBER).setVisible(logic.getGrid().getElevators()[elevatorID].isDoorOpen());
     }
 
@@ -222,9 +229,9 @@ public class GuiController implements Initializable {
             this.logic.getSTime().setTimerRunning(run, clockSpeed.getSelectionModel().getSelectedItem());
         running = run;
         if (running)
-            pauseButton.setText("pause");
+            pauseButton.setText("pausieren");
         else
-            pauseButton.setText("resume");
+            pauseButton.setText("fortsetzen");
     }
 
     /**
@@ -238,13 +245,13 @@ public class GuiController implements Initializable {
                 this.logic.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
                 System.out.println("connected to: " + this.logic.getSerialPort().getDescriptivePortName());
                 this.logic.initConnection();
-                connectButton.setText("disconnect");
+                connectButton.setText("trennen");
             } else {
                 System.out.println("no serial port selected");
             }
         } else {
             logic.closeConnection();
-            connectButton.setText("connect");
+            connectButton.setText("verbinden");
         }
     }
 
@@ -446,8 +453,14 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void toggleTimerButton() {
-        if (this.running)
+        if (logic.getCommandState().init_done) {
             logic.getSTime().setTimerRunning(!logic.getSTime().isTimer_isrunning(), clockSpeed.getSelectionModel().getSelectedItem());
+            if (logic.getSTime().isTimer_isrunning()) {
+                timerButton.setText("stopp");
+            } else {
+                timerButton.setText("start");
+            }
+        }
     }
 
 
@@ -460,7 +473,7 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void addPassenger() {
-        if (running)
+        if (logic.getCommandState().init_done && this.passengerFrom.getSelectionModel().getSelectedItem() != null && this.passengerTo.getSelectionModel().getSelectedItem() != null)
             logic.addPassenger(passengerFrom.getSelectionModel().getSelectedItem(),
                     passengerTo.getSelectionModel().getSelectedItem());
 
@@ -468,7 +481,7 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void setTime() {
-        if (running)
+        if (logic.getCommandState().init_done && !clockHourField.getText().equals("") && !clockMinuteField.getText().equals(""))
             logic.getSTime().setCurrentTime(clockHourField.getText(), clockMinuteField.getText());
 
     }
@@ -476,6 +489,8 @@ public class GuiController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        //TODO remove
+        testErrorHide.setDisable(true);
         //errorMessage Werte setzen
         errorMessage.setEditable(false);
         errorMessage.setStyle("-fx-text-fill: RED;");
@@ -523,11 +538,23 @@ public class GuiController implements Initializable {
         this.clockSpeed.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if (running) {
-                    logic.getSTime().setTimerRunning(true, clockSpeed.getSelectionModel().getSelectedItem());
+                if (logic.getCommandState().init_done) {
+                    logic.getSTime().setTimerRunning(logic.getSTime().isTimer_isrunning(), clockSpeed.getSelectionModel().getSelectedItem());
                 }
             }
         });
+        this.clockSpeed.setCellFactory(e -> new ListCell<Integer>() {
+            @Override
+            protected void updateItem(Integer i, boolean empty) {
+                super.updateItem(i, empty);
+                if (empty || i == null) {
+                    setText("");
+                } else {
+                    setText(i + " ms");
+                }
+            }
+        });
+
         //Nur Zahlen sollen moeglich sein im clockHourField
         clockHourField.textProperty().addListener(new ChangeListener<String>() {
             @Override

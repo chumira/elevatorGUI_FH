@@ -7,26 +7,53 @@
 <BorderPane prefHeight="517.0" prefWidth="753.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GuiController">
     <bottom>
-        <HBox prefHeight="78.0" prefWidth="753.0" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+              prefHeight="78.0" prefWidth="753.0">
             <children>
-                <Button mnemonicParsing="false" onAction="#addPassenger" text="Fahrgast"/>
-                <ListView fx:id="passengerFrom" prefHeight="78.0" prefWidth="62.0"/>
-                <ListView fx:id="passengerTo" prefHeight="78.0" prefWidth="67.0"/>
-                <Button fx:id="timerButton" mnemonicParsing="false" onAction="#toggleTimerButton" text="Uhrzeit"/>
-                <HBox prefHeight="78.0" prefWidth="509.0">
+                <Button alignment="CENTER" minWidth="70.0" mnemonicParsing="false" onAction="#addPassenger"
+                        text="Fahrgast" textAlignment="CENTER"/>
+                <ListView fx:id="passengerFrom" minWidth="-Infinity" prefHeight="78.0" prefWidth="50.0"/>
+                <ListView fx:id="passengerTo" minWidth="-Infinity" prefHeight="100.0" prefWidth="50.0"/>
+                <HBox alignment="CENTER" prefHeight="78.0" prefWidth="509.0">
                     <children>
-                        <ListView fx:id="clockSpeed" prefHeight="78.0" prefWidth="155.0"/>
-                        <TextField fx:id="clockHourField" prefHeight="25.0" prefWidth="31.0"/>
-                        <Label text=":">
+                        <Label fx:id="time" alignment="CENTER" minWidth="-Infinity" prefHeight="29.0" prefWidth="80.0"
+                               text="XX:XX">
                             <font>
-                                <Font name="System Bold" size="14.0"/>
+                                <Font size="20.0"/>
                             </font>
                         </Label>
-                        <TextField fx:id="clockMinuteField" prefHeight="25.0" prefWidth="33.0"/>
-                        <Button mnemonicParsing="false" onAction="#setTime" text="setTime"/>
-                        <TextArea fx:id="errorMessage" prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
+                        <ListView fx:id="clockSpeed" prefHeight="78.0" prefWidth="73.0"/>
+                        <VBox>
+                            <children>
+                                <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0"
+                                      prefWidth="177.0">
+                                    <children>
+                                        <TextField fx:id="clockHourField" minWidth="-Infinity" prefHeight="25.0"
+                                                   prefWidth="30.0"/>
+                                        <Label text=":">
+                                            <font>
+                                                <Font name="System Bold" size="14.0"/>
+                                            </font>
+                                        </Label>
+                                        <TextField fx:id="clockMinuteField" minWidth="-Infinity" prefHeight="25.0"
+                                                   prefWidth="30.0"/>
+                                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#setTime"
+                                                text="setzen"/>
+                                    </children>
+                                </HBox>
+                                <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+                                    <children>
+                                        <Button fx:id="timerButton" alignment="CENTER" mnemonicParsing="false"
+                                                onAction="#toggleTimerButton" prefHeight="27.0" prefWidth="49.0"
+                                                text="stopp"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
                     </children>
                 </HBox>
+                <TextArea fx:id="errorMessage" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                          prefHeight="50.0" wrapText="true"/>
             </children>
         </HBox>
     </bottom>
@@ -34,12 +61,13 @@
         <HBox alignment="CENTER_LEFT" prefHeight="59.0" prefWidth="753.0" BorderPane.alignment="CENTER">
             <children>
                 <Button fx:id="connectButton" alignment="CENTER" mnemonicParsing="false"
-                        onAction="#setSelectedSerialPort" prefHeight="25.0" prefWidth="78.0" text="connect"/>
+                        onAction="#setSelectedSerialPort" prefHeight="25.0" prefWidth="78.0" text="verbinden"/>
                 <ListView fx:id="serialPane" prefHeight="59.0" prefWidth="300.0"/>
-                <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="reload"/>
-                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#toggleLoop" text="toggleLoop"/>
+                <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="neu laden"/>
+                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#toggleLoop" text="Pausieren"/>
                 <Button mnemonicParsing="false" onAction="#testGrid" text="testGrid"/>
-                <Button mnemonicParsing="false" onAction="#changeElevatorErrorTest" text="errorHide"/>
+                <Button fx:id="testErrorHide" mnemonicParsing="false" onAction="#changeElevatorErrorTest"
+                        text="errorHide"/>
             </children>
         </HBox>
     </top>

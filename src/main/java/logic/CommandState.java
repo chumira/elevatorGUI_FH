@@ -24,7 +24,6 @@ public class CommandState {
 
     public CommandState(Logic parent) {
         this.parent = parent;
-
     }
 
     public void parse(String a) {
@@ -50,6 +49,7 @@ public class CommandState {
                     init_phase = false;
                     this.parent.setGrid(new ElevatorGrid(init_amountFloors, init_amountElevators));
                     this.parent.setSTime(new SimTime(init_hoursPerDay, init_hourAtStart, init_minuteAtStart, this.parent));
+                    this.parent.gui.hideErrorMessage();
                     for (Pair<Integer, Integer> pair : this.elevator_States
                     ) {
                         this.parent.grid.adjustElevatorHeight(pair.getKey(), pair.getValue());
@@ -69,14 +69,14 @@ public class CommandState {
                             this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                         }
                         this.parent.grid.elevators[elevatorID].doorOpen = true;
-                        this.parent.gui.changeDoorOpen(true, elevatorID);
+                        this.parent.gui.changeDoorOpen(elevatorID);
 
                     }
                 }
                 case "CLOSE" -> {
                     if (init_done) {
                         this.parent.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
-                        this.parent.gui.changeDoorOpen(false, Integer.parseInt(div[1]));
+                        this.parent.gui.changeDoorOpen(Integer.parseInt(div[1]));
                     }
                 }
                 case "MOVE_UP" -> {
@@ -130,7 +130,6 @@ public class CommandState {
                             this.parent.grid.floors[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeFloorButtonLight(on, feID, bID);
                         } else {
-                            //this.parent.gui.displayErrorMessage(" expected 'E' or 'F' but got '" + div[2] + "' for command " + div[0] + '\n');
                             throw new IllegalArgumentException("expected 'E' or 'F' but got '" + div[2] + "'");
                         }
                     }

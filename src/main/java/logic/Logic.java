@@ -196,7 +196,7 @@ public class Logic {
 
     /**
      * Klasse fuer das event-based reading fuer das Event: A delimited string-based message has been received
-     * siehe https://fazecast.github.io/jSerialComm/
+     * siehe <a href="https://fazecast.github.io/jSerialComm">...</a>
      */
     private static final class MessageListener implements SerialPortMessageListener {
         Logic logic;

@@ -12,8 +12,8 @@ public class SimTime {
     Timer timer;
     int hoursPerDay;
     int minutesPerHour;
-    int currentHour = 0;
-    int currentMinute = 0;
+    int currentHour;
+    int currentMinute;
     int currentSpeed = 1000;
     private boolean timer_isrunning = false;
     private Logic parent;
@@ -44,7 +44,7 @@ public class SimTime {
                 timer_isrunning = true;
                 currentSpeed = newSpeed;
                 timer = new Timer("uhrzeit");
-                scheduleTimer(currentSpeed);
+                scheduleTimer();
             } else
                 //change timerSpeed
                 if (currentSpeed != newSpeed) {
@@ -52,17 +52,15 @@ public class SimTime {
                     if (timer_isrunning) {
                         timer.cancel();
                         timer = new Timer("uhrzeit");
-                        scheduleTimer(currentSpeed);
+                        scheduleTimer();
                     }
                 }
     }
 
     /**
      * erstellt einen TimerThread welcher eine Minute pro Ausfuehrung hochzaehlt
-     *
-     * @param newSpeed die Zeitabstaende zwischen den Aufrufen
      */
-    public void scheduleTimer(int newSpeed) {
+    public void scheduleTimer() {
         this.timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
