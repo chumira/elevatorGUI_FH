@@ -18,9 +18,6 @@ import java.util.Queue;
 public class Logic {
 
     ElevatorGrid grid;
-
-    SerialConnection sCon;
-
     SerialPort serialPort;
     Thread rt;
     byte[] buffer = new byte[256];
