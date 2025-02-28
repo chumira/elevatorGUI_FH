@@ -81,8 +81,7 @@ public class Logic {
                             , e.getId());
                 }
                 if (!e.encounteredError) {
-                    e.setSpeed(elapsedTime * this.gui.ELEVATOR_SPEED);
-                    e.updateElevation();
+                    e.updateElevation(elapsedTime * this.grid.ELEVATOR_SPEED);
                 }
             }
             for (Elevator e : this.getGrid().getElevators()
@@ -91,7 +90,7 @@ public class Logic {
 
                     for (Floor f : this.grid.getFloors()
                     ) {
-                        if (!f.equals(e.mostRecentFloor) && Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.gui.ELEVATOR_SPEED)) {
+                        if (!f.equals(e.mostRecentFloor) && Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.grid.ELEVATOR_SPEED)) {
                             out.add("ARRIVE " + e.getId() + " " + f.getId() + "\n");
                             e.mostRecentFloor = f;
                         }

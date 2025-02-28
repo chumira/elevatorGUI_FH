@@ -15,7 +15,6 @@ public class Elevator {
     boolean doorOpen;
     ElevatorMovement movementDirection;
     double elevation = 0;
-    double speed = 0;
     boolean encounteredError = false;
     Floor mostRecentFloor;
 
@@ -27,15 +26,15 @@ public class Elevator {
     }
 
 
-    public void updateElevation() {
+    public void updateElevation(double amount) {
         switch (this.movementDirection) {
             case STAND_STILL:
                 break;
             case UP:
-                this.elevation += this.speed;
+                this.elevation += amount;
                 break;
             case DOWN:
-                this.elevation -= this.speed;
+                this.elevation -= amount;
                 break;
             default:
                 throw new IllegalArgumentException();

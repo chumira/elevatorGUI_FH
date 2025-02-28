@@ -61,8 +61,6 @@ public class GuiController implements Initializable {
     private static final int BUTTON_COLUMNS_UNDER_ELEVATOR = 2;
     private static final double BUTTON_WIDTH = ELEVATOR_WIDTH / BUTTON_COLUMNS_UNDER_ELEVATOR;
     private final double ELEVATOR_SPACE_BETWEEN = 10;
-    public final int ELEVATOR_SPEED = 20;
-
     private final int ELEVATORERROR_GROUP_NUMBER = 0;
 
     private final int ELEVATORCASE_GROUP_NUMBER = 1;
