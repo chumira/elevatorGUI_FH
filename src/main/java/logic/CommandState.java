@@ -1,6 +1,8 @@
 package logic;
 
 import javafx.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,11 +18,10 @@ public class CommandState {
     int init_hoursPerDay;
     int init_hourAtStart;
     int init_minuteAtStart;
-
     List<Pair<Integer, Integer>> elevator_States = new LinkedList<>();
-
     Logic parent;
 
+    private static final Logger logger = LogManager.getLogger("commands");
 
     public CommandState(Logic parent) {
         this.parent = parent;
@@ -40,26 +41,31 @@ public class CommandState {
                     init_hoursPerDay = Integer.parseInt(div[3]);
                     init_hourAtStart = Integer.parseInt(div[4]);
                     init_minuteAtStart = Integer.parseInt(div[5]);
+                    //TODO hide/remove old stuff
                 }
                 case "INIT_STATE" -> {
                     if (init_phase)
                         elevator_States.add(new Pair<>(Integer.parseInt(div[1]), Integer.parseInt(div[2])));
+                    else throw new IllegalStateException();
                 }
                 case "INIT_DONE" -> {
-                    init_phase = false;
-                    this.parent.setGrid(new ElevatorGrid(init_amountFloors, init_amountElevators));
-                    this.parent.setSTime(new SimTime(init_hoursPerDay, init_hourAtStart, init_minuteAtStart, this.parent));
-                    this.parent.gui.hideErrorMessage();
-                    for (Pair<Integer, Integer> pair : this.elevator_States
-                    ) {
-                        this.parent.grid.adjustElevatorHeight(pair.getKey(), pair.getValue());
-                    }
-                    init_done = true;
-                    this.parent.gui.setLoopRunning(true);
-                    this.parent.gui.clearGrid();
-                    this.parent.gui.drawGrid();
-                    this.parent.gui.showFloorList();
-                    this.elevator_States.clear();
+                    if (init_phase) {
+                        init_phase = false;
+                        this.parent.setGrid(new ElevatorGrid(init_amountFloors, init_amountElevators));
+                        this.parent.setSTime(new SimTime(init_hoursPerDay, init_hourAtStart, init_minuteAtStart, this.parent));
+                        this.parent.gui.hideErrorMessage();
+                        for (Pair<Integer, Integer> pair : this.elevator_States
+                        ) {
+                            this.parent.grid.adjustElevatorHeight(pair.getKey(), pair.getValue());
+                        }
+                        init_done = true;
+                        this.parent.gui.setLoopRunning(true);
+                        this.parent.gui.clearGrid();
+                        this.parent.gui.drawGrid();
+                        this.parent.gui.showFloorList();
+                        this.elevator_States.clear();
+                    } else throw new IllegalStateException("in init_phase");
+
                 }
                 case "OPEN" -> {
                     if (init_done) {
@@ -71,13 +77,13 @@ public class CommandState {
                         this.parent.grid.elevators[elevatorID].doorOpen = true;
                         this.parent.gui.changeDoorOpen(elevatorID);
 
-                    }
+                    } else throw new IllegalStateException("initialized");
                 }
                 case "CLOSE" -> {
                     if (init_done) {
                         this.parent.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
                         this.parent.gui.changeDoorOpen(Integer.parseInt(div[1]));
-                    }
+                    } else throw new IllegalStateException("initialized");
                 }
                 case "MOVE_UP" -> {
                     if (init_done) {
@@ -88,7 +94,9 @@ public class CommandState {
 
                         }
                         this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.UP);
-                    }
+                    } else
+                        throw new IllegalStateException("initialized");
+
                 }
                 case "MOVE_DOWN" -> {
 
@@ -101,11 +109,14 @@ public class CommandState {
                         }
                         this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.DOWN);
 
-                    }
+                    } else
+                        throw new IllegalStateException("initialized");
+
                 }
                 case "STOP" -> {
                     if (init_done)
                         this.parent.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
+                    else throw new IllegalStateException("initialized");
                 }
                 case "LIGHT" -> {
                     //LIGHT ON|OFF F|E 0-N 0-M
@@ -132,14 +143,15 @@ public class CommandState {
                         } else {
                             throw new IllegalArgumentException("expected 'E' or 'F' but got '" + div[2] + "'");
                         }
-                    }
+                    } else
+                        throw new IllegalStateException("initialized");
+
                 }
                 case "PRINT" -> {
                     System.out.print("-->");
                     for (int i = 1; i < div.length; i++) {
                         System.out.print(div[i]);
                     }
-                    System.out.println();
                 }
                 default -> {
 
@@ -148,10 +160,15 @@ public class CommandState {
             }
         } catch (UnsupportedOperationException e) {
             this.parent.gui.displayErrorMessage(div[0] + " is not a valid command." + '\n');
-            System.err.println(e.getMessage());
+            logger.error(div[0] + " is not a valid command.\n");
         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
             this.parent.gui.displayErrorMessage(div[0] + "->" + e.getMessage() + '\n');
-            System.err.println(e.getMessage());
+            logger.error(div[0] + ": " + e.getMessage() + '\n');
+        } catch (IllegalStateException e) {
+            if (e.getMessage().equals("false")) {
+                this.parent.gui.displayErrorMessage(div[0] + " but was not " + e.getMessage() + '\n');
+                logger.error(div[0] + " but was not " + e.getMessage() + '\n');
+            }
         }
     }
 

@@ -5,9 +5,8 @@ module elevator.elevatorgui {
     requires org.controlsfx.controls;
     requires com.fazecast.jSerialComm;
     requires lombok;
-    requires JavaSerial;
-    requires commons.io;
-
+    requires org.apache.logging.log4j;
+    requires org.apache.logging.log4j.core;
     opens gui to javafx.fxml;
     exports gui;
 }

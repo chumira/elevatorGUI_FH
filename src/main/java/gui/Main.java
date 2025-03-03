@@ -1,6 +1,5 @@
 package gui;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -22,7 +21,6 @@ public class Main extends Application {
 
         stage.setOnCloseRequest(e -> {
             controller.onClose();
-            javafx.application.Platform.exit();
         });
     }
 

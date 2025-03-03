@@ -7,6 +7,8 @@ import com.fazecast.jSerialComm.SerialPortMessageListener;
 import gui.GuiController;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 import java.util.LinkedList;
@@ -19,7 +21,7 @@ public class Logic {
 
     ElevatorGrid grid;
     SerialPort serialPort;
-    Thread rt;
+    private static final Logger logger = LogManager.getLogger("commands");
     byte[] buffer = new byte[256];
     Queue<String> out = new LinkedList<>();
 
@@ -50,7 +52,7 @@ public class Logic {
         if (serialPort != null && serialPort.isOpen() && this.in.size() > 0) {
             for (int i = 0; i < this.in.size(); i++) {
                 String a = this.in.remove();
-                System.out.println("-->parsing now: " + a);
+                logger.info("--> " + a + '\n');
                 this.commandState.parse(a);
             }
         }
@@ -59,7 +61,7 @@ public class Logic {
         if (serialPort != null && serialPort.isOpen() && this.out.size() > 0) {
             for (int i = 0; i < this.out.size(); i++) {
                 String a = this.out.remove();
-                System.out.println("-->transmitting now: " + a);
+                logger.info("<-- " + a);
                 sendCommand(a);
             }
         }
@@ -175,6 +177,7 @@ public class Logic {
     public void closeConnection() {
         if (serialPort != null) {
             serialPort.closePort();
+            serialPort = null;
             isConnected = false;
         }
     }
@@ -231,5 +234,19 @@ public class Logic {
             //eingegangene Nachricht speichern (ohne '\n')
             logic.in.add(sb.delete(sb.length() - 1, sb.length()).toString());
         }
+    }
+
+    public void closeThreads() {
+        LogManager.shutdown();
+        if (sTime != null)
+            sTime.timer.cancel();
+    }
+
+    public void logWarn(String message) {
+        logger.error(message + '\n');
+    }
+
+    public void logInfo(String message) {
+        logger.info(message + '\n');
     }
 }

@@ -23,7 +23,6 @@ import java.util.*;
 public class GuiController implements Initializable {
     @FXML
     private ListView<SerialPort> serialPane;
-
     @FXML
     private ListView<Floor> passengerFrom;
     @FXML
@@ -243,14 +242,15 @@ public class GuiController implements Initializable {
             if (this.serialPane.getSelectionModel().getSelectedItem() != null) {
                 this.setLoopRunning(true);
                 this.logic.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
-                System.out.println("connected to: " + this.logic.getSerialPort().getDescriptivePortName());
+                logic.logInfo("connected to: " + this.logic.getSerialPort().getDescriptivePortName());
                 serialPane.setMouseTransparent(true);
                 this.logic.initConnection();
                 connectButton.setText("trennen");
             } else {
-                System.out.println("no serial port selected");
+                this.logic.logWarn("no serial port chosen");
             }
         } else {
+            logic.logInfo("closed connection with: " + this.logic.getSerialPort().getDescriptivePortName());
             logic.closeConnection();
             serialPane.setMouseTransparent(false);
             connectButton.setText("verbinden");
@@ -381,11 +381,11 @@ public class GuiController implements Initializable {
 
                     //FOR MANUAL TESTING (delete later)
                     if (logic.getGrid().elevators[elevatorNum].getMovementDirection() == ElevatorMovement.STAND_STILL) {
-                        logic.in.add("MOVE_UP " + elevatorNum);
+                        //logic.in.add("MOVE_UP " + elevatorNum);
                     } else if (logic.getGrid().elevators[elevatorNum].getMovementDirection() == ElevatorMovement.UP) {
-                        logic.in.add("MOVE_DOWN " + elevatorNum);
+                        //logic.in.add("MOVE_DOWN " + elevatorNum);
                     } else if (logic.getGrid().elevators[elevatorNum].getMovementDirection() == ElevatorMovement.DOWN) {
-                        logic.in.add("STOP " + elevatorNum);
+                        //logic.in.add("STOP " + elevatorNum);
                     }
 
                 }
@@ -490,6 +490,7 @@ public class GuiController implements Initializable {
 
     protected void onClose() {
         this.logic.closeConnection();
+        this.logic.closeThreads();
     }
 
     @Override
