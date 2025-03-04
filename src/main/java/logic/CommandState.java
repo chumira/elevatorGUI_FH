@@ -10,15 +10,17 @@ import java.util.List;
 public class CommandState {
 
     private boolean init_phase = false;
-
     public boolean init_done = false;
     int init_amountFloors;
     int init_amountElevators;
-
     int init_hoursPerDay;
     int init_hourAtStart;
     int init_minuteAtStart;
     List<Pair<Integer, Integer>> elevator_States = new LinkedList<>();
+
+    boolean mode_UpDown = false;
+    boolean mode_Priority = false;
+    boolean mode_EmergencyHalt = false;
     Logic parent;
 
     private static final Logger logger = LogManager.getLogger("commands");
@@ -48,10 +50,28 @@ public class CommandState {
                         elevator_States.add(new Pair<>(Integer.parseInt(div[1]), Integer.parseInt(div[2])));
                     else throw new IllegalStateException();
                 }
+                case "MODE" -> {
+                    if (init_phase) {
+                        switch (div[1]) {
+                            case "PRIORITY" -> {
+                                mode_Priority = true;
+                            }
+                            case "EMERGENCY" -> {
+                                mode_EmergencyHalt = true;
+                            }
+                            case "UPDOWN" -> {
+                                mode_UpDown = true;
+                            }
+                            default ->
+                                    throw new IllegalArgumentException("expected 'PRIORITY','UPDOWN' or 'EMERGENCY' but got '" + div[1] + "'");
+                        }
+
+                    } else throw new IllegalStateException("not in init_phase");
+                }
                 case "INIT_DONE" -> {
                     if (init_phase) {
                         init_phase = false;
-                        this.parent.setGrid(new ElevatorGrid(init_amountFloors, init_amountElevators));
+                        this.parent.setGrid(new ElevatorGrid(init_amountFloors, init_amountElevators, mode_Priority, mode_EmergencyHalt, mode_UpDown));
                         this.parent.setSTime(new SimTime(init_hoursPerDay, init_hourAtStart, init_minuteAtStart, this.parent));
                         this.parent.gui.hideErrorMessage();
                         for (Pair<Integer, Integer> pair : this.elevator_States
@@ -64,7 +84,7 @@ public class CommandState {
                         this.parent.gui.drawGrid();
                         this.parent.gui.showFloorList();
                         this.elevator_States.clear();
-                    } else throw new IllegalStateException("in init_phase");
+                    } else throw new IllegalStateException("not in init_phase");
 
                 }
                 case "OPEN" -> {
@@ -77,13 +97,13 @@ public class CommandState {
                         this.parent.grid.elevators[elevatorID].doorOpen = true;
                         this.parent.gui.changeDoorOpen(elevatorID);
 
-                    } else throw new IllegalStateException("initialized");
+                    } else throw new IllegalStateException("not initialized");
                 }
                 case "CLOSE" -> {
                     if (init_done) {
                         this.parent.grid.elevators[Integer.parseInt(div[1])].doorOpen = false;
                         this.parent.gui.changeDoorOpen(Integer.parseInt(div[1]));
-                    } else throw new IllegalStateException("initialized");
+                    } else throw new IllegalStateException("not initialized");
                 }
                 case "MOVE_UP" -> {
                     if (init_done) {
@@ -95,7 +115,7 @@ public class CommandState {
                         }
                         this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.UP);
                     } else
-                        throw new IllegalStateException("initialized");
+                        throw new IllegalStateException("not initialized");
 
                 }
                 case "MOVE_DOWN" -> {
@@ -110,13 +130,13 @@ public class CommandState {
                         this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.DOWN);
 
                     } else
-                        throw new IllegalStateException("initialized");
+                        throw new IllegalStateException("not initialized");
 
                 }
                 case "STOP" -> {
                     if (init_done)
                         this.parent.grid.elevators[Integer.parseInt(div[1])].setMovementDirection(ElevatorMovement.STAND_STILL);
-                    else throw new IllegalStateException("initialized");
+                    else throw new IllegalStateException("not initialized");
                 }
                 case "LIGHT" -> {
                     //LIGHT ON|OFF F|E 0-N 0-M
@@ -144,7 +164,7 @@ public class CommandState {
                             throw new IllegalArgumentException("expected 'E' or 'F' but got '" + div[2] + "'");
                         }
                     } else
-                        throw new IllegalStateException("initialized");
+                        throw new IllegalStateException("not initialized");
 
                 }
                 case "PRINT" -> {
@@ -166,8 +186,8 @@ public class CommandState {
             logger.error(div[0] + ": " + e.getMessage() + '\n');
         } catch (IllegalStateException e) {
             if (e.getMessage().equals("false")) {
-                this.parent.gui.displayErrorMessage(div[0] + " but was not " + e.getMessage() + '\n');
-                logger.error(div[0] + " but was not " + e.getMessage() + '\n');
+                this.parent.gui.displayErrorMessage(div[0] + " but was " + e.getMessage() + '\n');
+                logger.error(div[0] + " but was " + e.getMessage() + '\n');
             }
         }
     }

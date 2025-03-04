@@ -18,6 +18,10 @@ public class ElevatorGrid {
     public Elevator[] elevators;
 
     ElevatorGrid(int amountElevators, int amountFloors) {
+        this(amountElevators, amountFloors, false, false, false);
+    }
+
+    ElevatorGrid(int amountElevators, int amountFloors, boolean priority, boolean emergency, boolean updown) {
         floors = new Floor[amountFloors];
         elevators = new Elevator[amountElevators];
         for (int i = 0; i < amountElevators; i++) {
@@ -33,11 +37,18 @@ public class ElevatorGrid {
                 elevators[i].getButtons().add(new LCDButton("" + j, "REQUEST " + elevators[i].getId() + " " + floors[j].getId() + "\n"));
             }
         }
-        for (int i = 0; i < amountFloors; i++) {
-            floors[i].getButtons().add(new LCDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n"));
+        if (!updown) {
+            for (int i = 0; i < amountFloors; i++) {
+                floors[i].getButtons().add(new LCDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n"));
+            }
+        } else {
+            for (int i = 0; i < amountFloors; i++) {
+                floors[i].getButtons().add(new LCDButton("↑", "BUTTON_UP " + floors[i].getId() + "\n"));
+                floors[i].getButtons().add(new LCDButton("↓", "BUTTON_DOWN " + floors[i].getId() + "\n"));
+
+            }
         }
-        //for debug
-        //floors[0].getButtons().add(new LCDButton("ABC", ""));
+        //TODO priority, emergency buttons
     }
 
     /**
