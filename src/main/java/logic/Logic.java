@@ -177,6 +177,9 @@ public class Logic {
     public void closeConnection() {
         if (serialPort != null) {
             serialPort.closePort();
+            this.sTime.timer.cancel();
+            this.grid = null;
+            this.commandState.init_done = false;
             serialPort = null;
             isConnected = false;
         }

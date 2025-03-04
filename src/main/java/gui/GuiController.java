@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -56,13 +57,14 @@ public class GuiController implements Initializable {
      */
     private final Logic logic = new Logic(this);
     boolean running = false;
-    private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 2;
+
     private static final double ELEVATOR_HEIGHT = 80;
     private static final double ELEVATOR_WIDTH = 60;
     private static final double ELEVATOR_WALL_THICKNESS = 5;
     private static final double BUTTON_BORDER_THICKNESS = 2;
     private static final double LINE_THICKNESS = 2;
-    private static final double ELEVATOR_OFFSET = 100;
+    private static final double ELEVATOR_OFFSET = 20;
+    private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 2;
     private static final int BUTTON_COLUMNS_UNDER_ELEVATOR = 2;
     private static final double BUTTON_WIDTH = ELEVATOR_WIDTH / BUTTON_COLUMNS_UNDER_ELEVATOR;
     private final double ELEVATOR_SPACE_BETWEEN = 10;
@@ -252,6 +254,7 @@ public class GuiController implements Initializable {
         } else {
             logic.logInfo("closed connection with: " + this.logic.getSerialPort().getDescriptivePortName());
             logic.closeConnection();
+            clearGrid();
             serialPane.setMouseTransparent(false);
             connectButton.setText("verbinden");
         }
@@ -323,7 +326,7 @@ public class GuiController implements Initializable {
             a++;
         if (a < BUTTONS_PER_COLUMN_IN_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
-        testMovable.setTranslateX((ELEVATOR_WIDTH) * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + elevatorNum * ELEVATOR_SPACE_BETWEEN);
+        testMovable.setTranslateX((ELEVATOR_WIDTH) * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + this.logic.getGrid().getMaxAmountButtons() * BUTTON_WIDTH + elevatorNum * ELEVATOR_SPACE_BETWEEN);
         elevators.add(testMovable);
         return testMovable;
     }
@@ -344,13 +347,14 @@ public class GuiController implements Initializable {
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
 
         Label passengerAmount = new Label();
-        passengerAmount.setTranslateY(200);
+        passengerAmount.setLayoutY(ELEVATOR_HEIGHT * 1.1 + BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH);
+        passengerAmount.setStyle("-fx-font: 16 arial;");
         passengerElevator.add(passengerAmount);
         passengerAmount.setTranslateX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
-                + ELEVATOR_OFFSET + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
+                + ELEVATOR_OFFSET + this.logic.getGrid().getMaxAmountButtons() * BUTTON_WIDTH + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
         passengerAmount.setText("0");
         shaft.setX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
-                + ELEVATOR_OFFSET + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
+                + ELEVATOR_OFFSET + this.logic.getGrid().getMaxAmountButtons() * BUTTON_WIDTH + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
         shaft.setY((logic.getGrid().floors.length - 1) * ElevatorGrid.HEIGHT_INCREASE_PER_FLOOR * -1);
 
         staticElevator.getChildren().addAll(passengerAmount, shaft);
@@ -369,7 +373,7 @@ public class GuiController implements Initializable {
             test.setStyle("-fx-font: 16 arial;");
             StackPane test2 = new StackPane(floorLCD_Border, floorLCD, test);
             int columnLength = j / BUTTONS_PER_COLUMN_IN_ELEVATOR;
-            test2.setLayoutX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + BUTTON_WIDTH * columnLength) + elevatorNum * ELEVATOR_SPACE_BETWEEN);
+            test2.setLayoutX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum) + ELEVATOR_OFFSET + this.logic.getGrid().getMaxAmountButtons() * BUTTON_WIDTH + BUTTON_WIDTH * columnLength) + elevatorNum * ELEVATOR_SPACE_BETWEEN);
             test2.setLayoutY((ELEVATOR_HEIGHT * 1.1 + j % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
             int floornum = j;
             test2.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -394,8 +398,7 @@ public class GuiController implements Initializable {
             buttonsInElevator.add(floorLCD);
         }
         elevatorbuttons.add(buttonsInElevator);
-        //TODO more buttons
-        //if(logic.priority_mode)
+
         return staticElevator;
     }
 
@@ -427,6 +430,7 @@ public class GuiController implements Initializable {
             });
             Label label = new Label("0");
             label.setTranslateX(-20);
+            label.setStyle("-fx-font: 16 arial;");
             label.setTranslateY((logic.getGrid().floors[floornum].getHeight()) * -1 + ELEVATOR_HEIGHT - BUTTON_WIDTH / 2);
             passengerFloor.add(label);
             allButtonsFloor.getChildren().addAll(test, label);
@@ -449,7 +453,7 @@ public class GuiController implements Initializable {
         heightLine.setWidth(((ELEVATOR_WIDTH * (double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * 1) + ELEVATOR_SPACE_BETWEEN) * elevatorNum - ELEVATOR_SPACE_BETWEEN);
         heightLine.setHeight(LINE_THICKNESS);
         heightLine.setY((logic.getGrid().floors[floorNum].getHeight()) * -1 + ELEVATOR_HEIGHT);
-        heightLine.setX(ELEVATOR_OFFSET);
+        heightLine.setX(ELEVATOR_OFFSET + this.logic.getGrid().getMaxAmountButtons() * BUTTON_WIDTH);
         return heightLine;
     }
 
@@ -586,9 +590,11 @@ public class GuiController implements Initializable {
 
     @FXML
     protected void testGrid() {
-        logic.getCommandState().parse("init_base 3 5 12 5 6");
+        logic.getCommandState().parse("init_base 4 4 12 5 6");
+        logic.getCommandState().parse("mode updown");
         logic.getCommandState().parse("init_done");
         logic.getCommandState().parse("light ON e 1 0");
         logic.getCommandState().parse("open 2");
+
     }
 }
