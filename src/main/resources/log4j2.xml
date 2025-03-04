@@ -1,0 +1,37 @@
+<Configuration status="warn">
+    <Properties>
+        <!-- Log Layout Hours:Minutes:Seconds.Milliseconds (Padding) Message -->
+        <Property name="layout">%d{HH:mm:ss.SSS }%-6p%m</Property>
+    </Properties>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="${layout}"/>
+        </Console>
+        <RollingFile name="RollingFile" fileName="logs/ElevatorGUI-${date:yyyy-MM-dd-HH-mm-ss}.log"
+                     filePattern="logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log">
+            <PatternLayout pattern="${layout}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+
+
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="logs">
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+    </Appenders>
+    <Loggers>
+        <Logger name="commands" level="info" additivity="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Logger>
+        >
+        <Root level="error" additivity="false">
+            <AppenderRef ref="console"/>
+        </Root>
+    </Loggers>
+</Configuration>
