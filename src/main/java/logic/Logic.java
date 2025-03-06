@@ -19,15 +19,15 @@ import java.util.Queue;
 @Getter
 public class Logic {
 
-    ElevatorGrid grid;
+    public ElevatorGrid grid;
     SerialPort serialPort;
     private static final Logger logger = LogManager.getLogger("commands");
-    byte[] buffer = new byte[256];
+    private byte[] buffer = new byte[256];
     Queue<String> out = new LinkedList<>();
 
     public boolean isConnected = false;
     GuiController gui;
-    public Queue<String> in = new LinkedList<>();
+    Queue<String> in = new LinkedList<>();
 
     private List<Passenger> removeFromElevator = new LinkedList<>();
     private List<Passenger> removeFromFloor = new LinkedList<>();
@@ -123,6 +123,7 @@ public class Logic {
                                     this.out.add(this.grid.getElevators()[eID].getButtons().get(
                                             this.grid.getElevators()[eID].getPassengers().indexOf(p)
                                     ).onClick);
+                                    this.gui.showDestination(true, eID, p.destination.id);
                                 }
                             }
                         }
@@ -139,9 +140,10 @@ public class Logic {
                     ) {
                         Floor f = this.grid.getFloorClosestToElevator(eID);
                         if (p.getDestination().equals(f)) {
-                            if (this.grid.isElevatorinFloor(eID, f.id)) {
+                            if (this.grid.isElevatorinFloor(eID, p.destination.id)) {
                                 p.setActivity(Activity.HAS_ARRIVED);
                                 removeFromElevator.add(p);
+                                this.gui.showDestination(false, eID, f.id);
                             }
                         }
                     }
