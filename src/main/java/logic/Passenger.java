@@ -1,5 +1,6 @@
 package logic;
 
+import logic.types.Activity;
 import lombok.Getter;
 import lombok.Setter;
 

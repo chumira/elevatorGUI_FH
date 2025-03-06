@@ -351,7 +351,7 @@ public class GuiController implements Initializable {
         elevator.setTranslateX((ELEVATOR_WIDTH) * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
                 + ELEVATOR_OFFSET + this.logic.grid.getMaxAmountButtons() * BUTTON_WIDTH
                 + elevatorNum * ELEVATOR_SPACE_BETWEEN);
-        elevator.setTranslateX(calcSpaceBetweenElevators(elevatorNum) - ELEVATOR_WIDTH / 2);
+        elevator.setTranslateX(calcElevatorPos(elevatorNum) - ELEVATOR_WIDTH / 2);
         elevators.add(elevator);
         return elevator;
     }
@@ -378,9 +378,9 @@ public class GuiController implements Initializable {
         passengerAmount.setStyle("-fx-font: 16 arial;");
         passengerAmount.setText("0");
         passengerAmount.setAlignment(Pos.CENTER);
-        passengerAmount.setTranslateX(calcSpaceBetweenElevators(elevatorNum));
+        passengerAmount.setTranslateX(calcElevatorPos(elevatorNum));
         passengerElevator.add(passengerAmount);
-        shaft.setX(calcSpaceBetweenElevators(elevatorNum) - LINE_THICKNESS / 2);
+        shaft.setX(calcElevatorPos(elevatorNum) - LINE_THICKNESS / 2);
         shaft.setY(logic.grid.floors[logic.grid.floors.length - 1].getHeight() * -1);
         staticElevator.getChildren().addAll(passengerAmount, shaft);
         staticElevator.setViewOrder(11);
@@ -457,6 +457,9 @@ public class GuiController implements Initializable {
         return allButtonsFloor;
     }
 
+    /**
+     * erzeugt eine horizontal laufende Linie auf Hoehe der Etage
+     */
     private Rectangle createFloorLine(int floorNum) {
         Rectangle heightLine = new Rectangle();
         heightLine.setFill(Color.LIGHTGRAY);
@@ -474,6 +477,9 @@ public class GuiController implements Initializable {
         return heightLine;
     }
 
+    /**
+     * erzeugt kleine Kreise, welche die Ziele der Fahrgaeste anzeigen koennen.
+     */
     private Circle[][] createPassengerDestinations() {
         Circle[][] a = new Circle[this.logic.grid.elevators.length][this.logic.grid.floors.length];
         for (int i = 0; i < this.logic.grid.elevators.length; i++) {
@@ -482,7 +488,7 @@ public class GuiController implements Initializable {
                 a[i][j].setRadius(LINE_THICKNESS * 3);
                 a[i][j].setFill(Color.RED);
                 a[i][j].setCenterY(((logic.grid.floors[j].getHeight()) * -1 + ELEVATOR_HEIGHT));
-                a[i][j].setCenterX(calcSpaceBetweenElevators(i));
+                a[i][j].setCenterX(calcElevatorPos(i));
                 a[i][j].setVisible(false);
                 a[i][j].setViewOrder(10);
                 gridAll.getChildren().add(a[i][j]);
@@ -526,6 +532,9 @@ public class GuiController implements Initializable {
 
     }
 
+    /**
+     * alle noch laufenden Verbindungen und Threads schliessen
+     */
     protected void onClose() {
         this.logic.closeConnection();
         this.logic.closeThreads();
@@ -636,8 +645,12 @@ public class GuiController implements Initializable {
 
     }
 
-
-    private double calcSpaceBetweenElevators(int elevatorNum) {
+    /**
+     * ermittelt die X-Koordinate eines Aufzugs.
+     *
+     * @return X-Koordinate eines Aufzugs
+     */
+    private double calcElevatorPos(int elevatorNum) {
         double res;
 
         //Berechnung Anzahl benoetigter Spalten
@@ -649,12 +662,17 @@ public class GuiController implements Initializable {
         if (a < BUTTON_COLUMNS_UNDER_ELEVATOR)
             a = BUTTON_COLUMNS_UNDER_ELEVATOR;
 
-
+        //durch die Anzahl von Knoepfen kann es zu groesseren Abstaenden kommen
         res = ((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
                 + ELEVATOR_OFFSET + this.logic.grid.getMaxAmountButtons() * BUTTON_WIDTH + ELEVATOR_WIDTH / 2 + elevatorNum * ELEVATOR_SPACE_BETWEEN) - LINE_THICKNESS / 2);
         return res;
     }
 
+    /**
+     * setzt die X-Koordinate eines Knopfes unter dem Aufzug
+     *
+     * @param test2 die grafische Darstellung des Knopfes
+     */
     private void setPosForElevatorButtons(StackPane test2, int elevatorNum, int buttonNum) {
         //Berechnung Anzahl benoetigter Spalten
         int a = (logic.grid.elevators[0].getButtons().size() / BUTTONS_PER_COLUMN_IN_ELEVATOR);

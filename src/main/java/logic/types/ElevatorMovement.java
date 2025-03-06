@@ -1,4 +1,4 @@
-package logic;
+package logic.types;
 
 public enum ElevatorMovement {
     UP, DOWN, STAND_STILL

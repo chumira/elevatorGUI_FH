@@ -1,5 +1,6 @@
 package logic;
 
+import logic.types.ElevatorMovement;
 import lombok.Getter;
 import lombok.Setter;
 

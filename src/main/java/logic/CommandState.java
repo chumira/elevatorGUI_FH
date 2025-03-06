@@ -1,6 +1,7 @@
 package logic;
 
 import javafx.util.Pair;
+import logic.types.ElevatorMovement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

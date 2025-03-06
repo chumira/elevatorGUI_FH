@@ -1,6 +1,7 @@
 package logic;
 
 import javafx.util.Pair;
+import logic.types.ElevatorMovement;
 import lombok.Getter;
 import lombok.Setter;
 

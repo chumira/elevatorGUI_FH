@@ -5,6 +5,8 @@ import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.fazecast.jSerialComm.SerialPortMessageListener;
 import gui.GuiController;
+import logic.types.Activity;
+import logic.types.ElevatorMovement;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
@@ -112,7 +114,6 @@ public class Logic {
                 ) {
                     if (p.getActivity() == Activity.IS_WAITING) {
                         //TODO ggf. kapazitaet??
-                        //TODO Fahrgast drueckt Knopf zum ZielFloor
                         for (int eID = 0; eID < this.grid.getElevators().length; eID++) {
                             if (this.grid.isElevatorinFloor(eID, fID)) {
                                 if (p.getActivity() == Activity.IS_WAITING && this.grid.elevators[eID].doorOpen) {
