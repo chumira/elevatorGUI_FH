@@ -78,6 +78,7 @@ public class Logic {
                     this.gui.displayError(
                             "elevator " + e.getId() + " reached the lowest point but has not stopped."
                             , e.getId());
+                    logWarn("elevator " + e.getId() + " reached the highest point but has not stopped.");
                 } else
                     //Fehlerfall das der Aufzug ueber der obersten Ebene ist
                     if ((e.getElevation() - grid.getBufferHeight()) > grid.floors[grid.floors.length - 1].getHeight() && !e.encounteredError) {
@@ -87,6 +88,7 @@ public class Logic {
                         this.gui.displayError(
                                 "elevator " + e.getId() + " reached the highest point but has not stopped."
                                 , e.getId());
+                        logWarn("elevator " + e.getId() + " reached the highest point but has not stopped.");
                     }
                 if (!e.encounteredError) {
                     //hochfahren/herunterfahren/stillstehen
@@ -163,6 +165,7 @@ public class Logic {
         MessageListener listener = new MessageListener(this);
         serialPort.addDataListener(listener);
         isConnected = true;
+        logInfo("connected to: " + this.getSerialPort().getDescriptivePortName());
     }
 
 
@@ -183,8 +186,10 @@ public class Logic {
             this.sTime.timer.cancel();
             this.grid = null;
             this.commandState.init_done = false;
+            logInfo("closed connection with: " + this.getSerialPort().getDescriptivePortName());
             serialPort = null;
             isConnected = false;
+
         }
     }
 

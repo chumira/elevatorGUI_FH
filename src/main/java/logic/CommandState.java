@@ -93,6 +93,7 @@ public class CommandState {
                         int elevatorID = Integer.parseInt(div[1]);
                         if (this.parent.grid.elevators[elevatorID].getMovementDirection() != ElevatorMovement.STAND_STILL) {
                             this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while moving.", elevatorID);
+                            this.parent.logWarn("Elevator " + elevatorID + " opened Door while moving.");
                             this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                         }
                         this.parent.grid.elevators[elevatorID].doorOpen = true;
@@ -112,7 +113,7 @@ public class CommandState {
                         if (this.parent.grid.elevators[elevatorID].isDoorOpen()) {
                             this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                             this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open.", elevatorID);
-
+                            this.parent.logWarn("Elevator " + elevatorID + " started moving while door was open.");
                         }
                         this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.UP);
                     } else
@@ -126,6 +127,7 @@ public class CommandState {
                         if (this.parent.grid.elevators[elevatorID].isDoorOpen()) {
                             this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                             this.parent.gui.displayError("Elevator " + elevatorID + " started moving while door was open.", elevatorID);
+                            this.parent.logWarn("Elevator " + elevatorID + " started moving while door was open.");
 
                         }
                         this.parent.grid.elevators[elevatorID].setMovementDirection(ElevatorMovement.DOWN);
