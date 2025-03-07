@@ -78,7 +78,7 @@ public class Logic {
                     this.gui.displayError(
                             "elevator " + e.getId() + " reached the lowest point but has not stopped."
                             , e.getId());
-                    logWarn("elevator " + e.getId() + " reached the highest point but has not stopped.");
+                    logWarn("elevator " + e.getId() + " reached the lowest point but has not stopped.");
                 } else
                     //Fehlerfall das der Aufzug ueber der obersten Ebene ist
                     if ((e.getElevation() - grid.getBufferHeight()) > grid.floors[grid.floors.length - 1].getHeight() && !e.encounteredError) {
