@@ -183,7 +183,8 @@ public class Logic {
     public void closeConnection() {
         if (serialPort != null) {
             serialPort.closePort();
-            this.sTime.timer.cancel();
+            if (this.sTime != null && this.sTime.timer != null)
+                this.sTime.timer.cancel();
             this.grid = null;
             this.commandState.init_done = false;
             logInfo("closed connection with: " + this.getSerialPort().getDescriptivePortName());
