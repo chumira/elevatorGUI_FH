@@ -245,11 +245,13 @@ public class GuiController implements Initializable {
     protected void setSelectedSerialPort() {
         if (!logic.isConnected) {
             if (this.serialPane.getSelectionModel().getSelectedItem() != null) {
-                this.setLoopRunning(true);
                 this.logic.setSerialPort(this.serialPane.getSelectionModel().getSelectedItem());
-                serialPane.setMouseTransparent(true);
-                this.logic.initConnection();
-                connectButton.setText("trennen");
+                boolean open = this.logic.initConnection();
+                if (open) {
+                    this.setLoopRunning(true);
+                    serialPane.setMouseTransparent(true);
+                    connectButton.setText("trennen");
+                }
             } else {
                 this.logic.logWarn("no serial port chosen");
             }

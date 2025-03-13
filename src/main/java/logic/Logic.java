@@ -160,12 +160,17 @@ public class Logic {
      * baut eine Verbindung per serieller Schnittstelle auf und fuegt dieser einen Data-Listener hinzu, welcher
      * auf das Zeichen'\n' hoert
      */
-    public void initConnection() {
-        serialPort.openPort();
-        MessageListener listener = new MessageListener(this);
-        serialPort.addDataListener(listener);
-        isConnected = true;
-        logInfo("connected to: " + this.getSerialPort().getDescriptivePortName());
+    public boolean initConnection() {
+        boolean open = serialPort.openPort();
+        if (open) {
+            MessageListener listener = new MessageListener(this);
+            serialPort.addDataListener(listener);
+            isConnected = true;
+            logInfo("connected to: " + this.getSerialPort().getDescriptivePortName());
+        } else {
+            logWarn("couldn't open the serial port: " + serialPort.getDescriptivePortName());
+        }
+        return open;
     }
 
 

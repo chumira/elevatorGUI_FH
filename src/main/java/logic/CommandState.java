@@ -18,12 +18,10 @@ public class CommandState {
     int init_hourAtStart;
     int init_minuteAtStart;
     List<Pair<Integer, Integer>> elevator_States = new LinkedList<>();
-
     boolean mode_UpDown = false;
     boolean mode_Priority = false;
     boolean mode_EmergencyHalt = false;
     Logic parent;
-
     private static final Logger logger = LogManager.getLogger("commands");
 
     public CommandState(Logic parent) {
@@ -154,7 +152,6 @@ public class CommandState {
                         } else if (onOrOff.equals("OFF")) {
                             on = false;
                         } else {
-                            this.parent.gui.displayErrorMessage(" expected 'ON' or 'OFF' but got '" + div[1] + "' for command " + div[0] + '\n');
                             throw new IllegalArgumentException("expected '0N' or 'OFF' but got '" + div[1] + "'");
                         }
                         if (floorOrElevator.equals("E")) {
@@ -171,13 +168,14 @@ public class CommandState {
 
                 }
                 case "PRINT" -> {
+                    //TODO print wohin? gui und/oder log
                     System.out.print("-->");
                     for (int i = 1; i < div.length; i++) {
                         System.out.print(div[i]);
                     }
+                    System.out.println('\n');
                 }
                 default -> {
-
                     throw new UnsupportedOperationException();
                 }
             }
