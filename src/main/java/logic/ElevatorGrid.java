@@ -18,11 +18,11 @@ public class ElevatorGrid {
     public Floor[] floors;
     public Elevator[] elevators;
 
-    ElevatorGrid(int amountElevators, int amountFloors) {
-        this(amountElevators, amountFloors, false, false, false);
+    ElevatorGrid(int amountFloors, int amountElevators) {
+        this(amountFloors, amountElevators, false, false, false);
     }
 
-    ElevatorGrid(int amountElevators, int amountFloors, boolean priority, boolean emergency, boolean updown) {
+    ElevatorGrid(int amountFloors, int amountElevators, boolean priority, boolean emergency, boolean updown) {
         floors = new Floor[amountFloors];
         elevators = new Elevator[amountElevators];
         for (int i = 0; i < amountElevators; i++) {
