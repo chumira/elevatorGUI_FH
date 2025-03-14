@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LCDButton {
-    String id;
+    int id;
     String symbol;
     String onClick;
     boolean isGlowing = false;

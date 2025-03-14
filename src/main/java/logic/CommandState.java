@@ -180,15 +180,15 @@ public class CommandState {
                 }
             }
         } catch (UnsupportedOperationException e) {
-            this.parent.gui.displayErrorMessage(div[0] + " is not a valid command." + '\n');
-            logger.error(div[0] + " is not a valid command.\n");
+            this.parent.gui.displayErrorMessage("'" + div[0] + "' is not a valid command." + '\n');
+            logger.error("'" + div[0] + "' is not a valid command.\n");
         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
-            this.parent.gui.displayErrorMessage(div[0] + "->" + e.getMessage() + '\n');
-            logger.error(div[0] + ": " + e.getMessage() + '\n');
+            this.parent.gui.displayErrorMessage("'" + div[0] + "'->" + e.getMessage() + '\n');
+            logger.error("'" + div[0] + "': " + e.getMessage() + '\n');
         } catch (IllegalStateException e) {
             if (e.getMessage().equals("false")) {
-                this.parent.gui.displayErrorMessage(div[0] + " but was " + e.getMessage() + '\n');
-                logger.error(div[0] + " but was " + e.getMessage() + '\n');
+                this.parent.gui.displayErrorMessage("'" + div[0] + "' but was " + e.getMessage() + '\n');
+                logger.error("'" + div[0] + "' but was " + e.getMessage() + '\n');
             }
         }
     }

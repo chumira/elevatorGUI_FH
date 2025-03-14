@@ -123,9 +123,7 @@ public class Logic {
                                     this.grid.getElevators()[eID].getPassengers().add(p);
                                     p.setActivity(Activity.IN_ELEVATOR);
                                     //Knopf fuer Zieletage im Aufzug druecken
-                                    this.out.add(this.grid.getElevators()[eID].getButtons().get(
-                                            this.grid.getElevators()[eID].getPassengers().indexOf(p)
-                                    ).onClick);
+                                    this.out.add("REQUEST " + eID + " " + p.destination.id + '\n');
                                     this.gui.showDestination(true, eID, p.destination.id);
                                 }
                             }
@@ -212,7 +210,7 @@ public class Logic {
         Passenger newPassenger = new Passenger(this.grid.floors[origin.getId()], this.grid.floors[destination.getId()]);
         this.grid.floors[origin.getId()].getPassengers().add(newPassenger);
         //Fahrgast drueckt Knopf zum Aufzug rufen
-        this.out.add(this.grid.floors[origin.getId()].buttons.get(0).onClick);
+        this.out.add("BUTTON_PUSH " + origin.id + '\n');
     }
 
     /**
