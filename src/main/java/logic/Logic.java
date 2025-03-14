@@ -165,8 +165,10 @@ public class Logic {
         if (open) {
             MessageListener listener = new MessageListener(this);
             serialPort.addDataListener(listener);
+            serialPort.setBaudRate(115200);
             isConnected = true;
             logInfo("connected to: " + this.getSerialPort().getDescriptivePortName());
+            //printSerialPortSettings();
         } else {
             logWarn("couldn't open the serial port: " + serialPort.getDescriptivePortName());
         }
@@ -265,5 +267,15 @@ public class Logic {
 
     public void logInfo(String message) {
         logger.info(message + '\n');
+    }
+
+    public void printSerialPortSettings() {
+        System.out.println("baud: " + serialPort.getBaudRate());
+        System.out.println("buffersizeRead: " + serialPort.getDeviceReadBufferSize());
+        System.out.println("buffersizeWrite: " + serialPort.getDeviceWriteBufferSize());
+        System.out.println("stopbits: " + serialPort.getNumStopBits());
+        System.out.println("flowcontroll: " + serialPort.getFlowControlSettings());
+        System.out.println("databits: " + serialPort.getNumDataBits());
+        System.out.println("parity: " + serialPort.getParity());
     }
 }
