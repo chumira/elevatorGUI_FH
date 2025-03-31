@@ -4,6 +4,13 @@
         <Property name="layout">%d{HH:mm:ss.SSS }%-6p%m</Property>
     </Properties>
     <Appenders>
+
+        <Async name="asyncConsole">
+            <AppenderRef ref="console"/>
+        </Async>
+        <Async name="asyncRollingFile">
+            <AppenderRef ref="RollingFile"/>
+        </Async>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout
                     pattern="${layout}"/>
@@ -26,8 +33,8 @@
     </Appenders>
     <Loggers>
         <Logger name="commands" level="info" additivity="false">
-            <AppenderRef ref="console"/>
-            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="asyncConsole"/>
+            <AppenderRef ref="asyncRollingFile"/>
         </Logger>
         >
         <Root level="error" additivity="false">
