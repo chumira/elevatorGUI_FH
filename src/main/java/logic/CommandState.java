@@ -168,12 +168,14 @@ public class CommandState {
 
                 }
                 case "PRINT" -> {
-                    //TODO print wohin? gui und/oder log
-                    System.out.print("-->");
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("-->");
                     for (int i = 1; i < div.length; i++) {
-                        System.out.print(div[i]);
+                        sb.append(div[i]);
+                        sb.append(" ");
                     }
-                    System.out.println('\n');
+                    //TODO GUI output
+                    logger.info(sb.toString());
                 }
                 default -> {
                     throw new UnsupportedOperationException();
