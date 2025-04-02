@@ -53,13 +53,13 @@ public class CommandState {
                     if (init_phase) {
                         switch (div[1]) {
                             case "PRIORITY" -> {
-                                mode_Priority = true;
+                                mode_Priority = !mode_Priority;
                             }
                             case "EMERGENCY" -> {
-                                mode_EmergencyHalt = true;
+                                mode_EmergencyHalt = !mode_EmergencyHalt;
                             }
                             case "UPDOWN" -> {
-                                mode_UpDown = true;
+                                mode_UpDown = !mode_UpDown;
                             }
                             default ->
                                     throw new IllegalArgumentException("expected 'PRIORITY','UPDOWN' or 'EMERGENCY' but got '" + div[1] + "'");
