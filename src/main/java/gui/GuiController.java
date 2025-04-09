@@ -551,6 +551,8 @@ public class GuiController implements Initializable {
         testErrorHide.setDisable(true);
         //errorMessage Werte setzen
         errorMessage.setEditable(false);
+
+        //errorMessage.setStyle("-fx-font-size: 10;-fx-text-fill: RED;");
         errorMessage.setStyle("-fx-text-fill: RED;");
         showSerialPorts();
 
