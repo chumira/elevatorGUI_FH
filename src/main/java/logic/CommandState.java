@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CommandState {
-
+    public static final boolean ENABLE_LEAVE_COMMAND = true;
     private boolean init_phase = false;
     public boolean init_done = false;
     int init_amountFloors;
