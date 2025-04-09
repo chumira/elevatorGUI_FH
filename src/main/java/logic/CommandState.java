@@ -174,11 +174,13 @@ public class CommandState {
                 }
                 case "PRINT" -> {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("' ");
+                    sb.append("'");
                     for (int i = 1; i < div.length; i++) {
                         sb.append(div[i]);
                         sb.append(" ");
                     }
+                    sb.deleteCharAt(sb.length() - 1);
+                    sb.append("'");
                     String print = sb.toString().replaceAll("\n", "");
                     //TODO GUI output
                     logger.info(print + '\n');
