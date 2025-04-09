@@ -102,9 +102,13 @@ public class Logic {
 
                     for (Floor f : this.grid.getFloors()
                     ) {
-                        if (!f.equals(e.mostRecentFloor) && Math.abs(e.getElevation() - f.getHeight()) < elapsedTime * (this.grid.ELEVATOR_SPEED)) {
+                        if (!f.equals(e.mostRecentFloor) && this.grid.isElevatorRoughlyInFloor(e.getId(), f.getId())) {
                             out.add("ARRIVE " + e.getId() + " " + f.getId() + "\n");
                             e.mostRecentFloor = f;
+                            e.inBetweenFloors = false;
+                        } else if (f.equals(e.mostRecentFloor) && !this.grid.isElevatorRoughlyInFloor(e.getId(), f.getId()) && !e.inBetweenFloors) {
+                            out.add("LEAVE " + e.getId() + " " + f.getId() + "\n");
+                            e.inBetweenFloors = true;
                         }
                     }
                 }
@@ -195,7 +199,6 @@ public class Logic {
             logInfo("closed connection with: " + this.getSerialPort().getDescriptivePortName());
             serialPort = null;
             isConnected = false;
-
         }
     }
 

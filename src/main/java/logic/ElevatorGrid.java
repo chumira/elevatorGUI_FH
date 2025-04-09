@@ -10,11 +10,11 @@ import java.util.List;
 @Getter
 @Setter
 public class ElevatorGrid {
-    private static final double HEIGHT_DIFFERENCE_FOR_EQUAL = 5;
+    private static final double HEIGHT_DIFFERENCE_FOR_EQUAL = 1;
     public static final double INIT_ELEVATOR_HEIGHT = 0;
     public static final double HEIGHT_INCREASE_PER_FLOOR = 100;
     public final double ELEVATOR_SPEED = 20;
-    public double bufferHeight = 5;
+    public double bufferHeight = 10;
     public Floor[] floors;
     public Elevator[] elevators;
 
@@ -69,7 +69,7 @@ public class ElevatorGrid {
     }
 
     /**
-     * checkt ob der Aufzug ungefaehr auf Hoehe der Etage ist
+     * checkt ob der Aufzug ungefaehr auf Hoehe der Etage ist und stationaer ist
      *
      * @param elevatorID der Aufzug
      * @param floorID    die Etage
@@ -82,6 +82,17 @@ public class ElevatorGrid {
             return elevators[elevatorID].movementDirection == ElevatorMovement.STAND_STILL;
         }
         return false;
+    }
+
+    /**
+     * checkt ob der Aufzug ungefaehr auf Hoehe der Etage ist
+     *
+     * @param elevatorID der Aufzug
+     * @param floorID    die Etage
+     * @return true falls Aufzugshoehe == Etagenhoehe
+     */
+    public boolean isElevatorRoughlyInFloor(int elevatorID, int floorID) {
+        return Math.abs(elevators[elevatorID].elevation - floors[floorID].height) < HEIGHT_DIFFERENCE_FOR_EQUAL;
     }
 
     /**

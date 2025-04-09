@@ -19,6 +19,8 @@ public class Elevator {
     boolean encounteredError = false;
     Floor mostRecentFloor;
 
+    boolean inBetweenFloors = false;
+
     public Elevator(int id) {
         this.id = id;
         this.buttons = new ArrayList<>();
