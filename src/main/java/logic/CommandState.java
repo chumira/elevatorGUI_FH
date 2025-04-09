@@ -33,6 +33,8 @@ public class CommandState {
         String[] div = aa.split(" ");
         try {
             switch (div[0]) {
+                case "" -> {
+                }
                 case "INIT_BASE" -> {
                     if (this.parent.sTime != null)
                         this.parent.sTime.setTimerRunning(false, this.parent.sTime.currentSpeed);
@@ -172,15 +174,15 @@ public class CommandState {
                 }
                 case "PRINT" -> {
                     StringBuilder sb = new StringBuilder();
-                    sb.append("-->");
-                    sb.append("'");
+                    sb.append("' ");
                     for (int i = 1; i < div.length; i++) {
                         sb.append(div[i]);
                         sb.append(" ");
                     }
-                    sb.append("'");
+                    String print = sb.toString().replaceAll("\n", "");
                     //TODO GUI output
-                    logger.info(sb.toString());
+                    logger.info(print + '\n');
+                    this.parent.gui.displayErrorMessage(print + '\n');
                 }
                 default -> {
                     throw new UnsupportedOperationException();
