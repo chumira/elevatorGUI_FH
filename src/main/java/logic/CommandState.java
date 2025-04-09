@@ -34,6 +34,8 @@ public class CommandState {
         try {
             switch (div[0]) {
                 case "INIT_BASE" -> {
+                    if (this.parent.sTime != null)
+                        this.parent.sTime.setTimerRunning(false, this.parent.sTime.currentSpeed);
                     init_phase = true;
                     init_done = false;
                     this.elevator_States.clear();
@@ -90,9 +92,10 @@ public class CommandState {
                     if (init_done) {
                         int elevatorID = Integer.parseInt(div[1]);
                         if (this.parent.grid.elevators[elevatorID].getMovementDirection() != ElevatorMovement.STAND_STILL) {
+                            this.parent.grid.elevators[elevatorID].setEncounteredError(true);
                             this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while moving.", elevatorID);
                             this.parent.logWarn("Elevator " + elevatorID + " opened Door while moving.");
-                            this.parent.grid.elevators[elevatorID].setEncounteredError(true);
+
                         }
                         this.parent.grid.elevators[elevatorID].doorOpen = true;
                         this.parent.gui.changeDoorOpen(elevatorID);
@@ -170,10 +173,12 @@ public class CommandState {
                 case "PRINT" -> {
                     StringBuilder sb = new StringBuilder();
                     sb.append("-->");
+                    sb.append("'");
                     for (int i = 1; i < div.length; i++) {
                         sb.append(div[i]);
                         sb.append(" ");
                     }
+                    sb.append("'");
                     //TODO GUI output
                     logger.info(sb.toString());
                 }
