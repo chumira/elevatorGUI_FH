@@ -98,6 +98,16 @@ public class CommandState {
                             this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while moving.", elevatorID);
                             this.parent.logWarn("Elevator " + elevatorID + " opened Door while moving.");
 
+                        } else {
+                            boolean isInAFloor = false;
+                            for (Floor f : this.parent.grid.floors) {
+                                isInAFloor |= this.parent.grid.isElevatorinFloor(elevatorID, f.getId());
+                            }
+                            if (!isInAFloor) {
+                                //this.parent.grid.elevators[elevatorID].setEncounteredError(true);
+                                logger.warn("Elevator " + elevatorID + " opened Door while not in a floor.");
+                                this.parent.gui.displayError("Elevator " + elevatorID + " opened Door while not in a floor.", elevatorID);
+                            }
                         }
                         this.parent.grid.elevators[elevatorID].doorOpen = true;
                         this.parent.gui.changeDoorOpen(elevatorID);
@@ -197,7 +207,7 @@ public class CommandState {
             this.parent.gui.displayErrorMessage("'" + div[0] + "'->" + e.getMessage() + '\n');
             logger.error("'" + div[0] + "': " + e.getMessage() + '\n');
         } catch (IllegalStateException e) {
-                
+
             this.parent.gui.displayErrorMessage("'" + div[0] + "' but was " + e.getMessage() + '\n');
             logger.error("'" + div[0] + "' but was " + e.getMessage() + '\n');
 
