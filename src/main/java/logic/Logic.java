@@ -102,11 +102,14 @@ public class Logic {
 
                     for (Floor f : this.grid.getFloors()
                     ) {
-                        if (!f.equals(e.mostRecentFloor) && this.grid.isElevatorRoughlyInFloor(e.getId(), f.getId())) {
+                        if (!f.equals(e.mostRecentFloor)
+                                && this.grid.isElevatorRoughlyInFloor(e.getId(), f.getId())) {
                             out.add("ARRIVE " + e.getId() + " " + f.getId() + "\n");
                             e.mostRecentFloor = f;
                             e.inBetweenFloors = false;
-                        } else if (this.commandState.ENABLE_LEAVE_COMMAND && f.equals(e.mostRecentFloor) && !this.grid.isElevatorRoughlyInFloor(e.getId(), f.getId()) && !e.inBetweenFloors) {
+                        } else if (CommandState.ENABLE_LEAVE_COMMAND && f.equals(e.mostRecentFloor)
+                                && this.grid.isElevatorNotInFloor(e.getId(), f.getId())
+                                && !e.inBetweenFloors) {
                             out.add("LEAVE " + e.getId() + " " + f.getId() + "\n");
                             e.inBetweenFloors = true;
                         }

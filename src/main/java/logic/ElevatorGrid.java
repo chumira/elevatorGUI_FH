@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 public class ElevatorGrid {
     private static final double HEIGHT_DIFFERENCE_FOR_EQUAL = 2;
+    private static final double BUFFER_HEIGHT_DIFFERENCE = 0.5;
     public static final double INIT_ELEVATOR_HEIGHT = 0;
     public static final double HEIGHT_INCREASE_PER_FLOOR = 100;
     public final double ELEVATOR_SPEED = 20;
@@ -77,7 +78,7 @@ public class ElevatorGrid {
      */
     public boolean isElevatorinFloor(int elevatorID, int floorID) {
         //sind Aufzug und Etage ungefaehr auf einer Hoehe?
-        if (Math.abs(elevators[elevatorID].elevation - floors[floorID].height) < HEIGHT_DIFFERENCE_FOR_EQUAL) {
+        if (Math.abs(elevators[elevatorID].elevation - floors[floorID].height) < HEIGHT_DIFFERENCE_FOR_EQUAL + BUFFER_HEIGHT_DIFFERENCE) {
             //Bewegt sich der Aufzug?
             return elevators[elevatorID].movementDirection == ElevatorMovement.STAND_STILL;
         }
@@ -92,7 +93,12 @@ public class ElevatorGrid {
      * @return true falls Aufzugshoehe == Etagenhoehe
      */
     public boolean isElevatorRoughlyInFloor(int elevatorID, int floorID) {
-        return Math.abs(elevators[elevatorID].elevation - floors[floorID].height) < HEIGHT_DIFFERENCE_FOR_EQUAL;
+
+        return Math.abs(elevators[elevatorID].elevation - floors[floorID].height) < (HEIGHT_DIFFERENCE_FOR_EQUAL);
+    }
+
+    public boolean isElevatorNotInFloor(int elevatorID, int floorID) {
+        return Math.abs(elevators[elevatorID].elevation - floors[floorID].height) > (HEIGHT_DIFFERENCE_FOR_EQUAL);
     }
 
     /**

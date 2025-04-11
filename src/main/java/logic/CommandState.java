@@ -197,10 +197,10 @@ public class CommandState {
             this.parent.gui.displayErrorMessage("'" + div[0] + "'->" + e.getMessage() + '\n');
             logger.error("'" + div[0] + "': " + e.getMessage() + '\n');
         } catch (IllegalStateException e) {
-            if (e.getMessage().equals("false")) {
-                this.parent.gui.displayErrorMessage("'" + div[0] + "' but was " + e.getMessage() + '\n');
-                logger.error("'" + div[0] + "' but was " + e.getMessage() + '\n');
-            }
+                
+            this.parent.gui.displayErrorMessage("'" + div[0] + "' but was " + e.getMessage() + '\n');
+            logger.error("'" + div[0] + "' but was " + e.getMessage() + '\n');
+
         }
     }
 
