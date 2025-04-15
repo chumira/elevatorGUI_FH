@@ -170,7 +170,7 @@ public class CommandState {
                             throw new IllegalArgumentException("expected '0N' or 'OFF' but got '" + div[1] + "'");
                         }
                         if (floorOrElevator.equals("E")) {
-                            //this.parent.logic.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
+                            this.parent.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeElevatorButtonLight(on, feID, bID);
                         } else if (floorOrElevator.equals("F")) {
                             this.parent.grid.floors[feID].getButtons().get(bID).isGlowing = on;
