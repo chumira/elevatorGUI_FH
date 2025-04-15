@@ -593,7 +593,7 @@ public class GuiController implements Initializable {
             }
         });
         //Uhrzeit vorauswaehlen und alle moeglichen Geschwindigkeiten anzeigen
-        this.clockSpeed.getItems().addAll(logic.getClockSpeeds());
+        this.clockSpeed.getItems().addAll(logic.clockSpeeds);
         this.clockSpeed.getSelectionModel().select(3);
         this.clockSpeed.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

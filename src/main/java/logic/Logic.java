@@ -34,7 +34,7 @@ public class Logic {
     private List<Passenger> removeFromElevator = new LinkedList<>();
     private List<Passenger> removeFromFloor = new LinkedList<>();
 
-    private Integer[] clockSpeeds = {100, 250, 500, 1000, 2500, 5000, 10000};
+    public Integer[] clockSpeeds = {100, 250, 500, 1000, 2500, 5000, 10000};
     StringBuilder command = new StringBuilder();
 
     SimTime sTime;
@@ -122,7 +122,7 @@ public class Logic {
                 for (Passenger p : this.grid.getFloors()[fID].getPassengers()
                 ) {
                     if (p.getActivity() == Activity.IS_WAITING) {
-                        //TODO ggf. kapazitaet??
+                        //ggf. kapazitaet??
                         for (int eID = 0; eID < this.grid.getElevators().length; eID++) {
                             if (this.grid.isElevatorinFloor(eID, fID)) {
                                 if (p.getActivity() == Activity.IS_WAITING && this.grid.elevators[eID].doorOpen) {
