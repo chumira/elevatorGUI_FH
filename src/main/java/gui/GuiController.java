@@ -547,7 +547,7 @@ public class GuiController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO remove
+        //TODO remove testButton
         testErrorHide.setDisable(true);
         //errorMessage Werte setzen
         errorMessage.setEditable(false);

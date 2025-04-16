@@ -46,7 +46,6 @@ public class CommandState {
                     init_hoursPerDay = Integer.parseInt(div[3]);
                     init_hourAtStart = Integer.parseInt(div[4]);
                     init_minuteAtStart = Integer.parseInt(div[5]);
-                    //TODO hide/remove old stuff
                 }
                 case "INIT_STATE" -> {
                     if (init_phase)
@@ -192,8 +191,8 @@ public class CommandState {
                     sb.deleteCharAt(sb.length() - 1);
                     sb.append("'");
                     String print = sb.toString().replaceAll("\n", "");
-                    //TODO GUI output
                     logger.info(print + '\n');
+                    //gibt einen PRINT wie einen fehler aus -> ggf. aendern, ist aber kein simpler fix
                     this.parent.gui.displayErrorMessage(print + '\n');
                 }
                 default -> {

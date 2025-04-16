@@ -117,12 +117,12 @@ public class Logic {
                 }
             }
 
-            //Fahrgaeste steigen in einen Aufzug ein falls er in seiner Ebene steht
+            //Fahrgaeste steigen in einen Aufzug ein, falls er in seiner Ebene steht
             for (int fID = 0; fID < this.grid.getFloors().length; fID++) {
                 for (Passenger p : this.grid.getFloors()[fID].getPassengers()
                 ) {
                     if (p.getActivity() == Activity.IS_WAITING) {
-                        //ggf. kapazitaet??
+                        //ggf. Kapazitaet ergaenzen?
                         for (int eID = 0; eID < this.grid.getElevators().length; eID++) {
                             if (this.grid.isElevatorinFloor(eID, fID)) {
                                 if (p.getActivity() == Activity.IS_WAITING && this.grid.elevators[eID].doorOpen) {

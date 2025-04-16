@@ -49,8 +49,9 @@ public class ElevatorGrid {
                 floors[i].getButtons().add(new LCDButton("↓", "BUTTON_DOWN " + floors[i].getId() + "\n"));
 
             }
+            //other modes like  priority, emergency buttons here
         }
-        //TODO priority, emergency buttons
+
     }
 
     /**
