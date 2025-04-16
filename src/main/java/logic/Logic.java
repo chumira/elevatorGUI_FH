@@ -28,7 +28,7 @@ public class Logic {
     private static final Logger logger = LogManager.getLogger("commands");
     private byte[] buffer = new byte[256];
     //Queue<String> out = new LinkedList<>();
-    BlockingQueue<String> out = new LinkedBlockingQueue<>();  // Ausgabe-Queue
+    BlockingQueue<String> out = new LinkedBlockingQueue<>();  // Threadsicher
     private Thread outputThread;
     volatile boolean runOutputThread = true;
     public boolean isConnected = false;

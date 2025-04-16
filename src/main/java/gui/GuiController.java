@@ -67,8 +67,8 @@ public class GuiController implements Initializable {
     private static final double BUTTON_BORDER_THICKNESS = 2;
     private static final double LINE_THICKNESS = 2;
     private static final double ELEVATOR_OFFSET = 20;
-    private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 2;
-    private static final int BUTTON_COLUMNS_UNDER_ELEVATOR = 2;
+    private static final int BUTTONS_PER_COLUMN_IN_ELEVATOR = 3;
+    private static final int BUTTON_COLUMNS_UNDER_ELEVATOR = 3;
     private static final double BUTTON_WIDTH = ELEVATOR_WIDTH / BUTTON_COLUMNS_UNDER_ELEVATOR;
     private final double ELEVATOR_SPACE_BETWEEN = 10;
     private final int ELEVATORERROR_GROUP_NUMBER = 0;
@@ -401,8 +401,8 @@ public class GuiController implements Initializable {
             Text test = new Text("" + i);
             test.setStyle("-fx-font: 16 arial;");
             StackPane test2 = new StackPane(floorLCD_Border, floorLCD, test);
-            setPosForElevatorButtons(test2, elevatorNum, i);
-            test2.setLayoutY((ELEVATOR_HEIGHT * 1.1 + i % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
+            setPosForElevatorButtons(test2, elevatorNum, logic.grid.elevators[elevatorNum].getButtons().size() - 1 - i);
+            test2.setLayoutY((ELEVATOR_HEIGHT * 1.1 + (logic.grid.elevators[elevatorNum].getButtons().size() - 1 - i) % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
             int floornum = i;
             test2.setOnMouseClicked(mouseEvent ->
                     logic.getOut().add(logic.grid.elevators[elevatorNum].getButtons().get(floornum).getOnClick()));
@@ -696,4 +696,6 @@ public class GuiController implements Initializable {
 
 
     }
+
+
 }

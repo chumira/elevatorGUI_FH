@@ -14,7 +14,7 @@ public class Main extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         GuiController controller = fxmlLoader.getController();
         stage.setMinWidth(1000);
-        stage.setMinHeight(500);
+        stage.setMinHeight(600);
         stage.setTitle("Elevator GUI");
         stage.setScene(scene);
         stage.show();
