@@ -39,6 +39,8 @@ public class GuiController implements Initializable {
     private Button timerButton;
     @FXML
     private Button connectButton;
+    @FXML
+    private Button testInit;
 
     @FXML
     private Button testErrorHide;
@@ -58,7 +60,7 @@ public class GuiController implements Initializable {
      */
     private final Logic logic = new Logic(this);
     boolean running = false;
-
+    private static final boolean DEBUGMODE = false;
     private static final double ELEVATOR_HEIGHT = 80;
     private static final double ELEVATOR_WIDTH = 60;
     private static final double ELEVATOR_WALL_THICKNESS = 5;
@@ -547,8 +549,10 @@ public class GuiController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //TODO remove testButton
-        testErrorHide.setDisable(true);
+
+        testErrorHide.setVisible(DEBUGMODE);
+        testInit.setVisible(DEBUGMODE);
+        
         //errorMessage Werte setzen
         errorMessage.setEditable(false);
 

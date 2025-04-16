@@ -67,7 +67,7 @@
                 <ListView fx:id="serialPane" prefHeight="59.0" prefWidth="300.0"/>
                 <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="neu laden"/>
                 <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#toggleLoop" text="pausieren"/>
-                <Button mnemonicParsing="false" onAction="#testGrid" text="testGrid"/>
+                <Button fx:id="testInit" mnemonicParsing="false" onAction="#testGrid" text="testGrid"/>
                 <Button fx:id="testErrorHide" mnemonicParsing="false" onAction="#changeElevatorErrorTest"
                         text="errorHide"/>
             </children>
