@@ -14,7 +14,7 @@
                         text="Fahrgast" textAlignment="CENTER"/>
                 <ListView fx:id="passengerFrom" minWidth="-Infinity" prefHeight="78.0" prefWidth="50.0"/>
                 <ListView fx:id="passengerTo" minWidth="-Infinity" prefHeight="100.0" prefWidth="50.0"/>
-                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
                 <HBox alignment="CENTER" prefHeight="78.0" prefWidth="509.0">
                     <children>
                         <Label fx:id="time" alignment="CENTER" minWidth="-Infinity" prefHeight="29.0" prefWidth="80.0"
@@ -53,7 +53,7 @@
                         </VBox>
                     </children>
                 </HBox>
-                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS"/>
                 <TextArea fx:id="errorMessage" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                           prefHeight="50.0" wrapText="true"/>
             </children>
@@ -66,7 +66,7 @@
                         onAction="#setSelectedSerialPort" prefHeight="25.0" prefWidth="78.0" text="verbinden"/>
                 <ListView fx:id="serialPane" prefHeight="59.0" prefWidth="300.0"/>
                 <Button fx:id="reloadSerial" mnemonicParsing="false" onAction="#showSerialPorts" text="neu laden"/>
-                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#toggleLoop" text="Pausieren"/>
+                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#toggleLoop" text="pausieren"/>
                 <Button mnemonicParsing="false" onAction="#testGrid" text="testGrid"/>
                 <Button fx:id="testErrorHide" mnemonicParsing="false" onAction="#changeElevatorErrorTest"
                         text="errorHide"/>
