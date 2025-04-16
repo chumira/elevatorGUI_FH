@@ -54,7 +54,7 @@ public class Logic {
         if (serialPort != null && serialPort.isOpen() && this.in.size() > 0) {
             for (int i = 0; i < this.in.size(); i++) {
                 String a = this.in.remove();
-                logger.info("--> " + a + '\n');
+                logger.info("--> " + a);
                 this.commandState.parse(a);
             }
         }
@@ -266,11 +266,11 @@ public class Logic {
     }
 
     public void logWarn(String message) {
-        logger.error(message + '\n');
+        logger.error(message);
     }
 
     public void logInfo(String message) {
-        logger.info(message + '\n');
+        logger.info(message);
     }
 
     public void printSerialPortSettings() {

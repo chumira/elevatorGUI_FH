@@ -191,7 +191,7 @@ public class CommandState {
                     sb.deleteCharAt(sb.length() - 1);
                     sb.append("'");
                     String print = sb.toString().replaceAll("\n", "");
-                    logger.info(print + '\n');
+                    logger.info(print);
                     //gibt einen PRINT wie einen fehler aus -> ggf. aendern, ist aber kein simpler fix
                     this.parent.gui.displayErrorMessage(print + '\n');
                 }
@@ -201,14 +201,14 @@ public class CommandState {
             }
         } catch (UnsupportedOperationException e) {
             this.parent.gui.displayErrorMessage("'" + div[0] + "' is not a valid command." + '\n');
-            logger.error("'" + div[0] + "' is not a valid command.\n");
+            logger.error("'" + div[0] + "' is not a valid command.");
         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
             this.parent.gui.displayErrorMessage("'" + div[0] + "'->" + e.getMessage() + '\n');
-            logger.error("'" + div[0] + "': " + e.getMessage() + '\n');
+            logger.error("'" + div[0] + "': " + e.getMessage());
         } catch (IllegalStateException e) {
 
             this.parent.gui.displayErrorMessage("'" + div[0] + "' but was " + e.getMessage() + '\n');
-            logger.error("'" + div[0] + "' but was " + e.getMessage() + '\n');
+            logger.error("'" + div[0] + "' but was " + e.getMessage());
 
         }
     }

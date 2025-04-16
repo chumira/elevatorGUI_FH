@@ -478,7 +478,7 @@ public class GuiController implements Initializable {
     }
 
     /**
-     * erzeugt kleine Kreise, welche die Ziele der Fahrgaeste anzeigen koennen.
+     * erzeugt kleine, rote Kreise, welche die Ziele der Fahrgaeste anzeigen koennen sobald setVisible(true) gesetzt wird.
      */
     private Circle[][] createPassengerDestinations() {
         Circle[][] a = new Circle[this.logic.grid.elevators.length][this.logic.grid.floors.length];

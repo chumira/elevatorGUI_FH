@@ -1,7 +1,7 @@
 <Configuration status="warn">
     <Properties>
         <!-- Log Layout Hours:Minutes:Seconds.Milliseconds (Padding) Message -->
-        <Property name="layout">%d{HH:mm:ss.SSS }%-6p%m</Property>
+        <Property name="layout">%d{HH:mm:ss.SSS }%-6p%m%n</Property>
     </Properties>
     <Appenders>
 
@@ -20,23 +20,23 @@
             <PatternLayout pattern="${layout}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
             </Policies>
 
 
-            <DefaultRolloverStrategy max="10">
+            <DefaultRolloverStrategy max="20">
                 <Delete basePath="logs">
                     <IfLastModified age="7d"/>
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
-
     </Appenders>
     <Loggers>
         <Logger name="commands" level="info" additivity="false">
             <AppenderRef ref="asyncConsole"/>
             <AppenderRef ref="asyncRollingFile"/>
         </Logger>
-        >
+
         <Root level="error" additivity="false">
             <AppenderRef ref="console"/>
         </Root>
