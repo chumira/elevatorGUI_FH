@@ -16,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Setter
 @Getter
@@ -25,8 +27,10 @@ public class Logic {
     SerialPort serialPort;
     private static final Logger logger = LogManager.getLogger("commands");
     private byte[] buffer = new byte[256];
-    Queue<String> out = new LinkedList<>();
-
+    //Queue<String> out = new LinkedList<>();
+    BlockingQueue<String> out = new LinkedBlockingQueue<>();  // Ausgabe-Queue
+    private Thread outputThread;
+    volatile boolean runOutputThread = true;
     public boolean isConnected = false;
     GuiController gui;
     Queue<String> in = new LinkedList<>();
@@ -53,20 +57,20 @@ public class Logic {
         //Eingehende Befehle verarbeiten
         if (serialPort != null && serialPort.isOpen() && this.in.size() > 0) {
             for (int i = 0; i < this.in.size(); i++) {
-                String a = this.in.remove();
+                String a = this.in.poll();
                 logger.info("--> " + a);
                 this.commandState.parse(a);
             }
         }
 
         //Ausgehende Befehle senden
-        if (serialPort != null && serialPort.isOpen() && this.out.size() > 0) {
+/*        if (serialPort != null && serialPort.isOpen() && this.out.size() > 0) {
             for (int i = 0; i < this.out.size(); i++) {
-                String a = this.out.remove();
+                String a = this.out.poll();
                 logger.info("<-- " + a);
                 sendCommand(a);
             }
-        }
+        }*/
         if (this.commandState.init_done) {
             for (Elevator e : this.grid.getElevators()
             ) {
@@ -177,9 +181,38 @@ public class Logic {
         } else {
             logWarn("couldn't open the serial port: " + serialPort.getDescriptivePortName());
         }
+        runOutputThread = true;
+        initOutputThread();
         return open;
     }
 
+    private void initOutputThread() {
+        outputThread = new Thread(() -> {
+            while (runOutputThread) {
+                try {
+                    String command = out.take(); // blockiert solange es leer ist
+                    sendCommand(command);
+                    logger.info("<-- " + command.replace("\n", ""));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        });
+        outputThread.start();
+    }
+
+    public void stopOutputThread() {
+        runOutputThread = false;
+        if (outputThread != null && outputThread.isAlive()) {
+            outputThread.interrupt();
+            try {
+                outputThread.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 
     /**
      * sendet einen Befehl ueber die serielle Schnittstelle
@@ -190,6 +223,7 @@ public class Logic {
         byte[] temp = cmd.getBytes();
         //System.out.println(Arrays.toString(temp));
         serialPort.writeBytes(temp, temp.length);
+
     }
 
     public void closeConnection() {
@@ -202,6 +236,7 @@ public class Logic {
             logInfo("closed connection with: " + this.getSerialPort().getDescriptivePortName());
             serialPort = null;
             isConnected = false;
+            stopOutputThread();
         }
     }
 

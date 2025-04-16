@@ -552,7 +552,7 @@ public class GuiController implements Initializable {
 
         testErrorHide.setVisible(DEBUGMODE);
         testInit.setVisible(DEBUGMODE);
-        
+
         //errorMessage Werte setzen
         errorMessage.setEditable(false);
 
