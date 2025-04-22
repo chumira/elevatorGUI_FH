@@ -186,12 +186,13 @@ public class Logic {
         return open;
     }
 
-    private void initOutputThread() {
+    void initOutputThread() {
         outputThread = new Thread(() -> {
             while (runOutputThread) {
                 try {
                     String command = out.take(); // blockiert solange es leer ist
-                    sendCommand(command);
+                    if (this.serialPort != null && this.serialPort.isOpen())
+                        sendCommand(command);
                     logger.info("<-- " + command.replace("\n", ""));
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -202,7 +203,7 @@ public class Logic {
         outputThread.start();
     }
 
-    public void stopOutputThread() {
+    void stopOutputThread() {
         runOutputThread = false;
         if (outputThread != null && outputThread.isAlive()) {
             outputThread.interrupt();

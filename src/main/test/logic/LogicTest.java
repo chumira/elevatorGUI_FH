@@ -2,7 +2,15 @@ package logic;
 
 import com.fazecast.jSerialComm.SerialPort;
 import logic.types.ElevatorMovement;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -139,5 +147,71 @@ public class LogicTest {
         this.logic.getSTime().setTimerRunning(false, 1000);
         assertFalse(logic.sTime.isTimer_isrunning());
     }
+
+
+    /**
+     * Einen mindestabstand zwischen ARRIVE und LEAVE garantieren
+     * Test dauert mehrere Sekunden
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    public void testARRIVELEAVE_Intervall() throws InterruptedException {
+        logic.getCommandState().parse("init_base 4 7 12 5 6");
+        assertNull(logic.sTime);
+        logic.getCommandState().parse("init_done");
+        logic.getCommandState().parse("move_up 0");
+
+
+        Logger logger = LogManager.getLogger("commands");
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        Configuration config = context.getConfiguration();
+
+        LoggerConfig loggerConfig = config.getLoggerConfig("commands");
+
+
+        TimestampedMessageAppender appender = new TimestampedMessageAppender("TestAppender");
+        appender.start();
+        loggerConfig.addAppender(appender, null, null);
+
+        context.updateLoggers();
+
+        logic.initOutputThread();
+        // Log-Ausgaben mit Zeitabstand
+        boolean error = false;
+        while (!error) {
+            //AnimationsTimer simulieren
+            //zeit zwischen aufrufen = 0.0166
+            logic.tickUpdate(0.0166);
+            for (Elevator e : logic.grid.elevators
+            ) {
+                error = error || e.encounteredError;
+            }
+            //1000ms / 60 x pro sekunde = 17 ms
+            Thread.sleep(17);
+        }
+        logic.stopOutputThread();
+        List<TimestampedMessageAppender.LogEntry> entries = appender.getEntries();
+        List<TimestampedMessageAppender.LogEntry> entriesLEAVE = entries.stream().filter(e -> {
+            return e.message.contains("LEAVE");
+        }).toList();
+        List<TimestampedMessageAppender.LogEntry> entriesARRIVE = entries.stream().filter(e -> {
+            return e.message.contains("ARRIVE");
+        }).toList();
+
+
+        assertEquals(entriesARRIVE.size(), entriesLEAVE.size());
+
+        //delta0 ist kleiner, da der elevator schon auf halber Hoehe ist
+        long delta0 = entriesLEAVE.get(0).timestamp - entriesARRIVE.get(0).timestamp;
+        long delta1 = entriesLEAVE.get(1).timestamp - entriesARRIVE.get(1).timestamp;
+        long delta2 = entriesLEAVE.get(2).timestamp - entriesARRIVE.get(2).timestamp;
+
+        assertTrue(delta0 >= 100, "Der Abstand0 muss mindestens 100ms betragen");
+        assertTrue(delta1 >= 200, "Der Abstand1 muss mindestens 200ms betragen");
+        assertTrue(delta2 >= 200, "Der Abstand2 muss mindestens 200ms betragen");
+
+    }
+
 
 }

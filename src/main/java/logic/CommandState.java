@@ -41,6 +41,7 @@ public class CommandState {
                     init_phase = true;
                     init_done = false;
                     this.elevator_States.clear();
+                    this.parent.gui.clearGrid();
                     init_amountFloors = Integer.parseInt(div[1]);
                     init_amountElevators = Integer.parseInt(div[2]);
                     init_hoursPerDay = Integer.parseInt(div[3]);
@@ -82,7 +83,6 @@ public class CommandState {
                         }
                         init_done = true;
                         this.parent.gui.setLoopRunning(true);
-                        this.parent.gui.clearGrid();
                         this.parent.gui.drawGrid();
                         this.parent.gui.showFloorList();
                         this.elevator_States.clear();
@@ -158,8 +158,6 @@ public class CommandState {
                     if (init_done) {
                         String onOrOff = div[1];
                         String floorOrElevator = div[2];
-                        int feID = Integer.parseInt(div[3]);
-                        int bID = Integer.parseInt(div[4]);
                         boolean on;
                         if (onOrOff.equals("ON")) {
                             on = true;
@@ -168,6 +166,8 @@ public class CommandState {
                         } else {
                             throw new IllegalArgumentException("expected '0N' or 'OFF' but got '" + div[1] + "'");
                         }
+                        int feID = Integer.parseInt(div[3]);
+                        int bID = Integer.parseInt(div[4]);
                         if (floorOrElevator.equals("E")) {
                             this.parent.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeElevatorButtonLight(on, feID, bID);
