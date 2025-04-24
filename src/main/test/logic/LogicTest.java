@@ -2,12 +2,8 @@ package logic;
 
 import com.fazecast.jSerialComm.SerialPort;
 import logic.types.ElevatorMovement;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -117,22 +113,22 @@ public class LogicTest {
 
         logic.getCommandState().parse("init_base 4 7 12 5 6");
         logic.getCommandState().parse("init_done");
-        assertFalse(logic.grid.elevators[1].getButtons().get(0).isGlowing);
+        assertFalse(logic.grid.elevators[1].getFloorButtons().get(0).isGlowing);
         logic.getCommandState().parse("light ON E 1 0");
-        assertTrue(logic.grid.elevators[1].getButtons().get(0).isGlowing);
+        assertTrue(logic.grid.elevators[1].getFloorButtons().get(0).isGlowing);
 
-        assertFalse(logic.grid.elevators[2].getButtons().get(3).isGlowing);
+        assertFalse(logic.grid.elevators[2].getFloorButtons().get(3).isGlowing);
         logic.getCommandState().parse("light ON E 2 3");
-        assertTrue(logic.grid.elevators[2].getButtons().get(3).isGlowing);
+        assertTrue(logic.grid.elevators[2].getFloorButtons().get(3).isGlowing);
     }
 
     @Test
     public void testParseLightFloor() {
         logic.getCommandState().parse("init_base 4 7 12 5 6");
         logic.getCommandState().parse("init_done");
-        assertFalse(logic.grid.floors[1].getButtons().get(0).isGlowing);
+        assertFalse(logic.grid.floors[1].callButton.isGlowing);
         logic.getCommandState().parse("light ON F 1 0");
-        assertTrue(logic.grid.floors[1].getButtons().get(0).isGlowing);
+        assertTrue(logic.grid.floors[1].callButton.isGlowing);
     }
 
     @Test

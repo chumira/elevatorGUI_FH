@@ -5,6 +5,7 @@ import logic.types.ElevatorMovement;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -36,17 +37,18 @@ public class ElevatorGrid {
         }
         for (int i = 0; i < amountElevators; i++) {
             for (int j = 0; j < amountFloors; j++) {
-                elevators[i].getButtons().add(new LEDButton("" + j, "REQUEST " + elevators[i].getId() + " " + floors[j].getId() + "\n"));
+                elevators[i].getFloorButtons().add(new LEDButton("" + j, "REQUEST " + elevators[i].getId() + " " + floors[j].getId() + "\n"));
             }
         }
         if (!updown) {
             for (int i = 0; i < amountFloors; i++) {
-                floors[i].getButtons().add(new LEDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n"));
+                floors[i].callButton = new LEDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n");
             }
         } else {
             for (int i = 0; i < amountFloors; i++) {
-                floors[i].getButtons().add(new LEDButton("↑", "BUTTON_UP " + floors[i].getId() + "\n"));
-                floors[i].getButtons().add(new LEDButton("↓", "BUTTON_DOWN " + floors[i].getId() + "\n"));
+                floors[i].updownButtons = new ArrayList<>();
+                floors[i].updownButtons.add(new LEDButton("↑", "BUTTON_UP " + floors[i].getId() + "\n"));
+                floors[i].updownButtons.add(new LEDButton("↓", "BUTTON_DOWN " + floors[i].getId() + "\n"));
 
             }
             //other modes like  priority, emergency buttons here
@@ -125,7 +127,7 @@ public class ElevatorGrid {
     public int getMaxAmountButtons() {
         int max = 0;
         for (Floor f : floors) {
-            max = Math.max(f.getButtons().size(), max);
+            max = Math.max(f.aggregateButtons().size(), max);
         }
         return max;
     }

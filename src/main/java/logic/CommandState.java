@@ -155,6 +155,9 @@ public class CommandState {
                 }
                 case "LIGHT" -> {
                     //LIGHT ON|OFF F|E 0-N 0-M
+                    //Dies ist eine recht allgemein gehaltene Version des LIGHT-Befehls,
+                    //falls dies zu unuebersichtlich und zu kompliziert wird hinsichtlich derr Auswahl des richtigen Buttons,
+                    //dann sollten lieber Befehle wie LIGHT_UP ON <F> und LIGHT_DOWN ON <F> eingefuehrt werden.
                     if (init_done) {
                         String onOrOff = div[1];
                         String floorOrElevator = div[2];
@@ -169,10 +172,10 @@ public class CommandState {
                         int feID = Integer.parseInt(div[3]);
                         int bID = Integer.parseInt(div[4]);
                         if (floorOrElevator.equals("E")) {
-                            this.parent.grid.elevators[feID].getButtons().get(bID).isGlowing = on;
+                            this.parent.grid.elevators[feID].getFloorButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeElevatorButtonLight(on, feID, bID);
                         } else if (floorOrElevator.equals("F")) {
-                            this.parent.grid.floors[feID].getButtons().get(bID).isGlowing = on;
+                            this.parent.grid.floors[feID].aggregateButtons().get(bID).isGlowing = on;
                             this.parent.gui.changeFloorButtonLight(on, feID, bID);
                         } else {
                             throw new IllegalArgumentException("expected 'E' or 'F' but got '" + div[2] + "'");

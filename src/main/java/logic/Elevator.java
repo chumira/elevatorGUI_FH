@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Getter
@@ -12,7 +13,9 @@ import java.util.List;
 public class Elevator {
     int id;
     List<Passenger> passengers;
-    List<LEDButton> buttons;
+    List<LEDButton> floorButtons;
+
+    LEDButton emergency;
     boolean doorOpen;
     ElevatorMovement movementDirection;
     double elevation = 0;
@@ -23,7 +26,7 @@ public class Elevator {
 
     public Elevator(int id) {
         this.id = id;
-        this.buttons = new ArrayList<>();
+        this.floorButtons = new ArrayList<>();
         this.passengers = new ArrayList<>();
         this.movementDirection = ElevatorMovement.STAND_STILL;
     }
@@ -43,6 +46,16 @@ public class Elevator {
                 throw new IllegalArgumentException();
 
         }
+    }
+
+    public List<LEDButton> aggregateButtons() {
+        List<LEDButton> res = new LinkedList<>();
+
+        if (floorButtons != null && floorButtons.size() > 0)
+            res.addAll(floorButtons);
+        if (emergency != null)
+            res.add(emergency);
+        return res;
     }
 
 }
