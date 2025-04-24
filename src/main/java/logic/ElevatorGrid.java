@@ -53,6 +53,14 @@ public class ElevatorGrid {
             }
             //other modes like  priority, emergency buttons here
         }
+        if (emergency) {
+            for (int i = 0; i < amountFloors; i++) {
+                floors[i].emergency = new LEDButton("N", "EMERGENCY_STOP_FLOOR " + floors[i].getId() + "\n");
+            }
+            for (int i = 0; i < amountElevators; i++) {
+                elevators[i].emergency = new LEDButton("N", "EMERGENCY_STOP_ELEVATOR " + elevators[i].getId() + "\n");
+            }
+        }
 
     }
 

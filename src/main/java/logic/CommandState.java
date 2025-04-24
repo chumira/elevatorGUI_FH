@@ -55,20 +55,27 @@ public class CommandState {
                 }
                 case "MODE" -> {
                     if (init_phase) {
+                        boolean enabled;
                         switch (div[1]) {
                             case "PRIORITY" -> {
                                 mode_Priority = !mode_Priority;
+                                enabled = mode_Priority;
                             }
                             case "EMERGENCY" -> {
                                 mode_EmergencyHalt = !mode_EmergencyHalt;
+                                enabled = mode_EmergencyHalt;
                             }
                             case "UPDOWN" -> {
                                 mode_UpDown = !mode_UpDown;
+                                enabled = mode_UpDown;
                             }
                             default ->
                                     throw new IllegalArgumentException("expected 'PRIORITY','UPDOWN' or 'EMERGENCY' but got '" + div[1] + "'");
                         }
-
+                        if (enabled)
+                            logger.info("enabled mode " + div[1]);
+                        else
+                            logger.info("disabled mode " + div[1]);
                     } else throw new IllegalStateException("not in init_phase");
                 }
                 case "INIT_DONE" -> {
@@ -209,7 +216,6 @@ public class CommandState {
             this.parent.gui.displayErrorMessage("'" + div[0] + "'->" + e.getMessage() + '\n');
             logger.error("'" + div[0] + "': " + e.getMessage());
         } catch (IllegalStateException e) {
-
             this.parent.gui.displayErrorMessage("'" + div[0] + "' but was " + e.getMessage() + '\n');
             logger.error("'" + div[0] + "' but was " + e.getMessage());
 

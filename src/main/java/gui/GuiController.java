@@ -384,7 +384,7 @@ public class GuiController implements Initializable {
         //create FloorButtons
         List<Rectangle> buttonsInElevator = new ArrayList<>();
         //jeden Knopf erzeugen
-        for (int i = 0; i < logic.grid.elevators[elevatorNum].getFloorButtons().size(); i++) {
+        for (int i = 0; i < logic.grid.elevators[elevatorNum].aggregateButtons().size(); i++) {
             Rectangle floorLCD_Border = new Rectangle();
             floorLCD_Border.setFill(Color.BLACK);
             floorLCD_Border.setHeight(BUTTON_WIDTH);
@@ -393,14 +393,14 @@ public class GuiController implements Initializable {
             floorLCD.setFill(Color.GRAY);
             floorLCD.setHeight(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             floorLCD.setWidth(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
-            Text test = new Text("" + i);
+            Text test = new Text("" + logic.grid.elevators[elevatorNum].aggregateButtons().get(i).getSymbol());
             test.setStyle("-fx-font: 16 arial;");
             StackPane button = new StackPane(floorLCD_Border, floorLCD, test);
-            setPosForElevatorButtons(button, elevatorNum, logic.grid.elevators[elevatorNum].getFloorButtons().size() - 1 - i);
-            button.setLayoutY((ELEVATOR_HEIGHT * 1.1 + (logic.grid.elevators[elevatorNum].getFloorButtons().size() - 1 - i) % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
+            setPosForElevatorButtons(button, elevatorNum, logic.grid.elevators[elevatorNum].aggregateButtons().size() - 1 - i);
+            button.setLayoutY((ELEVATOR_HEIGHT * 1.1 + (logic.grid.elevators[elevatorNum].aggregateButtons().size() - 1 - i) % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
             int floornum = i;
             button.setOnMouseClicked(mouseEvent ->
-                    logic.getOut().add(logic.grid.elevators[elevatorNum].getFloorButtons().get(floornum).getOnClick()));
+                    logic.getOut().add(logic.grid.elevators[elevatorNum].aggregateButtons().get(floornum).getOnClick()));
             staticElevator.getChildren().addAll(button);
             buttonsInElevator.add(floorLCD);
         }
@@ -652,9 +652,9 @@ public class GuiController implements Initializable {
         double res;
 
         //Berechnung Anzahl benoetigter Spalten
-        int a = (logic.grid.elevators[0].getFloorButtons().size() / BUTTONS_PER_COLUMN_IN_ELEVATOR);
+        int a = (logic.grid.elevators[0].aggregateButtons().size() / BUTTONS_PER_COLUMN_IN_ELEVATOR);
         //wenn es nicht glatt aufgeht muss es eine extra Spalte geben
-        if (logic.grid.elevators[0].getFloorButtons().size() % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
+        if (logic.grid.elevators[0].aggregateButtons().size() % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
             a++;
         //mindestens so viele Spalten wie unter einen Aufzug passen
         if (a < BUTTON_COLUMNS_UNDER_ELEVATOR)
@@ -673,9 +673,9 @@ public class GuiController implements Initializable {
      */
     private void setPosForElevatorButtons(StackPane test2, int elevatorNum, int buttonNum) {
         //Berechnung Anzahl benoetigter Spalten
-        int a = (logic.grid.elevators[0].getFloorButtons().size() / BUTTONS_PER_COLUMN_IN_ELEVATOR);
+        int a = (logic.grid.elevators[0].aggregateButtons().size() / BUTTONS_PER_COLUMN_IN_ELEVATOR);
         //wenn es nicht glatt aufgeht muss es eine extra Spalte geben
-        if (logic.grid.elevators[0].getFloorButtons().size() % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
+        if (logic.grid.elevators[0].aggregateButtons().size() % BUTTONS_PER_COLUMN_IN_ELEVATOR != 0)
             a++;
         //mindestens so viele Spalten wie unter einen Aufzug passen
         if (a < BUTTON_COLUMNS_UNDER_ELEVATOR)
