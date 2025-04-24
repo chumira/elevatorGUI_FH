@@ -5,14 +5,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LCDButton {
+public class LEDButton {
     int id;
     String symbol;
     String onClick;
     boolean isGlowing = false;
 
 
-    public LCDButton(String symbol, String onClick) {
+    public LEDButton(String symbol, String onClick) {
         this.symbol = symbol;
         this.onClick = onClick;
 

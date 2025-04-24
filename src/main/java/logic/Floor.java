@@ -12,7 +12,7 @@ public class Floor {
 
     int id;
     List<Passenger> passengers = new ArrayList<>();
-    List<LCDButton> buttons = new ArrayList<>();
+    List<LEDButton> buttons = new ArrayList<>();
     double height;
 
     public Floor(int id) {

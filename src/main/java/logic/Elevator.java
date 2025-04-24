@@ -12,7 +12,7 @@ import java.util.List;
 public class Elevator {
     int id;
     List<Passenger> passengers;
-    List<LCDButton> buttons;
+    List<LEDButton> buttons;
     boolean doorOpen;
     ElevatorMovement movementDirection;
     double elevation = 0;

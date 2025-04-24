@@ -162,32 +162,23 @@ public class LogicTest {
         logic.getCommandState().parse("init_done");
         logic.getCommandState().parse("move_up 0");
 
-
-        Logger logger = LogManager.getLogger("commands");
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        Configuration config = context.getConfiguration();
-
-        LoggerConfig loggerConfig = config.getLoggerConfig("commands");
-
-
         TimestampedMessageAppender appender = new TimestampedMessageAppender("TestAppender");
         appender.start();
-        loggerConfig.addAppender(appender, null, null);
-
+        context.getConfiguration().getLoggerConfig("commands").addAppender(appender, null, null);
         context.updateLoggers();
-
         logic.initOutputThread();
-        // Log-Ausgaben mit Zeitabstand
         boolean error = false;
+        //logic ausfuehren bis ein Fehler auftritt
         while (!error) {
             //AnimationsTimer simulieren
-            //zeit zwischen aufrufen = 0.0166
+            //zeit zwischen aufrufen in Sekunden
             logic.tickUpdate(0.0166);
             for (Elevator e : logic.grid.elevators
             ) {
                 error = error || e.encounteredError;
             }
-            //1000ms / 60 x pro sekunde = 17 ms
+            //1000ms/60 = 17 ms
             Thread.sleep(17);
         }
         logic.stopOutputThread();
@@ -198,10 +189,7 @@ public class LogicTest {
         List<TimestampedMessageAppender.LogEntry> entriesARRIVE = entries.stream().filter(e -> {
             return e.message.contains("ARRIVE");
         }).toList();
-
-
         assertEquals(entriesARRIVE.size(), entriesLEAVE.size());
-
         //delta0 ist kleiner, da der elevator schon auf halber Hoehe ist
         long delta0 = entriesLEAVE.get(0).timestamp - entriesARRIVE.get(0).timestamp;
         long delta1 = entriesLEAVE.get(1).timestamp - entriesARRIVE.get(1).timestamp;

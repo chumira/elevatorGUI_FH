@@ -72,7 +72,6 @@ public class GuiController implements Initializable {
     private static final double BUTTON_WIDTH = ELEVATOR_WIDTH / BUTTON_COLUMNS_UNDER_ELEVATOR;
     private final double ELEVATOR_SPACE_BETWEEN = 10;
     private final int ELEVATORERROR_GROUP_NUMBER = 0;
-
     private final int ELEVATORCASE_GROUP_NUMBER = 1;
     private final int ELEVATORDOOR_GROUP_NUMBER = 2;
     private Group gridAll = new Group();
@@ -275,7 +274,6 @@ public class GuiController implements Initializable {
         }
         gridAll.getChildren().add(createElevator(elevatorNum));
         ePaneTest.setContent(gridAll);
-
     }
 
     @FXML
@@ -290,7 +288,6 @@ public class GuiController implements Initializable {
         gridAll.getChildren().add(createFloorLine(floornum));
         ePaneTest.setContent(gridAll);
     }
-
 
     protected void addStaticElevator(int elevatorNum) {
         if (eGrid == null) {
@@ -373,8 +370,6 @@ public class GuiController implements Initializable {
         shaft.setWidth(LINE_THICKNESS);
 
         //siehe createElevator
-
-
         Label passengerAmount = new Label();
         passengerAmount.setLayoutY(ELEVATOR_HEIGHT * 1.1 + BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH);
         passengerAmount.setStyle("-fx-font: 16 arial;");
@@ -400,20 +395,19 @@ public class GuiController implements Initializable {
             floorLCD.setWidth(BUTTON_WIDTH - BUTTON_BORDER_THICKNESS);
             Text test = new Text("" + i);
             test.setStyle("-fx-font: 16 arial;");
-            StackPane test2 = new StackPane(floorLCD_Border, floorLCD, test);
-            setPosForElevatorButtons(test2, elevatorNum, logic.grid.elevators[elevatorNum].getButtons().size() - 1 - i);
-            test2.setLayoutY((ELEVATOR_HEIGHT * 1.1 + (logic.grid.elevators[elevatorNum].getButtons().size() - 1 - i) % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
+            StackPane button = new StackPane(floorLCD_Border, floorLCD, test);
+            setPosForElevatorButtons(button, elevatorNum, logic.grid.elevators[elevatorNum].getButtons().size() - 1 - i);
+            button.setLayoutY((ELEVATOR_HEIGHT * 1.1 + (logic.grid.elevators[elevatorNum].getButtons().size() - 1 - i) % BUTTONS_PER_COLUMN_IN_ELEVATOR * BUTTON_WIDTH));
             int floornum = i;
-            test2.setOnMouseClicked(mouseEvent ->
+            button.setOnMouseClicked(mouseEvent ->
                     logic.getOut().add(logic.grid.elevators[elevatorNum].getButtons().get(floornum).getOnClick()));
-            staticElevator.getChildren().addAll(test2);
+            staticElevator.getChildren().addAll(button);
             buttonsInElevator.add(floorLCD);
         }
         elevatorbuttons.add(buttonsInElevator);
 
         return staticElevator;
     }
-
 
     /**
      * erzeugt alles noetige fuer eine Etage
@@ -511,7 +505,6 @@ public class GuiController implements Initializable {
         }
     }
 
-
     @FXML
     protected void showSerialPorts() {
         this.serialPane.getItems().clear();
@@ -545,7 +538,6 @@ public class GuiController implements Initializable {
     public void showDestination(boolean show, int elevatorNum, int floorNum) {
         destination[elevatorNum][floorNum].setVisible(show);
     }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -693,9 +685,5 @@ public class GuiController implements Initializable {
         test2.setLayoutX((ELEVATOR_WIDTH * ((double) a / BUTTON_COLUMNS_UNDER_ELEVATOR * elevatorNum)
                 + ELEVATOR_OFFSET + this.logic.grid.getMaxAmountButtons()
                 * BUTTON_WIDTH + BUTTON_WIDTH * columnLength) + elevatorNum * ELEVATOR_SPACE_BETWEEN);
-
-
     }
-
-
 }

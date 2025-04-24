@@ -36,17 +36,17 @@ public class ElevatorGrid {
         }
         for (int i = 0; i < amountElevators; i++) {
             for (int j = 0; j < amountFloors; j++) {
-                elevators[i].getButtons().add(new LCDButton("" + j, "REQUEST " + elevators[i].getId() + " " + floors[j].getId() + "\n"));
+                elevators[i].getButtons().add(new LEDButton("" + j, "REQUEST " + elevators[i].getId() + " " + floors[j].getId() + "\n"));
             }
         }
         if (!updown) {
             for (int i = 0; i < amountFloors; i++) {
-                floors[i].getButtons().add(new LCDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n"));
+                floors[i].getButtons().add(new LEDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n"));
             }
         } else {
             for (int i = 0; i < amountFloors; i++) {
-                floors[i].getButtons().add(new LCDButton("↑", "BUTTON_UP " + floors[i].getId() + "\n"));
-                floors[i].getButtons().add(new LCDButton("↓", "BUTTON_DOWN " + floors[i].getId() + "\n"));
+                floors[i].getButtons().add(new LEDButton("↑", "BUTTON_UP " + floors[i].getId() + "\n"));
+                floors[i].getButtons().add(new LEDButton("↓", "BUTTON_DOWN " + floors[i].getId() + "\n"));
 
             }
             //other modes like  priority, emergency buttons here
