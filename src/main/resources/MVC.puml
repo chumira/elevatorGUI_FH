@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+
+
+
+
+
+
+
+
+
+
+class GuiController{
+
+}
+
+
+
+
+FXML  <-- "initiert & setzt Daten" GuiController
+FXML  --> "Update von Daten" GuiController
+GuiController --> "modifiziert Daten"Logic
+
+GuiController --> "bekommt Daten"Logic
+
+
+class Logic{
+
+}
+
+
+
+
+
+
+
+
+
+@enduml

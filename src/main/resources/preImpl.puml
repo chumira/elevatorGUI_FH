@@ -1,0 +1,75 @@
+
+@startuml
+'https://plantuml.com/class-diagram
+
+
+
+
+
+class Main {
+
+}
+
+class Logic{
+timer : Timer
+sp : SerialPort
+
+}
+
+
+
+class Elevator{
+String name
+int id
+int height
+boolean doorClosed
+boolean isMoving
+updateElevation()
+}
+class GuiController{
+drawElevator()
+drawFloor()
+connectTo()
+...()
+}
+class Floor{
+String name
+int id
+int height
+}
+class LEDButton{
+	String bezeichung
+	String symbol
+	String onClick
+	boolean isGlowing
+}
+class Passenger{
+int id
+}
+
+Application<|- Main
+Main <-- GuiController
+Main <-- FXMLLoader
+
+GuiController <-> Logic
+
+
+
+
+
+Logic "1" *-- "many" Elevator
+Logic "1" *-- "many" Floor
+Elevator "1" *-- "many" Passenger
+Floor "1" *-- "many" Passenger
+Passenger <-- Activity
+Elevator "1" *-- "many" LEDButton
+Floor "1" *-- "many" LEDButton
+Passenger "1" *- "2" Floor
+enum Activity {
+IS_WAITING
+IN_ELEVATOR
+HAS_ARRIVED
+}
+
+
+@enduml
