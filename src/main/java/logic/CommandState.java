@@ -1,3 +1,6 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic;
 
 import javafx.util.Pair;
@@ -8,6 +11,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Klasse fuer die Verarbeitung von eingehenden Befehlen
+ */
 public class CommandState {
     public static final boolean ENABLE_LEAVE_COMMAND = true;
     private boolean init_phase = false;
@@ -28,6 +34,10 @@ public class CommandState {
         this.parent = parent;
     }
 
+    /**
+     * verarbeitet eingehende Befehle
+     * @param a der zu verarbeitenede Befehl als String
+     */
     public void parse(String a) {
         String aa = a.toUpperCase();
         String[] div = aa.split(" ");
@@ -209,7 +219,9 @@ public class CommandState {
                     throw new UnsupportedOperationException();
                 }
             }
-        } catch (UnsupportedOperationException e) {
+        }
+        //Fehler auffangen und Fehlermeldung senden
+        catch (UnsupportedOperationException e) {
             this.parent.gui.displayErrorMessage("'" + div[0] + "' is not a valid command." + '\n');
             logger.error("'" + div[0] + "' is not a valid command.");
         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException e) {

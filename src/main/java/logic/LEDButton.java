@@ -1,8 +1,15 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic;
 
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Representation eines Buttons,
+ * kann leuchten und hat einen hinterlegten Befehl
+ */
 @Getter
 @Setter
 public class LEDButton {

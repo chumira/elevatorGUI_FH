@@ -1,3 +1,6 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic;
 
 
@@ -19,6 +22,9 @@ import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Die Logik der gesamten Applikation
+ */
 @Setter
 @Getter
 public class Logic {
@@ -62,15 +68,6 @@ public class Logic {
                 this.commandState.parse(a);
             }
         }
-
-        //Ausgehende Befehle senden
-/*        if (serialPort != null && serialPort.isOpen() && this.out.size() > 0) {
-            for (int i = 0; i < this.out.size(); i++) {
-                String a = this.out.poll();
-                logger.info("<-- " + a);
-                sendCommand(a);
-            }
-        }*/
         if (this.commandState.init_done) {
             for (Elevator e : this.grid.getElevators()
             ) {
@@ -186,6 +183,9 @@ public class Logic {
         return open;
     }
 
+    /**
+     * Thread initialisieren, um ausgehende Befehle zu senden
+     */
     void initOutputThread() {
         outputThread = new Thread(() -> {
             while (runOutputThread) {
@@ -202,7 +202,9 @@ public class Logic {
         });
         outputThread.start();
     }
-
+    /**
+     * Outputthread stoppen
+     */
     void stopOutputThread() {
         runOutputThread = false;
         if (outputThread != null && outputThread.isAlive()) {
@@ -227,6 +229,9 @@ public class Logic {
 
     }
 
+    /**
+     * SerialPort schliessen
+     */
     public void closeConnection() {
         if (serialPort != null) {
             serialPort.closePort();
@@ -295,6 +300,9 @@ public class Logic {
         }
     }
 
+    /**
+     * Logging-Thread und Timer-Thread stoppen
+     */
     public void closeThreads() {
         LogManager.shutdown();
         if (sTime != null)
@@ -309,6 +317,9 @@ public class Logic {
         logger.info(message);
     }
 
+    /**
+     * Debug ausgabe fuer Einstellungen des SerialPorts
+     */
     public void printSerialPortSettings() {
         System.out.println("baud: " + serialPort.getBaudRate());
         System.out.println("buffersizeRead: " + serialPort.getDeviceReadBufferSize());

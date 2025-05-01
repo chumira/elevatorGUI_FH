@@ -1,5 +1,7 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package gui;
-
 import com.fazecast.jSerialComm.SerialPort;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
@@ -22,6 +24,9 @@ import logic.*;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * Controllerklasse fuer die Applikation (GUI ist Elevator.fxml)
+ */
 public class GuiController implements Initializable {
     @FXML
     private ListView<SerialPort> serialPane;

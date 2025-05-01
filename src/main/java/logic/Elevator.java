@@ -1,3 +1,6 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic;
 
 import logic.types.ElevatorMovement;
@@ -8,6 +11,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Representation eines Aufzuges
+ */
 @Getter
 @Setter
 public class Elevator {
@@ -31,7 +37,10 @@ public class Elevator {
         this.movementDirection = ElevatorMovement.STAND_STILL;
     }
 
-
+    /**
+     * Die Elevation des Fahrstuhls anpassen je nach Fahrtrichtung
+     * @param amount wie viel sich bewegt werden soll
+     */
     public void updateElevation(double amount) {
         switch (this.movementDirection) {
             case STAND_STILL:
@@ -48,10 +57,14 @@ public class Elevator {
         }
     }
 
+    /**
+     * fasst alle Buttons des Aufzuges zu einer Liste zusammen
+     * @return Liste mit allen Buttons
+     */
     public List<LEDButton> aggregateButtons() {
         List<LEDButton> res = new LinkedList<>();
 
-        if (floorButtons != null && floorButtons.size() > 0)
+        if (floorButtons != null && !floorButtons.isEmpty())
             res.addAll(floorButtons);
         if (emergency != null)
             res.add(emergency);

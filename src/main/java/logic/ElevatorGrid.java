@@ -1,3 +1,6 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic;
 
 import javafx.util.Pair;
@@ -8,6 +11,9 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Das Grid bestehend aus allen Aufzuegen und Etagen
+ */
 @Getter
 @Setter
 public class ElevatorGrid {
@@ -24,9 +30,18 @@ public class ElevatorGrid {
         this(amountFloors, amountElevators, false, false, false);
     }
 
+    /**
+     * Hauptconstructor fuer das Grid
+     * @param amountFloors Anzahl Etagen
+     * @param amountElevators Anzahl Aufzuege
+     * @param priority Modus Prioritaet
+     * @param emergency Modus Nothalt
+     * @param updown Modus Updown
+     */
     ElevatorGrid(int amountFloors, int amountElevators, boolean priority, boolean emergency, boolean updown) {
         floors = new Floor[amountFloors];
         elevators = new Elevator[amountElevators];
+        //alle noetigen Aufzuege, Etagen und Buttons erstellen
         for (int i = 0; i < amountElevators; i++) {
             elevators[i] = new Elevator(i);
             elevators[i].setElevation(INIT_ELEVATOR_HEIGHT);
@@ -40,6 +55,7 @@ public class ElevatorGrid {
                 elevators[i].getFloorButtons().add(new LEDButton("" + j, "REQUEST " + elevators[i].getId() + " " + floors[j].getId() + "\n"));
             }
         }
+        //falls Modi an oder aus sind muessen Buttons erstellt werden
         if (!updown) {
             for (int i = 0; i < amountFloors; i++) {
                 floors[i].callButton = new LEDButton("E" + i, "BUTTON_PUSH " + floors[i].getId() + "\n");

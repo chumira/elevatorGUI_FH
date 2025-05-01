@@ -1,9 +1,16 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic;
 
 import logic.types.Activity;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Represenation eines Fahrgastes
+ * mit Start- und Zielebene
+ */
 @Getter
 @Setter
 public class Passenger {

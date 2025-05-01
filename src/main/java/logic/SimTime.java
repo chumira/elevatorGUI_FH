@@ -1,3 +1,6 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic;
 
 import lombok.Getter;
@@ -6,6 +9,9 @@ import lombok.Setter;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Klasse fuer die Uhrzeit
+ */
 @Getter
 @Setter
 public class SimTime {
@@ -76,6 +82,9 @@ public class SimTime {
         }, currentSpeed, currentSpeed);
     }
 
+    /**
+     * @return aktuelle, simulierte Uhrzeit als Stringrepresentation
+     */
     public String currentTime() {
         return String.format("%02d:%02d", currentHour, currentMinute);
     }
