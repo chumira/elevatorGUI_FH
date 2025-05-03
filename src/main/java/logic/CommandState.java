@@ -67,10 +67,10 @@ public class CommandState {
                     if (init_phase) {
                         boolean enabled;
                         switch (div[1]) {
-                            case "PRIORITY" -> {
+/*                            case "PRIORITY" -> {
                                 mode_Priority = !mode_Priority;
                                 enabled = mode_Priority;
-                            }
+                            }*/
                             case "EMERGENCY" -> {
                                 mode_EmergencyHalt = !mode_EmergencyHalt;
                                 enabled = mode_EmergencyHalt;
@@ -80,7 +80,9 @@ public class CommandState {
                                 enabled = mode_UpDown;
                             }
                             default ->
-                                    throw new IllegalArgumentException("expected 'PRIORITY','UPDOWN' or 'EMERGENCY' but got '" + div[1] + "'");
+                                    throw new IllegalArgumentException("expected " +
+                                 //           "'PRIORITY'," +
+                                            "'UPDOWN' or 'EMERGENCY' but got '" + div[1] + "'");
                         }
                         if (enabled)
                             logger.info("enabled mode " + div[1]);
