@@ -8,24 +8,22 @@
         <Async name="asyncConsole">
             <AppenderRef ref="console"/>
         </Async>
-        <Async name="asyncRollingFile">
-            <AppenderRef ref="RollingFile"/>
+        <Async name="asyncFileAppender">
+            <AppenderRef ref="FileAppender"/>
         </Async>
         <Console name="console" target="SYSTEM_OUT">
             <PatternLayout
                     pattern="${layout}"/>
         </Console>
-        <RollingFile name="RollingFile" fileName="ElevatorGUI-Logs/ElevatorGUI-${date:yyyy-MM-dd-HH-mm-ss}.log"
-                     filePattern="logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log">
+        <RollingFile name="FileAppender"
+                     fileName="ElevatorGUI-Logs/ElevatorGUI.log"
+                     filePattern="ElevatorGUI-Logs/ElevatorGUI-%d{yyyy-MM-dd-HH-mm-ss}.log">
             <PatternLayout pattern="${layout}"/>
             <Policies>
-                <SizeBasedTriggeringPolicy size="10MB"/>
-                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <OnStartupTriggeringPolicy />
             </Policies>
-
-
-            <DefaultRolloverStrategy max="20">
-                <Delete basePath="logs">
+            <DefaultRolloverStrategy>
+                <Delete basePath="ElevatorGUI-Logs">
                     <IfLastModified age="7d"/>
                 </Delete>
             </DefaultRolloverStrategy>
@@ -34,7 +32,7 @@
     <Loggers>
         <Logger name="commands" level="info" additivity="false">
             <AppenderRef ref="asyncConsole"/>
-            <AppenderRef ref="asyncRollingFile"/>
+            <AppenderRef ref="asyncFileAppender"/>
         </Logger>
 
         <Root level="error" additivity="false">

@@ -24,7 +24,9 @@ establishConnection()
 class MessageListener
 interface SerialPortMessageListener
 interface Initializable
-class CommandState
+class CommandState{
+parse()
+}
 class ElevatorGrid{
 }
 class Elevator{
@@ -55,7 +57,7 @@ GuiController <-> Logic
 Logic <-- ElevatorGrid
 Logic <-> SimTime
 Logic <-- Logger
-Logic <--> CommandState
+Logic <-> CommandState
 Logic <..> MessageListener
 MessageListener <|.. SerialPortMessageListener
 ElevatorGrid "1" *-- "many" Elevator

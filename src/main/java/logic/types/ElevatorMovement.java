@@ -1,3 +1,6 @@
+/*
+ * Author:  Jonas Harmuth
+ */
 package logic.types;
 
 public enum ElevatorMovement {
